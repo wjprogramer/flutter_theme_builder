@@ -13,12 +13,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   var _fragmentType = _FragmentType.dynamic;
-  late ThemeData _themeData;
 
   @override
   Widget build(BuildContext context) {
-    _themeData = Theme.of(context);
-
     return Consumer<ThemeProvider>(
       builder: (_, themeProvider, ___) {
         return Scaffold(
@@ -72,14 +69,15 @@ class _MainPageState extends State<MainPage> {
       actions: [
         IconButton(
           onPressed: () {
-            if (themeProvider.data.brightness == Brightness.light) {
-              themeProvider.data = ThemeData.dark(useMaterial3: true);
-            } else {
-              themeProvider.data = ThemeData.light(useMaterial3: true);
-            }
+            // if (themeProvider.themes.brightness == Brightness.light) {
+            //   themeProvider.themes = ThemeData.dark(useMaterial3: true);
+            // } else {
+            //   themeProvider.themes = ThemeData.light(useMaterial3: true);
+            // }
+            themeProvider.toggleBrightness();
           },
           icon: Icon(
-            themeProvider.data.brightness == Brightness.light
+            themeProvider.brightness == Brightness.light
                 ? Icons.dark_mode
                 : Icons.light_mode,
           ),
