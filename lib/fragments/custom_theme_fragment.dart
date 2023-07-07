@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
+import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 import 'package:provider/provider.dart';
 
@@ -18,8 +20,13 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   late ThemeProvider _themeProvider;
   late ThemeData _themeData;
   TextTheme get _textTheme => _themeData.textTheme;
-  
+
   Color _primaryColor = Colors.white;
+  Color _secondaryColor = Colors.white;
+  Color _tertiaryColor = Colors.white;
+  Color _neutralColor = Colors.white;
+
+  final _leftFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -28,6 +35,9 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     WidgetsBinding.instance.addPostFrameCallback((_timeStamp) {
       final themeProvider = context.read<ThemeProvider>();
       _primaryColor = themeProvider.themeData.colorScheme.primary;
+      _secondaryColor = themeProvider.themeData.colorScheme.secondary;
+      _tertiaryColor = themeProvider.themeData.colorScheme.tertiary;
+      _neutralColor = themeProvider.themeData.colorScheme.surface;
     });
   }
 
@@ -71,79 +81,106 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   Widget _buildLeft() {
     final colorScheme = _themeProvider.customThemes.light.colorScheme;
 
-    return ListView(
-      children: [
-        64.height,
-        ...[
-          Text(
-            'Build a custom color scheme to map dynamic color, use as fallback colors, or implement a branded theme. The color system automatically handles critical adjustments that provide accessible color contrast. Learn more about color roles.',
-            style: _textTheme.bodyLarge,
-          ),
-          18.height,
-          Text(
-            'Core colors',
-            style: _textTheme.titleLarge,
-          ),
-          18.height,
-          Text(
-            'Input one or more brand color to define your color scheme.',
-            style: _textTheme.bodyLarge,
-          ),
-          10.height,
+    return SelectionArea(
+      focusNode: _leftFocusNode,
+      child: ListView(
+        children: [
+          64.height,
           ...[
-            _coreColorCard(
-              title: 'Primary',
-              subtitle: 'Acts as custom source color',
-              color: _themeData.colorScheme.primary,
-              onColorSelected: (color) {
-                setState(() {
-                  _primaryColor = color;
-                });
-                _themeProvider.setThemes(primaryColor: color);
-              }
+            Text(
+              'Build a custom color scheme to map dynamic color, use as fallback colors, or implement a branded theme. The color system automatically handles critical adjustments that provide accessible color contrast. Learn more about color roles.',
+              style: _textTheme.bodyLarge,
             ),
-            _coreColorCard(
-              title: 'Secondary',
-              color: _themeData.colorScheme.secondary,
-              onColorSelected: (color) {},
+            18.height,
+            Text(
+              'Core colors',
+              style: _textTheme.titleLarge,
             ),
-            _coreColorCard(
-              title: 'Tertiary',
-              color: _themeData.colorScheme.tertiary,
-              onColorSelected: (color) {},
+            18.height,
+            Text(
+              'Input one or more brand color to define your color scheme.',
+              style: _textTheme.bodyLarge,
             ),
-            _coreColorCard(
-              title: 'Neutral',
-              subtitle: 'Used for background and surfaces',
-              color: _themeData.colorScheme.surface,
-              onColorSelected: (color) {},
+            10.height,
+            ...[
+              _coreColorCard(
+                title: 'Primary',
+                subtitle: 'Acts as custom source color',
+                color: _themeData.colorScheme.primary,
+                onColorSelected: (color) {
+                  setState(() {
+                    _primaryColor = color;
+                    _updateThemeByCoreColor();
+                  });
+                }
+              ),
+              _coreColorCard(
+                title: 'Secondary',
+                color: _themeData.colorScheme.secondary,
+                onColorSelected: (color) {
+                  setState(() {
+                    _secondaryColor = color;
+                    _updateThemeByCoreColor();
+                  });
+                },
+              ),
+              _coreColorCard(
+                title: 'Tertiary',
+                color: _themeData.colorScheme.tertiary,
+                onColorSelected: (color) {
+                  setState(() {
+                    _tertiaryColor = color;
+                    _updateThemeByCoreColor();
+                  });
+                },
+              ),
+              _coreColorCard(
+                title: 'Neutral',
+                subtitle: 'Used for background and surfaces',
+                color: _themeData.colorScheme.surface,
+                onColorSelected: (color) {
+                  setState(() {
+                    _neutralColor = color;
+                    _updateThemeByCoreColor();
+                  });
+                },
+              ),
+            ].map((e) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: e,
+            )),
+            36.height,
+            Text(
+              'Extended Colors',
+              style: _textTheme.headlineSmall,
             ),
+            Text(
+              'Input a custom color that automatically gets assigned a set of complementary tones.',
+              style: _textTheme.bodyLarge,
+            ),
+
+            // TextButton(
+            //   onPressed: () {
+            //     _themeProvider.setThemes(primaryColor: Color(0xFF01d7f1));
+            //   },
+            //   child: Text('SetTheme'),
+            // ),
           ].map((e) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: e,
           )),
-          36.height,
-          Text(
-            'Extended Colors',
-            style: _textTheme.headlineSmall,
-          ),
-          Text(
-            'Input a custom color that automatically gets assigned a set of complementary tones.',
-            style: _textTheme.bodyLarge,
-          ),
+          20.height,
+        ],
+      ),
+    );
+  }
 
-          // TextButton(
-          //   onPressed: () {
-          //     _themeProvider.setThemes(primaryColor: Color(0xFF01d7f1));
-          //   },
-          //   child: Text('SetTheme'),
-          // ),
-        ].map((e) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: e,
-        )),
-        20.height,
-      ],
+  void _updateThemeByCoreColor() {
+    _themeProvider.setThemes(
+      primaryColor: _primaryColor,
+      secondaryColor: _secondaryColor,
+      tertiaryColor: _tertiaryColor,
+      neutralColor: _neutralColor,
     );
   }
 
@@ -153,58 +190,66 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     required Color color,
     required _ColorSelected onColorSelected,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: _themeData.colorScheme.surfaceVariant,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: subtitle != null
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: () => _pickColor(
-              color: color,
-              onColorSelected: onColorSelected,
-            ),
-            child: Container(
-              height: 48,
-              width: 48,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color,
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: _themeData.colorScheme.surfaceVariant,
+            borderRadius: BorderRadius.circular(24),
           ),
-          8.width,
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  title,
-                  textAlign: TextAlign.start,
-                  style: _textTheme.bodyLarge?.copyWith(
-                    color: _themeData.colorScheme.onSurfaceVariant,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: subtitle != null
+                ? CrossAxisAlignment.end
+                : CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () => _pickColor(
+                  color: color,
+                  onColorSelected: onColorSelected,
+                ),
+                child: Container(
+                  height: 48,
+                  width: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: color,
                   ),
                 ),
-                if (subtitle != null)
-                  Text(
-                    subtitle,
-                    textAlign: TextAlign.start,
-                    style: _textTheme.bodySmall?.copyWith(
-                      color: _themeData.colorScheme.onSurfaceVariant,
+              ),
+              8.width,
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      title,
+                      textAlign: TextAlign.start,
+                      style: _textTheme.bodyLarge?.copyWith(
+                        color: _themeData.colorScheme.onSurfaceVariant,
+                      ),
                     ),
-                  ),
-              ],
-            ),
+                    if (subtitle != null)
+                      SelectableText(
+                        subtitle,
+                        textAlign: TextAlign.start,
+                        style: _textTheme.bodySmall?.copyWith(
+                          color: _themeData.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        Text(
+          '#' + color.value.toRadixString(16),
+        ),
+      ],
     );
   }
 
@@ -226,7 +271,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
               onColorChanged: (v) {
                 resultColor = v;
               },
-              colorModel: ColorModel.rgb,
+              colorModel: ColorModel.hsv,
               enableAlpha: false,
               displayThumbColor: true,
               showParams: true,
@@ -258,6 +303,9 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     final lightTheme = _themeProvider.customThemes.light;
     final darkTheme = _themeProvider.customThemes.dark;
 
+    ThemeTempUtility.test();
+    final testThemes = ThemeTempUtility.testThemes();
+
     return [
       Center(
         child: ConstrainedBox(
@@ -277,6 +325,11 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       ),
       _buildScheme(lightTheme),
       _buildScheme(darkTheme),
+
+      if (kDebugMode) ...[
+        _buildScheme(testThemes.light),
+        _buildScheme(testThemes.dark),
+      ],
     ];
   }
 
@@ -452,12 +505,24 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                           bottomRight: isLastRow && i == row.length - 1 ? Radius.circular(16) : Radius.zero,
                         ),
                       ),
-                      child: Text(
-                        e.name,
-                        style: TextStyle(color: e.textColor),
+                      child: Text.rich(
+                          TextSpan(
+                            text: '${e.name}\n',
+                            children: [
+                              TextSpan(
+                                text: '#${e.bgColor.value.toRadixString(16).substring(2)}',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: e.textColor.withOpacity(0.6),
+                                ),
+                              ),
+                            ],
+                          ),
+                          style: TextStyle(color: e.textColor),
+                        ),
                       ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             );
