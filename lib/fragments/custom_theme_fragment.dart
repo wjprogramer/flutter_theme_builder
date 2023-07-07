@@ -306,16 +306,16 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     ThemeTempUtility.test();
     final testThemes = ThemeTempUtility.testThemes();
 
-    ThemeTempUtility.custom_generateCustomTheme({
-      'coreColors': {
-        // 數值只有兩個可能
-        // 1. 只有 primary
-        // 2. 有四個值 primary, secondary, tertiary, neutral
-        // primary
-      },
-      'is3p': true,
-      'customColors': null, // 不確定型別
-    });
+    // ThemeTempUtility.custom_generateCustomTheme({
+    //   'coreColors': {
+    //     // 數值只有兩個可能
+    //     // 1. 只有 primary
+    //     // 2. 有四個值 primary, secondary, tertiary, neutral
+    //     // primary
+    //   },
+    //   'is3p': true,
+    //   'customColors': [],
+    // });
 
     return [
       Center(
@@ -337,8 +337,10 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       _buildScheme(lightTheme),
       _buildScheme(darkTheme),
 
+
       if (kDebugMode) ...[
 
+        Divider(),
         _buildScheme(testThemes.light),
         _buildScheme(testThemes.dark),
 

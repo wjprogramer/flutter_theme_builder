@@ -80,10 +80,10 @@ class ThemeTempUtility {
   }
 
   /// No. 2 Function
-  static _Scheme baseline_getScheme(Brightness brightness) {
+  static MyScheme baseline_getScheme(Brightness brightness) {
     final group = brightness == Brightness.light ? 'light' : 'dark';
 
-    return _Scheme(
+    return MyScheme(
       brightness: brightness,
       primary: baseline_getColorById('md.sys.color.primary', group),
       onPrimary: baseline_getColorById('md.sys.color.on-primary', group),
@@ -451,18 +451,19 @@ class ThemeTempUtility {
         baseline = baseline_generateBaseline(
           customColors: options['customColors']
         );
-    var $jscomp$nullish$tmp224;
-    final sourceColor = null != ($jscomp$nullish$tmp224 = coreColors.primary) ? $jscomp$nullish$tmp224 : baseline,
-        source = argbFromHex(sourceColor),
+    final sourceColor = null != coreColors['primary']
+        ? coreColors['primary']
+        : baseline;
+    final source = argbFromHex(sourceColor),
         cp = c ? CorePalette(source, true) : CorePalette.of(source);
-    var palettes = {
-      'primary': tonal_group_tonesToTonalGroup(cp.a1),
-      'secondary': tonal_group_tonesToTonalGroup(cp.a2),
-      'tertiary': tonal_group_tonesToTonalGroup(cp.a3),
-      'neutral': tonal_group_tonesToTonalGroup(cp.n1),
-      'neutralVariant': tonal_group_tonesToTonalGroup(cp.n2),
-      'error': tonal_group_tonesToTonalGroup(cp.error),
-    };
+    // var palettes = {
+    //   'primary': tonal_group_tonesToTonalGroup(cp.a1),
+    //   'secondary': tonal_group_tonesToTonalGroup(cp.a2),
+    //   'tertiary': tonal_group_tonesToTonalGroup(cp.a3),
+    //   'neutral': tonal_group_tonesToTonalGroup(cp.n1),
+    //   'neutralVariant': tonal_group_tonesToTonalGroup(cp.n2),
+    //   'error': tonal_group_tonesToTonalGroup(cp.error),
+    // };
     // final paletteKeys = {
     //   'primary': "P",
     //   'secondary': "S",
@@ -654,8 +655,8 @@ class ThemeTempUtility {
 
 }
 
-class _Scheme {
-  _Scheme({
+class MyScheme {
+  MyScheme({
     this.brightness,
     this.primary,
     this.onPrimary,
@@ -791,6 +792,7 @@ class _Scheme {
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();
+    print(hexString);
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));

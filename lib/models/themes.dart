@@ -48,5 +48,41 @@ class CorePalette {
 
 // module$exports$google3$third_party$javascript$material_color_utilities$palettes$tonal_palette$TonalPalette$fromHueAndChroma
 fromHueAndChroma(hue, chroma) {
+  return TonalPalette(hue, chroma);
+}
 
+// module$exports$google3$third_party$javascript$material_color_utilities$palettes$tonal_palette$TonalPalette
+class TonalPalette {
+  TonalPalette(this.hue, this.chroma) {
+
+  }
+
+  dynamic hue;
+  dynamic chroma;
+  Map cache = {};
+
+  tone(tone) {
+    var argb = this.cache[tone];
+
+    // if (argb != null) {
+    //   argb = colorUtilities.Hct(
+    //       HctSolver.solveToInt(
+    //           this.hue, this.chroma, tone)
+    //   ).toInt();
+    //   this.cache[tone] = argb;
+    // }
+
+    return argb;
+  }
+
+}
+
+// module$exports$google3$third_party$javascript$material_color_utilities$hct$hct_solver$HctSolver
+class HctSolver {
+  HctSolver._();
+
+  // module$exports$google3$third_party$javascript$material_color_utilities$hct$hct_solver$HctSolver$solveToInt
+  static solveToInt() {
+
+  }
 }
