@@ -340,7 +340,7 @@ class ThemeTempUtility {
       //   color: {
       //     name: color.name,
       //     harmonized: color.blend,
-      //     color: module$exports$google3$third_party$javascript$material_color_utilities$utils$string_utils$hexFromArgb(color.value)
+      //     color: hexFromArgb(color.value)
       //   },
       // });
       //
@@ -435,6 +435,221 @@ class ThemeTempUtility {
     return value is num
         ? hexFromArgb(value)
         : value;
+  }
+
+  /// No. 17 Function
+  static custom_generateCustomTheme(options) {
+    var $jscomp$nullish$tmp222;
+    final customColors = null != ($jscomp$nullish$tmp222 = null == options
+        ? null
+        : options['customColors'])
+        ? $jscomp$nullish$tmp222
+        : [];
+    var $jscomp$nullish$tmp223;
+    final c = null != ($jscomp$nullish$tmp223 = options['content']) ? $jscomp$nullish$tmp223 : false,
+        coreColors = options['coreColors'],
+        baseline = baseline_generateBaseline(
+          customColors: options['customColors']
+        );
+    var $jscomp$nullish$tmp224;
+    final sourceColor = null != ($jscomp$nullish$tmp224 = coreColors.primary) ? $jscomp$nullish$tmp224 : baseline,
+        source = argbFromHex(sourceColor),
+        cp = c ? CorePalette(source, true) : CorePalette.of(source);
+    var palettes = {
+      'primary': tonal_group_tonesToTonalGroup(cp.a1),
+      'secondary': tonal_group_tonesToTonalGroup(cp.a2),
+      'tertiary': tonal_group_tonesToTonalGroup(cp.a3),
+      'neutral': tonal_group_tonesToTonalGroup(cp.n1),
+      'neutralVariant': tonal_group_tonesToTonalGroup(cp.n2),
+      'error': tonal_group_tonesToTonalGroup(cp.error),
+    };
+    // final paletteKeys = {
+    //   'primary': "P",
+    //   'secondary': "S",
+    //   'tertiary': "T",
+    //   'neutral': "N",
+    //   'neutralVariant': "NV",
+    //   'error': "E"
+    // },
+    //     p = new Map([...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.primary, palettes.primary), ...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.secondary, palettes.secondary), ...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.tertiary,
+    //         palettes.tertiary), ...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.neutral, palettes.neutral), ...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.neutralVariant, palettes.neutralVariant), ...module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(paletteKeys.error, palettes.error)]);
+    // for (final [key__tsickle_destructured_1, value__tsickle_destructured_2] of Object.entries(coreColors)) {
+    // final key =
+    // key__tsickle_destructured_1,
+    // value = value__tsickle_destructured_2;
+    // if (value) {
+    // final coreColorPalette = module$exports$google3$third_party$javascript$material_color_utilities$palettes$core_palette$CorePalette$of(module$exports$google3$third_party$javascript$material_color_utilities$utils$string_utils$argbFromHex(value)),
+    // customPalettes = Object(palettes),
+    // toneGroup = tonal_group_tonesToTonalGroup(coreColorPalette.a1);
+    // customPalettes[key] = toneGroup;
+    // palettes =
+    // customPalettes;
+    // final map = module$contents$google3$ux$material$theme_builder$core$theme$tonal_group_convertTonalGroupToMap(Object(paletteKeys)[key], toneGroup);
+    // for (final [key__tsickle_destructured_3, value__tsickle_destructured_4] of map.entries()) p.set(key__tsickle_destructured_3, value__tsickle_destructured_4)
+    // }
+    // }
+    // var JSCompiler_temp_final = Object,
+    // JSCompiler_temp_const$jscomp$0 = JSCompiler_temp_const.assign,
+    // JSCompiler_temp_const$jscomp$1 = module$contents$google3$ux$material$theme_builder$core$theme$custom_color_convertCustomColors(customColors,
+    // sourceColor);
+    // var JSCompiler_temp_const$jscomp$2 = {
+    //   'primary': p["P-40"],
+    //   'onPrimary': p["P-100"],
+    //   'primaryContainer': p["P-90"],
+    //   'onPrimaryContainer': p["P-10"],
+    //   'secondary': p["S-40"],
+    //   'onSecondary': p["S-100"],
+    //   'secondaryContainer': p["S-90"],
+    //   'onSecondaryContainer': p["S-10"],
+    //   'tertiary': p["T-40"],
+    //   'onTertiary': p["T-100"],
+    //   'tertiaryContainer': p["T-90"],
+    //   'onTertiaryContainer': p["T-10"],
+    //   'error': p["E-40"],
+    //   'errorContainer': p["E-90"],
+    //   'onError': p["E-100"],
+    //   'onErrorContainer': p["E-10"],
+    //   'background': p["N-99"],
+    //   'onBackground': p["N-10"],
+    //   'surface': p["N-99"],
+    //   'onSurface': p["N-10"],
+    //   'surfaceVariant': p["NV-90"],
+    //   'onSurfaceVariant': p["NV-30"],
+    //   'outline': p["NV-50"],
+    //   'inverseOnSurface': p["N-95"],
+    //   'inverseSurface': p["N-20"],
+    //   'inversePrimary': p["P-80"],
+    //   'shadow': p["N-0"],
+    //   'surfaceTint': p["P-40"],
+    //   'outlineVariant': p["NV-80"],
+    //   'scrim': p["N-0"],
+    // };
+    // var JSCompiler_inline_result = {
+    //   'primary': p["P-80"],
+    //   'onPrimary': p["P-20"],
+    //   'primaryContainer': p["P-30"],
+    //   'onPrimaryContainer': p["P-90"],
+    //   'secondary': p["S-80"],
+    //   'onSecondary': p["S-20"],
+    //   'secondaryContainer': p["S-30"],
+    //   'onSecondaryContainer': p["S-90"],
+    //   'tertiary': p["T-80"],
+    //   'onTertiary': p["T-20"],
+    //   'tertiaryContainer': p["T-30"],
+    //   'onTertiaryContainer': p["T-90"],
+    //   'error': p["E-80"],
+    //   'errorContainer': p["E-30"],
+    //   'onError': p["E-20"],
+    //   'onErrorContainer': p["E-90"],
+    //   'background': p["N-10"],
+    //   'onBackground': p["N-90"],
+    //   'surface': p["N-10"],
+    //   'onSurface': p["N-90"],
+    //   'surfaceVariant': p["NV-30"],
+    //   'onSurfaceVariant': p["NV-80"],
+    //   'outline': p["NV-60"],
+    //   'inverseOnSurface': p["N-10"],
+    //   'inverseSurface': p["N-90"],
+    //   'inversePrimary': p["P-40"],
+    //   'shadow': p["N-0"],
+    //   'surfaceTint': p["P-80"],
+    //   'outlineVariant': p["NV-30"],
+    //   'scrim': p["N-0"],
+    // };
+    // var $jscomp$inline_1016, $jscomp$inline_1018, $jscomp$inline_1020, $jscomp$inline_1022, $jscomp$inline_1024, $jscomp$inline_1026, $jscomp$inline_1028, $jscomp$inline_1030, $jscomp$inline_1032, $jscomp$inline_1034, $jscomp$inline_1036, $jscomp$inline_1038, $jscomp$inline_1040, $jscomp$inline_1042, $jscomp$inline_1044, $jscomp$inline_1046, $jscomp$inline_1048, $jscomp$inline_1050,
+    // $jscomp$inline_1052, $jscomp$inline_1054, $jscomp$inline_1056, $jscomp$inline_1058, $jscomp$inline_1060, $jscomp$inline_1062, $jscomp$inline_1064;
+    // var JSCompiler_temp_const$jscomp$3 = {
+    //   'colorAccentPrimary': null != ($jscomp$inline_1016 = p["P-90"]) ? $jscomp$inline_1016 : hexFromArgb(cp.a1.tone(90)),
+    //   'colorAccentPrimaryVariant': null != ($jscomp$inline_1018 = p["P-40"]) ? $jscomp$inline_1018 : hexFromArgb(cp.a1.tone(40)),
+    //   'colorAccentSecondary': null != ($jscomp$inline_1020 = p["S-90"]) ? $jscomp$inline_1020 : hexFromArgb(cp.a2.tone(90)),
+    //   'colorAccentSecondaryVariant': null != ($jscomp$inline_1022 = p["S-40"]) ? $jscomp$inline_1022 : hexFromArgb(cp.a2.tone(40)),
+    //   'colorAccentTertiary': null != ($jscomp$inline_1024 = p["T-90"]) ? $jscomp$inline_1024 : hexFromArgb(cp.a3.tone(90)),
+    //   'colorAccentTertiaryVariant': null != ($jscomp$inline_1026 = p["T-40"]) ? $jscomp$inline_1026 : hexFromArgb(cp.a3.tone(40)),
+    //   'textColorPrimary': null != ($jscomp$inline_1028 = p["N-10"]) ? $jscomp$inline_1028 : hexFromArgb(cp.n1.tone(10)),
+    //   'textColorSecondary': null != ($jscomp$inline_1030 = p["NV-30"]) ? $jscomp$inline_1030 : hexFromArgb(cp.n2.tone(30)),
+    //   'textColorTertiary': null != ($jscomp$inline_1032 = p["NV-50"]) ? $jscomp$inline_1032 : hexFromArgb(cp.n2.tone(50)),
+    //   'textColorPrimaryInverse': null != ($jscomp$inline_1034 = p["N-95"]) ? $jscomp$inline_1034 : hexFromArgb(cp.n1.tone(95)),
+    //   'textColorSecondaryInverse': null != ($jscomp$inline_1036 = p["N-80"]) ? $jscomp$inline_1036 : hexFromArgb(cp.n1.tone(80)),
+    //   'textColorTertiaryInverse': null != ($jscomp$inline_1038 = p["N-60"]) ? $jscomp$inline_1038 : hexFromArgb(cp.n1.tone(60)),
+    //   'colorBackground': null != ($jscomp$inline_1040 = p["N-95"]) ? $jscomp$inline_1040 : hexFromArgb(cp.n1.tone(95)),
+    //   'colorBackgroundFloating': null != ($jscomp$inline_1042 = p["N-98"]) ? $jscomp$inline_1042 : hexFromArgb(cp.n1.tone(98)),
+    //   'colorSurface': null != ($jscomp$inline_1044 = p["N-98"]) ? $jscomp$inline_1044 : hexFromArgb(cp.n1.tone(98)),
+    //   'colorSurfaceVariant': null != ($jscomp$inline_1046 = p["N-90"]) ? $jscomp$inline_1046 : hexFromArgb(cp.n1.tone(90)),
+    //   'colorSurfaceHighlight': null != ($jscomp$inline_1048 = p["N-100"]) ? $jscomp$inline_1048 : hexFromArgb(cp.n1.tone(100)),
+    //   'surfaceHeader': null != ($jscomp$inline_1050 = p["N-90"]) ? $jscomp$inline_1050 : hexFromArgb(cp.n1.tone(90)),
+    //   'underSurface': null != ($jscomp$inline_1052 = p["N-0"]) ? $jscomp$inline_1052 : hexFromArgb(cp.n1.tone(0)),
+    //   'offState': null != ($jscomp$inline_1054 = p["N-20"]) ? $jscomp$inline_1054 : hexFromArgb(cp.n1.tone(20)),
+    //   'accentSurface': null != ($jscomp$inline_1056 = p["NV-95"]) ? $jscomp$inline_1056 : hexFromArgb(cp.a2.tone(95)),
+    //   'textPrimaryOnAccent': null != ($jscomp$inline_1058 = p["N-10"]) ? $jscomp$inline_1058 : hexFromArgb(cp.n1.tone(10)),
+    //   'textSecondaryOnAccent': null != ($jscomp$inline_1060 = p["NV-30"]) ? $jscomp$inline_1060 : hexFromArgb(cp.n2.tone(30)),
+    //   'volumeBackground': null != ($jscomp$inline_1062 = p["N-25"]) ? $jscomp$inline_1062 : hexFromArgb(cp.n1.tone(25)),
+    //   'scrim': null != ($jscomp$inline_1064 = p["N-80"]) ? $jscomp$inline_1064 : hexFromArgb(cp.n1.tone(80))
+    // };
+    // var $jscomp$inline_1070, $jscomp$inline_1072, $jscomp$inline_1074, $jscomp$inline_1076, $jscomp$inline_1078, $jscomp$inline_1080,
+    // $jscomp$inline_1082, $jscomp$inline_1084, $jscomp$inline_1086, $jscomp$inline_1088, $jscomp$inline_1090, $jscomp$inline_1092, $jscomp$inline_1094, $jscomp$inline_1096, $jscomp$inline_1098, $jscomp$inline_1100, $jscomp$inline_1102, $jscomp$inline_1104, $jscomp$inline_1106, $jscomp$inline_1108, $jscomp$inline_1110, $jscomp$inline_1112, $jscomp$inline_1114, $jscomp$inline_1116, $jscomp$inline_1118;
+    // var JSCompiler_inline_result$jscomp$0 = {
+    //   'colorAccentPrimary': null != ($jscomp$inline_1070 = p["P-90"]) ? $jscomp$inline_1070 : hexFromArgb(cp.a1.tone(90)),
+    //   'colorAccentPrimaryVariant': null != ($jscomp$inline_1072 = p["P-70"]) ? $jscomp$inline_1072 : hexFromArgb(cp.a1.tone(70)),
+    //   'colorAccentSecondary': null != ($jscomp$inline_1074 = p["S-90"]) ? $jscomp$inline_1074 : hexFromArgb(cp.a2.tone(90)),
+    //   'colorAccentSecondaryVariant': null != ($jscomp$inline_1076 = p["S-70"]) ? $jscomp$inline_1076 : hexFromArgb(cp.a2.tone(70)),
+    //   'colorAccentTertiary': null != ($jscomp$inline_1078 = p["T-90"]) ? $jscomp$inline_1078 : hexFromArgb(cp.a3.tone(90)),
+    //   'colorAccentTertiaryVariant': null != ($jscomp$inline_1080 = p["T-70"]) ? $jscomp$inline_1080 : hexFromArgb(cp.a3.tone(70)),
+    //   'textColorPrimary': null != ($jscomp$inline_1082 = p["N-95"]) ? $jscomp$inline_1082 : hexFromArgb(cp.n1.tone(95)),
+    //   'textColorSecondary': null != ($jscomp$inline_1084 = p["NV-80"]) ? $jscomp$inline_1084 : hexFromArgb(cp.n2.tone(80)),
+    //   'textColorTertiary': null != ($jscomp$inline_1086 = p["NV-60"]) ? $jscomp$inline_1086 : hexFromArgb(cp.n2.tone(60)),
+    //   'textColorPrimaryInverse': null != ($jscomp$inline_1088 = p["N-10"]) ? $jscomp$inline_1088 : hexFromArgb(cp.n1.tone(10)),
+    //   'textColorSecondaryInverse': null != ($jscomp$inline_1090 = p["N-30"]) ? $jscomp$inline_1090 : hexFromArgb(cp.n1.tone(30)),
+    //   'textColorTertiaryInverse': null != ($jscomp$inline_1092 = p["N-50"]) ? $jscomp$inline_1092 : hexFromArgb(cp.n1.tone(50)),
+    //   'colorBackground': null != ($jscomp$inline_1094 = p["N-10"]) ? $jscomp$inline_1094 : hexFromArgb(cp.n1.tone(10)),
+    //   'colorBackgroundFloating': null != ($jscomp$inline_1096 = p["N-10"]) ? $jscomp$inline_1096 : hexFromArgb(cp.n1.tone(10)),
+    //   'colorSurface': null != ($jscomp$inline_1098 = p["N-20"]) ? $jscomp$inline_1098 : hexFromArgb(cp.n1.tone(20)),
+    //   'colorSurfaceVariant': null != ($jscomp$inline_1100 = p["N-30"]) ? $jscomp$inline_1100 : hexFromArgb(cp.n1.tone(30)),
+    //   'colorSurfaceHighlight': null != ($jscomp$inline_1102 = p["N-35"]) ? $jscomp$inline_1102 : hexFromArgb(cp.n1.tone(35)),
+    //   'surfaceHeader': null != ($jscomp$inline_1104 = p["N-30"]) ? $jscomp$inline_1104 : hexFromArgb(cp.n1.tone(30)),
+    //   'underSurface': null != ($jscomp$inline_1106 = p["N-0"]) ? $jscomp$inline_1106 : hexFromArgb(cp.n1.tone(0)),
+    //   'offState': null != ($jscomp$inline_1108 = p["N-20"]) ? $jscomp$inline_1108 : hexFromArgb(cp.n1.tone(20)),
+    //   'accentSurface': null != ($jscomp$inline_1110 = p["NV-95"]) ? $jscomp$inline_1110 : hexFromArgb(cp.a2.tone(95)),
+    //   'textPrimaryOnAccent': null != ($jscomp$inline_1112 = p["N-10"]) ? $jscomp$inline_1112 : hexFromArgb(cp.n1.tone(10)),
+    //   'textSecondaryOnAccent': null != ($jscomp$inline_1114 = p["NV-30"]) ? $jscomp$inline_1114 : hexFromArgb(cp.n2.tone(30)),
+    //   'volumeBackground': null != ($jscomp$inline_1116 = p["N-25"]) ? $jscomp$inline_1116 : hexFromArgb(cp.n1.tone(25)),
+    //   'scrim': null != ($jscomp$inline_1118 = p["N-80"]) ? $jscomp$inline_1118 : hexFromArgb(cp.n1.tone(80))
+    // };
+    // return JSCompiler_temp_const$jscomp$0.call(JSCompiler_temp_const, {}, baseline, {
+    //   baseline: !1,
+    //   seed: sourceColor,
+    //   extendedColors: null != customColors ? customColors : [],
+    //   customColors: JSCompiler_temp_const$jscomp$1,
+    //   schemes: {
+    //   light: JSCompiler_temp_const$jscomp$2,
+    //   dark: JSCompiler_inline_result,
+    //   androidLight: JSCompiler_temp_const$jscomp$3,
+    //   androidDark: JSCompiler_inline_result$jscomp$0
+    //   },
+    //   palettes,
+    //   coreColors
+    // });
+  }
+
+  /// No 18.
+  static tonal_group_tonesToTonalGroup(tones) {
+    return {
+      100: hexFromArgb(tones.tone(100)),
+      99: hexFromArgb(tones.tone(99)),
+      98: hexFromArgb(tones.tone(98)),
+      95: hexFromArgb(tones.tone(95)),
+      90: hexFromArgb(tones.tone(90)),
+      80: hexFromArgb(tones.tone(80)),
+      70: hexFromArgb(tones.tone(70)),
+      60: hexFromArgb(tones.tone(60)),
+      50: hexFromArgb(tones.tone(50)),
+      40: hexFromArgb(tones.tone(40)),
+      35: hexFromArgb(tones.tone(35)),
+      30: hexFromArgb(tones.tone(30)),
+      25: hexFromArgb(tones.tone(25)),
+      20: hexFromArgb(tones.tone(20)),
+      10: hexFromArgb(tones.tone(10)),
+      0: hexFromArgb(tones.tone(0))
+    };
   }
 
 }
@@ -567,6 +782,10 @@ class _Scheme {
       onBackground: fromHex(onBackground['value']),
       surface: fromHex(surface['value']),
       onSurface: fromHex(onSurface['value']),
+
+      outline: fromHex(outline['value']),
+      surfaceVariant: fromHex(surfaceVariant['value']),
+      onSurfaceVariant: fromHex(onSurfaceVariant['value']),
     );
   }
 
