@@ -297,7 +297,15 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   }
 
   Widget _buildMain() {
-    return Container();
+    final items = [
+      ..._buildRightListItems(),
+    ];
+
+    return ListView.builder(
+      itemCount: items.length,
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      itemBuilder: (c, i) => items[i],
+    );
   }
 
   List<Widget> _buildRightListItems() {

@@ -77,12 +77,3 @@ class TonalPalette {
 
 }
 
-// module$exports$google3$third_party$javascript$material_color_utilities$hct$hct_solver$HctSolver
-class HctSolver {
-  HctSolver._();
-
-  // module$exports$google3$third_party$javascript$material_color_utilities$hct$hct_solver$HctSolver$solveToInt
-  static solveToInt() {
-
-  }
-}
