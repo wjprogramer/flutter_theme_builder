@@ -41,33 +41,33 @@ class ThemeTempUtility {
   }
 
   /// No. 1 Function
-  static baseline_generateBaseline({
+  static MyDemoThemeData baseline_generateBaseline({
     List customColors = const [],
   }) {
     final sourceColor = "#6750A4";
     // final context = options.is3p ? "3p" : "1p";
 
-    final data = {
-      'seed': sourceColor,
-      'name': "material-theme",
-      'baseline': true,
-      'extendedColors': customColors,
-      'coreColors': {
-        'primary': sourceColor
+    return MyDemoThemeData(
+      seed: sourceColor,
+      name: "material-theme",
+      baseline: true,
+      extendedColors: customColors,
+      coreColors: {
+        'primary': sourceColor,
       },
-      'schemes': {
-        'light': baseline_getScheme(Brightness.light).toJson(),
-        'dark': baseline_getScheme(Brightness.dark).toJson(),
+      schemes: {
+        'light': baseline_getScheme(Brightness.light),
+        'dark': baseline_getScheme(Brightness.dark),
       },
-      'palettes': {
+      palettes: {
         'primary': baseline_getPalette("primary"),
-        // 'secondary': baseline_getPalette("secondary"),
-        // 'tertiary': baseline_getPalette("tertiary"),
-        // 'error': baseline_getPalette("error"),
-        // 'neutral': baseline_getPalette("neutral"),
-        // 'neutralVariant': baseline_getPalette("neutral-variant")
+        'secondary': baseline_getPalette("secondary"),
+        'tertiary': baseline_getPalette("tertiary"),
+        'error': baseline_getPalette("error"),
+        'neutral': baseline_getPalette("neutral"),
+        'neutralVariant': baseline_getPalette("neutral-variant")
       },
-      'styles': {
+      styles: {
         'display': baseline_getFontStyleGroup("display"),
         'headline': baseline_getFontStyleGroup("headline"),
         'body': baseline_getFontStyleGroup("body"),
@@ -75,9 +75,7 @@ class ThemeTempUtility {
         'title': baseline_getFontStyleGroup("title")
       },
       // 'customColors': custom_color_convertCustomColors(customColors, sourceColor)
-    };
-
-    return data;
+    );
   }
 
   // 1912
@@ -120,7 +118,7 @@ class ThemeTempUtility {
   }
 
   /// No. 3 Function
-  static baseline_getColorById(String tokenId, String group) {
+  static MyToken? baseline_getColorById(String tokenId, String group) {
     return latest_findTokenById(
       tokenId,
       group,
@@ -130,11 +128,11 @@ class ThemeTempUtility {
   }
 
   /// No. 4 Function
-  static Map? latest_findTokenById(String tokenId, String? vGroup, {
+  static MyToken? latest_findTokenById(String tokenId, String? vGroup, {
     bool resolve = false,
     bool hex = false,
   }) {
-    Map? searchGroup(Map group) {
+    MyToken? searchGroup(Map group) {
       for (final entry in group.entries) {
         final id = entry.key;
         final value = entry.value;
@@ -167,7 +165,7 @@ class ThemeTempUtility {
   }
 
   /// No. 5 Function
-  static Map latest_convertToken(id, Map value, {
+  static MyToken latest_convertToken(id, Map value, {
     required bool resolve,
     required bool hex,
     String? vGroup,
@@ -212,29 +210,43 @@ class ThemeTempUtility {
       token['value'] = '#${parts.join().toUpperCase()}';
     }
 
-    return token;
+    return MyToken(
+      name: token['name'],
+      value: token['value'],
+      id: token['id'],
+    );
   }
 
   /// No. 6 Function
-  static baseline_getPalette(section$jscomp$0) {
+  static colorUtilities.TonalPalette baseline_getPalette(section$jscomp$0) {
     final prefix = 'md.ref.palette.${section$jscomp$0}';
     final tokens = latest_findAllTokens((section, id) => id.startsWith(prefix) ? true : false);
     final group = {};
     for (final token in tokens) {
-      if ("neutral" == section$jscomp$0 && !token['id'].startsWith('${prefix}-')) {
-        // 應該是這樣改?
-        // Object(group)[Number(token.id.substring(prefix.length))] = token.value
-        final x = int.parse((token['id'] as String).substring(prefix.length));
-        group[x] = token['value'];
+      if ("neutral" == section$jscomp$0 && token.id.startsWith('${prefix}-')) {
+        continue;
       }
+      // 應該是這樣改?
+      // Object(group)[Number(token.id.substring(prefix.length))] = token.value
+      final x = int.parse((token.id).substring(prefix.length));
+      group[x] = token.value;
     }
-    return group;
+
+    int _valueFromMap(int index) {
+      final tone = colorUtilities.TonalPalette.commonTones[index];
+      return argbFromHex(group[tone]);
+    }
+
+    return colorUtilities.TonalPalette.fromList(List.generate(
+      colorUtilities.TonalPalette.commonSize,
+      _valueFromMap,
+    ));
   }
 
   /// No. 7 Function
-  static List latest_findAllTokens(Function match) {
+  static List<MyToken> latest_findAllTokens(Function match) {
     final tokens = TOKENS_3P;
-    final results = [];
+    final results = <MyToken>[];
 
     for (final entry in tokens.entries) {
       final section = entry.key,
@@ -250,6 +262,7 @@ class ThemeTempUtility {
         }
       }
     }
+
     return results;
   }
 
@@ -270,14 +283,14 @@ class ThemeTempUtility {
         fontSize = latest_findTokenById('${prefix}.size', null, resolve: true),
         lineHeight = latest_findTokenById('${prefix}.line-height', null, resolve: true),
         tracking = latest_findTokenById('${prefix}.tracking', null, resolve: true),
-        fontWeightValue = fontWeight?['value'];
+        fontWeightValue = fontWeight?.value;
 
     if (fontWeightValue == null) {
       return null;
     }
 
     return {
-      'fontFamilyName': fontFamily?['value']['valuesList'][0],
+      'fontFamilyName': fontFamily?.value['valuesList'][0],
       'fontFamilyStyle': 950 <= fontWeightValue ? "Ultra-black"
           : 900 <= fontWeightValue ? "Black"
           : 800 <= fontWeightValue ?
@@ -289,9 +302,9 @@ class ThemeTempUtility {
           : 200 <= fontWeightValue ? "Extra-light"
           : "Hairline",
       'fontWeight': fontWeightValue,
-      'fontSize': fontSize?['value']['value'],
-      'lineHeight': lineHeight?['value']['value'],
-      'letterSpacing': tracking?['value']['value'],
+      'fontSize': fontSize?.value['value'],
+      'lineHeight': lineHeight?.value['value'],
+      'letterSpacing': tracking?.value['value'],
     };
   }
 
@@ -333,112 +346,110 @@ class MyScheme {
   });
 
   Brightness? brightness;
-  dynamic primary;
-  dynamic onPrimary;
-  dynamic primaryContainer;
-  dynamic onPrimaryContainer;
-  dynamic secondary;
-  dynamic onSecondary;
-  dynamic secondaryContainer;
-  dynamic onSecondaryContainer;
-  dynamic tertiary;
-  dynamic onTertiary;
-  dynamic tertiaryContainer;
-  dynamic onTertiaryContainer;
-  dynamic error;
-  dynamic onError;
-  dynamic errorContainer;
-  dynamic onErrorContainer;
-  dynamic outline;
-  dynamic background;
-  dynamic onBackground;
-  dynamic surface;
-  dynamic onSurface;
-  dynamic surfaceVariant;
-  dynamic onSurfaceVariant;
-  dynamic inverseSurface;
-  dynamic inverseOnSurface;
-  dynamic inversePrimary;
-  dynamic shadow;
-  dynamic surfaceTint;
-  dynamic outlineVariant;
-  dynamic scrim;
+  MyToken? primary;
+  MyToken? onPrimary;
+  MyToken? primaryContainer;
+  MyToken? onPrimaryContainer;
+  MyToken? secondary;
+  MyToken? onSecondary;
+  MyToken? secondaryContainer;
+  MyToken? onSecondaryContainer;
+  MyToken? tertiary;
+  MyToken? onTertiary;
+  MyToken? tertiaryContainer;
+  MyToken? onTertiaryContainer;
+  MyToken? error;
+  MyToken? onError;
+  MyToken? errorContainer;
+  MyToken? onErrorContainer;
+  MyToken? outline;
+  MyToken? background;
+  MyToken? onBackground;
+  MyToken? surface;
+  MyToken? onSurface;
+  MyToken? surfaceVariant;
+  MyToken? onSurfaceVariant;
+  MyToken? inverseSurface;
+  MyToken? inverseOnSurface;
+  MyToken? inversePrimary;
+  MyToken? shadow;
+  MyToken? surfaceTint;
+  MyToken? outlineVariant;
+  MyToken? scrim;
 
   toJson() => {
-    'primary': primary,
-    'onPrimary': onPrimary,
-    'primaryContainer': primaryContainer,
-    'onPrimaryContainer': onPrimaryContainer,
-    'secondary': secondary,
-    'onSecondary': onSecondary,
-    'secondaryContainer': secondaryContainer,
-    'onSecondaryContainer': onSecondaryContainer,
-    'tertiary': tertiary,
-    'onTertiary': onTertiary,
-    'tertiaryContainer': tertiaryContainer,
-    'onTertiaryContainer': onTertiaryContainer,
-    'error': error,
-    'onError': onError,
-    'errorContainer': errorContainer,
-    'onErrorContainer': onErrorContainer,
-    'outline': outline,
-    'background': background,
-    'onBackground': onBackground,
-    'surface': surface,
-    'onSurface': onSurface,
-    'surfaceVariant': surfaceVariant,
-    'onSurfaceVariant': onSurfaceVariant,
-    'inverseSurface': inverseSurface,
-    'inverseOnSurface': inverseOnSurface,
-    'inversePrimary': inversePrimary,
-    'shadow': shadow,
-    'surfaceTint': surfaceTint,
-    'outlineVariant': outlineVariant,
-    'scrim': scrim,
+    'primary': primary?.toJson(),
+    'onPrimary': onPrimary?.toJson(),
+    'primaryContainer': primaryContainer?.toJson(),
+    'onPrimaryContainer': onPrimaryContainer?.toJson(),
+    'secondary': secondary?.toJson(),
+    'onSecondary': onSecondary?.toJson(),
+    'secondaryContainer': secondaryContainer?.toJson(),
+    'onSecondaryContainer': onSecondaryContainer?.toJson(),
+    'tertiary': tertiary?.toJson(),
+    'onTertiary': onTertiary?.toJson(),
+    'tertiaryContainer': tertiaryContainer?.toJson(),
+    'onTertiaryContainer': onTertiaryContainer?.toJson(),
+    'error': error?.toJson(),
+    'onError': onError?.toJson(),
+    'errorContainer': errorContainer?.toJson(),
+    'onErrorContainer': onErrorContainer?.toJson(),
+    'outline': outline?.toJson(),
+    'background': background?.toJson(),
+    'onBackground': onBackground?.toJson(),
+    'surface': surface?.toJson(),
+    'onSurface': onSurface?.toJson(),
+    'surfaceVariant': surfaceVariant?.toJson(),
+    'onSurfaceVariant': onSurfaceVariant?.toJson(),
+    'inverseSurface': inverseSurface?.toJson(),
+    'inverseOnSurface': inverseOnSurface?.toJson(),
+    'inversePrimary': inversePrimary?.toJson(),
+    'shadow': shadow?.toJson(),
+    'surfaceTint': surfaceTint?.toJson(),
+    'outlineVariant': outlineVariant?.toJson(),
+    'scrim': scrim?.toJson(),
   };
 
   ColorScheme toColorScheme() {
     return ColorScheme(
       brightness: brightness!,
 
-      primary: fromHex(primary['value']),
-      onPrimary: fromHex(onPrimary['value']),
-      primaryContainer: fromHex(primaryContainer['value']),
-      onPrimaryContainer: fromHex(onPrimaryContainer['value']),
+      primary: fromHex(primary?.value),
+      onPrimary: fromHex(onPrimary?.value),
+      primaryContainer: fromHex(primaryContainer?.value),
+      onPrimaryContainer: fromHex(onPrimaryContainer?.value),
 
-      secondary: fromHex(secondary['value']),
-      onSecondary: fromHex(onSecondary['value']),
-      secondaryContainer: fromHex(secondaryContainer['value']),
-      onSecondaryContainer: fromHex(onSecondaryContainer['value']),
+      secondary: fromHex(secondary?.value),
+      onSecondary: fromHex(onSecondary?.value),
+      secondaryContainer: fromHex(secondaryContainer?.value),
+      onSecondaryContainer: fromHex(onSecondaryContainer?.value),
 
-      tertiary: fromHex(tertiary['value']),
-      onTertiary: fromHex(onTertiary['value']),
-      tertiaryContainer: fromHex(tertiaryContainer['value']),
-      onTertiaryContainer: fromHex(onTertiaryContainer['value']),
+      tertiary: fromHex(tertiary?.value),
+      onTertiary: fromHex(onTertiary?.value),
+      tertiaryContainer: fromHex(tertiaryContainer?.value),
+      onTertiaryContainer: fromHex(onTertiaryContainer?.value),
 
-      error: fromHex(error['value']),
-      onError: fromHex(onError['value']),
-      errorContainer: fromHex(errorContainer['value']),
-      onErrorContainer: fromHex(onErrorContainer['value']),
+      error: fromHex(error?.value),
+      onError: fromHex(onError?.value),
+      errorContainer: fromHex(errorContainer?.value),
+      onErrorContainer: fromHex(onErrorContainer?.value),
 
-      background: fromHex(background['value']),
-      onBackground: fromHex(onBackground['value']),
-      surface: fromHex(surface['value']),
-      onSurface: fromHex(onSurface['value']),
+      background: fromHex(background?.value),
+      onBackground: fromHex(onBackground?.value),
+      surface: fromHex(surface?.value),
+      onSurface: fromHex(onSurface?.value),
 
-      outline: fromHex(outline['value']),
-      surfaceVariant: fromHex(surfaceVariant['value']),
-      onSurfaceVariant: fromHex(onSurfaceVariant['value']),
+      outline: fromHex(outline?.value),
+      surfaceVariant: fromHex(surfaceVariant?.value),
+      onSurfaceVariant: fromHex(onSurfaceVariant?.value),
     );
   }
 
   static Color fromHex(String hexString) {
     final buffer = StringBuffer();
-    print(hexString);
     if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
     buffer.write(hexString.replaceFirst('#', ''));
     return Color(int.parse(buffer.toString(), radix: 16));
   }
+
 }
-
-

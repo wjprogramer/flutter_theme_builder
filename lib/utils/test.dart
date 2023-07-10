@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/other_utils.dart';
@@ -98,9 +99,9 @@ void testSomething() {
       )
     ],
   });
-  print(a);
-  print(a);
-  print(a);
+  print(a.toJson());
+
+  ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
 
 }
 
@@ -402,7 +403,7 @@ tonal_group_convertTonalGroupToMap(prefix, group) {
 }
 
 // 2061
-custom_generateCustomTheme(options) {
+MyDemoThemeData custom_generateCustomTheme(options) {
   var $jscomp$nullish$tmp222;
   final customColors = null != ($jscomp$nullish$tmp222 = null == options
       ? null
@@ -429,13 +430,13 @@ custom_generateCustomTheme(options) {
     'error': tonal_group_tonesToTonalGroup(cp.error),
   };
   final paletteKeys = {
-    'primary': "P",
-    'secondary': "S",
-    'tertiary': "T",
-    'neutral': "N",
-    'neutralVariant': "NV",
-    'error': "E"
-  },
+        'primary': "P",
+        'secondary': "S",
+        'tertiary': "T",
+        'neutral': "N",
+        'neutralVariant': "NV",
+        'error': "E"
+      },
       p = {};
 
   p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['primary'], palettes['primary'])));
@@ -461,74 +462,74 @@ custom_generateCustomTheme(options) {
         p[mapEntru.key] = mapEntru.value;
     }
   }
-  var JSCompiler_temp_final = Object;
-  // var JSCompiler_temp_const$jscomp$0 = JSCompiler_temp_const.assign;
   var JSCompiler_temp_const$jscomp$1 = custom_color_convertCustomColors(customColors, sourceColor);
 
-  var JSCompiler_temp_const$jscomp$2 = {
-    'primary': p["P-40"],
-    'onPrimary': p["P-100"],
-    'primaryContainer': p["P-90"],
-    'onPrimaryContainer': p["P-10"],
-    'secondary': p["S-40"],
-    'onSecondary': p["S-100"],
-    'secondaryContainer': p["S-90"],
-    'onSecondaryContainer': p["S-10"],
-    'tertiary': p["T-40"],
-    'onTertiary': p["T-100"],
-    'tertiaryContainer': p["T-90"],
-    'onTertiaryContainer': p["T-10"],
-    'error': p["E-40"],
-    'errorContainer': p["E-90"],
-    'onError': p["E-100"],
-    'onErrorContainer': p["E-10"],
-    'background': p["N-99"],
-    'onBackground': p["N-10"],
-    'surface': p["N-99"],
-    'onSurface': p["N-10"],
-    'surfaceVariant': p["NV-90"],
-    'onSurfaceVariant': p["NV-30"],
-    'outline': p["NV-50"],
-    'inverseOnSurface': p["N-95"],
-    'inverseSurface': p["N-20"],
-    'inversePrimary': p["P-80"],
-    'shadow': p["N-0"],
-    'surfaceTint': p["P-40"],
-    'outlineVariant': p["NV-80"],
-    'scrim': p["N-0"],
-  };
-  var JSCompiler_inline_result = {
-    'primary': p["P-80"],
-    'onPrimary': p["P-20"],
-    'primaryContainer': p["P-30"],
-    'onPrimaryContainer': p["P-90"],
-    'secondary': p["S-80"],
-    'onSecondary': p["S-20"],
-    'secondaryContainer': p["S-30"],
-    'onSecondaryContainer': p["S-90"],
-    'tertiary': p["T-80"],
-    'onTertiary': p["T-20"],
-    'tertiaryContainer': p["T-30"],
-    'onTertiaryContainer': p["T-90"],
-    'error': p["E-80"],
-    'errorContainer': p["E-30"],
-    'onError': p["E-20"],
-    'onErrorContainer': p["E-90"],
-    'background': p["N-10"],
-    'onBackground': p["N-90"],
-    'surface': p["N-10"],
-    'onSurface': p["N-90"],
-    'surfaceVariant': p["NV-30"],
-    'onSurfaceVariant': p["NV-80"],
-    'outline': p["NV-60"],
-    'inverseOnSurface': p["N-10"],
-    'inverseSurface': p["N-90"],
-    'inversePrimary': p["P-40"],
-    'shadow': p["N-0"],
-    'surfaceTint': p["P-80"],
-    'outlineVariant': p["NV-30"],
-    'scrim': p["N-0"],
-  };
+  var JSCompiler_temp_const$jscomp$2 = MyScheme(
+    brightness: Brightness.light,
+    primary: MyToken(id: '', name: '', value: p["P-40"]),
+    onPrimary: MyToken(id: '', name: '', value: p["P-100"]),
+    primaryContainer: MyToken(id: '', name: '', value: p["P-90"]),
+    onPrimaryContainer: MyToken(id: '', name: '', value: p["P-10"]),
+    secondary: MyToken(id: '', name: '', value: p["S-40"]),
+    onSecondary: MyToken(id: '', name: '', value: p["S-100"]),
+    secondaryContainer: MyToken(id: '', name: '', value: p["S-90"]),
+    onSecondaryContainer: MyToken(id: '', name: '', value: p["S-10"]),
+    tertiary: MyToken(id: '', name: '', value: p["T-40"]),
+    onTertiary: MyToken(id: '', name: '', value: p["T-100"]),
+    tertiaryContainer: MyToken(id: '', name: '', value: p["T-90"]),
+    onTertiaryContainer: MyToken(id: '', name: '', value: p["T-10"]),
+    error: MyToken(id: '', name: '', value: p["E-40"]),
+    errorContainer: MyToken(id: '', name: '', value: p["E-90"]),
+    onError: MyToken(id: '', name: '', value: p["E-100"]),
+    onErrorContainer: MyToken(id: '', name: '', value: p["E-10"]),
+    background: MyToken(id: '', name: '', value: p["N-99"]),
+    onBackground: MyToken(id: '', name: '', value: p["N-10"]),
+    surface: MyToken(id: '', name: '', value: p["N-99"]),
+    onSurface: MyToken(id: '', name: '', value: p["N-10"]),
+    surfaceVariant: MyToken(id: '', name: '', value: p["NV-90"]),
+    onSurfaceVariant: MyToken(id: '', name: '', value: p["NV-30"]),
+    outline: MyToken(id: '', name: '', value: p["NV-50"]),
+    inverseOnSurface: MyToken(id: '', name: '', value: p["N-95"]),
+    inverseSurface: MyToken(id: '', name: '', value: p["N-20"]),
+    inversePrimary: MyToken(id: '', name: '', value: p["P-80"]),
+    shadow: MyToken(id: '', name: '', value: p["N-0"]),
+    surfaceTint: MyToken(id: '', name: '', value: p["P-40"]),
+    outlineVariant: MyToken(id: '', name: '', value: p["NV-80"]),
+    scrim: MyToken(id: '', name: '', value: p["N-0"]),
+  );
+  var JSCompiler_inline_result = MyScheme(
+    brightness: Brightness.dark,
+    primary: MyToken(id: '', name: '', value: p["P-80"]),
+    onPrimary: MyToken(id: '', name: '', value: p["P-20"]),
+    primaryContainer: MyToken(id: '', name: '', value: p["P-30"]),
+    onPrimaryContainer: MyToken(id: '', name: '', value: p["P-90"]),
+    secondary: MyToken(id: '', name: '', value: p["S-80"]),
+    onSecondary: MyToken(id: '', name: '', value: p["S-20"]),
+    secondaryContainer: MyToken(id: '', name: '', value: p["S-30"]),
+    onSecondaryContainer: MyToken(id: '', name: '', value: p["S-90"]),
+    tertiary: MyToken(id: '', name: '', value: p["T-80"]),
+    onTertiary: MyToken(id: '', name: '', value: p["T-20"]),
+    tertiaryContainer: MyToken(id: '', name: '', value: p["T-30"]),
+    onTertiaryContainer: MyToken(id: '', name: '', value: p["T-90"]),
+    error: MyToken(id: '', name: '', value: p["E-80"]),
+    errorContainer: MyToken(id: '', name: '', value: p["E-30"]),
+    onError: MyToken(id: '', name: '', value: p["E-20"]),
+    onErrorContainer: MyToken(id: '', name: '', value: p["E-90"]),
+    background: MyToken(id: '', name: '', value: p["N-10"]),
+    onBackground: MyToken(id: '', name: '', value: p["N-90"]),
+    surface: MyToken(id: '', name: '', value: p["N-10"]),
+    onSurface: MyToken(id: '', name: '', value: p["N-90"]),
+    surfaceVariant: MyToken(id: '', name: '', value: p["NV-30"]),
+    onSurfaceVariant: MyToken(id: '', name: '', value: p["NV-80"]),
+    outline: MyToken(id: '', name: '', value: p["NV-60"]),
+    inverseOnSurface: MyToken(id: '', name: '', value: p["N-10"]),
+    inverseSurface: MyToken(id: '', name: '', value: p["N-90"]),
+    inversePrimary: MyToken(id: '', name: '', value: p["P-40"]),
+    shadow: MyToken(id: '', name: '', value: p["N-0"]),
+    surfaceTint: MyToken(id: '', name: '', value: p["P-80"]),
+    outlineVariant: MyToken(id: '', name: '', value: p["NV-30"]),
+    scrim: MyToken(id: '', name: '', value: p["N-0"]),
+  );
   var $jscomp$inline_1016, $jscomp$inline_1018, $jscomp$inline_1020, $jscomp$inline_1022, $jscomp$inline_1024, $jscomp$inline_1026, $jscomp$inline_1028, $jscomp$inline_1030, $jscomp$inline_1032, $jscomp$inline_1034, $jscomp$inline_1036, $jscomp$inline_1038, $jscomp$inline_1040, $jscomp$inline_1042, $jscomp$inline_1044, $jscomp$inline_1046, $jscomp$inline_1048, $jscomp$inline_1050,
   $jscomp$inline_1052, $jscomp$inline_1054, $jscomp$inline_1056, $jscomp$inline_1058, $jscomp$inline_1060, $jscomp$inline_1062, $jscomp$inline_1064;
   var JSCompiler_temp_const$jscomp$3 = {
@@ -588,23 +589,20 @@ custom_generateCustomTheme(options) {
     'scrim': null != ($jscomp$inline_1118 = p["N-80"]) ? $jscomp$inline_1118 : hexFromArgb(cp.neutral.get(80))
   };
 
-  final _r = Map.from(baseline);
-  _r.addAll({
-    'baseline': false,
-    'seed': sourceColor,
-    'extendedColors': null != customColors ? customColors : [],
-    'customColors': JSCompiler_temp_const$jscomp$1,
-    'schemes': {
+  return baseline.copyWith(
+    baseline: false,
+    seed: sourceColor,
+    extendedColors: null != customColors ? customColors : [],
+    customColors: JSCompiler_temp_const$jscomp$1,
+    schemes: {
       'light': JSCompiler_temp_const$jscomp$2,
       'dark': JSCompiler_inline_result,
-      'androidLight': JSCompiler_temp_const$jscomp$3,
-      'androidDark': JSCompiler_inline_result$jscomp$0
+      // 'androidLight': JSCompiler_temp_const$jscomp$3,
+      // 'androidDark': JSCompiler_inline_result$jscomp$0
     },
-    'palettes': palettes,
-    'coreColors': coreColors,
-  });
-
-  return _r;
+    palettes: palettes,
+    coreColors: coreColors,
+  );
   // return JSCompiler_temp_const$jscomp$0.call(JSCompiler_temp_const, {}, baseline, {
   //   'baseline': !1,
   //   'seed': sourceColor,
@@ -676,6 +674,89 @@ Map<dynamic, dynamic> convertToDynamicMap(Map v) {
     newMap[entry.key] = entry.value;
   }
   return newMap;
+}
+
+class MyDemoThemeData {
+  MyDemoThemeData({
+    required this.seed,
+    required this.name,
+    required this.baseline,
+    required this.extendedColors,
+    required this.coreColors,
+    required this.schemes,
+    required this.palettes,
+    required this.styles,
+    this.customColors,
+  });
+
+  String seed;
+  String name;
+  bool baseline;
+  List extendedColors;
+  dynamic coreColors;
+  Map<String, MyScheme> schemes;
+  dynamic palettes;
+  dynamic styles;
+  dynamic customColors;
+
+  Map toJson() {
+    return {
+      'seed': seed,
+      'name': name,
+      'baseline': baseline,
+      'extendedColors': extendedColors,
+      'coreColors': coreColors,
+      'schemes': schemes,
+      'palettes': palettes,
+      'styles': styles,
+      'customColors': customColors,
+    };
+  }
+
+  MyDemoThemeData copyWith({
+    String? seed,
+    String? name,
+    bool? baseline,
+    List? extendedColors,
+    dynamic? coreColors,
+    Map<String, MyScheme>? schemes,
+    dynamic? palettes,
+    dynamic? styles,
+    dynamic? customColors,
+  }) {
+    return MyDemoThemeData(
+      seed: seed ?? this.seed,
+      name: name ?? this.name,
+      baseline: baseline ?? this.baseline,
+      extendedColors: extendedColors ?? this.extendedColors,
+      coreColors: coreColors ?? this.coreColors,
+      schemes: schemes ?? this.schemes,
+      palettes: palettes ?? this.palettes,
+      styles: styles ?? this.styles,
+      customColors: customColors ?? this.customColors,
+    );
+  }
+
+}
+
+class MyToken {
+  MyToken({
+    this.name,
+    this.value,
+    this.id,
+  });
+
+  dynamic name;
+  dynamic value;
+  dynamic id;
+
+  toJson() {
+    return {
+      'name': name,
+      'value': value,
+      'id': id,
+    };
+  }
 }
 
 
