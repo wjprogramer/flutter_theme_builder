@@ -77,7 +77,7 @@ void testSomething() {
   myAssertEqual(argbFromHex('#9d906d'), 4288516205);
 
   // Custom schemes
-  final a = custom_generateCustomTheme({},
+  final customTheme = custom_generateCustomTheme({},
     coreColors: {
       'primary': '#006b62',
       'secondary': '#9d906d',
@@ -97,7 +97,7 @@ void testSomething() {
       ),
     ],
   );
-  print(a.toJson());
+  print(customTheme.toJson());
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
 
@@ -360,25 +360,25 @@ Map<int, String> tonal_group_tonesToTonalGroup(colorUtilities.TonalPalette tonal
 }
 
 // 2036
-tonal_group_convertTonalGroupToMap(prefix, group) {
+tonal_group_convertTonalGroupToMap(prefix, colorUtilities.TonalPalette group) {
   final map = {};
 
-  map['${prefix}-100'] = group[100];
-  map['${prefix}-99'] = group[99];
-  map['${prefix}-98'] = group[98];
-  map['${prefix}-95'] = group[95];
-  map['${prefix}-90'] = group[90];
-  map['${prefix}-80'] = group[80];
-  map['${prefix}-70'] = group[70];
-  map['${prefix}-60'] = group[60];
-  map['${prefix}-50'] = group[50];
-  map['${prefix}-40'] = group[40];
-  map['${prefix}-35'] = group[35];
-  map['${prefix}-30'] = group[30];
-  map['${prefix}-25'] = group[25];
-  map['${prefix}-20'] = group[20];
-  map['${prefix}-10'] = group[10];
-  map['${prefix}-0'] = group[0];
+  map['${prefix}-100'] = group.get(100);
+  map['${prefix}-99'] = group.get(99);
+  map['${prefix}-98'] = group.get(98);
+  map['${prefix}-95'] = group.get(95);
+  map['${prefix}-90'] = group.get(90);
+  map['${prefix}-80'] = group.get(80);
+  map['${prefix}-70'] = group.get(70);
+  map['${prefix}-60'] = group.get(60);
+  map['${prefix}-50'] = group.get(50);
+  map['${prefix}-40'] = group.get(40);
+  map['${prefix}-35'] = group.get(35);
+  map['${prefix}-30'] = group.get(30);
+  map['${prefix}-25'] = group.get(25);
+  map['${prefix}-20'] = group.get(20);
+  map['${prefix}-10'] = group.get(10);
+  map['${prefix}-0'] = group.get(0);
 
   return map;
 }
@@ -386,25 +386,25 @@ tonal_group_convertTonalGroupToMap(prefix, group) {
 // 2061
 MyDemoThemeData custom_generateCustomTheme(options, {
   List<MyCustomColor> customColors = const [],
-  required Map coreColors,
+  required Map<String, String?> coreColors,
   bool isContent = false,
 }) {
   final baseline = ThemeTempUtility.baseline_generateBaseline(
     customColors: customColors,
   );
-  final sourceColor = coreColors['primary'] ?? baseline;
+  final sourceColor = coreColors['primary'] ?? baseline.coreColors['primary']!;
   final source = argbFromHex(sourceColor),
       cp = isContent
           ? colorUtilities.CorePalette.contentOf(source)
           : colorUtilities.CorePalette.of(source);
-  var palettes = {
-    'primary': tonal_group_tonesToTonalGroup(cp.primary),
-    'secondary': tonal_group_tonesToTonalGroup(cp.secondary),
-    'tertiary': tonal_group_tonesToTonalGroup(cp.tertiary),
-    'neutral': tonal_group_tonesToTonalGroup(cp.neutral),
-    'neutralVariant': tonal_group_tonesToTonalGroup(cp.neutralVariant),
-    'error': tonal_group_tonesToTonalGroup(cp.error),
-  };
+  var palettes = MyCorePalette(
+    primary: cp.primary,
+    secondary: cp.secondary,
+    tertiary: cp.tertiary,
+    neutral: cp.neutral,
+    neutralVariant: cp.neutralVariant,
+    error: cp.error,
+  );
   final paletteKeys = {
         'primary': "P",
         'secondary': "S",
@@ -415,98 +415,103 @@ MyDemoThemeData custom_generateCustomTheme(options, {
       },
       p = {};
 
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['primary'], palettes['primary'])));
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['secondary'], palettes['secondary'])));
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['tertiary'], palettes['tertiary'])));
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['neutral'], palettes['neutral'])));
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['neutralVariant'], palettes['neutralVariant'])));
-  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['error'], palettes['error'])));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['primary'], palettes.primary)));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['secondary'], palettes.secondary)));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['tertiary'], palettes.tertiary)));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['neutral'], palettes.neutral)));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['neutralVariant'], palettes.neutralVariant)));
+  p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['error'], palettes.error)));
 
   for (final entry in coreColors.entries) {
     final key = entry.key,
         value = entry.value;
 
-    if (value != null) {
-      final coreColorPalette = colorUtilities.CorePalette.of(argbFromHex(value)),
-      customPalettes = palettes,
-      toneGroup = tonal_group_tonesToTonalGroup(coreColorPalette.primary);
-      customPalettes[key] = toneGroup;
-      palettes = customPalettes;
+    if (value == null) {
+      continue;
+    }
 
-      final Map map = tonal_group_convertTonalGroupToMap(paletteKeys[key], toneGroup);
-      for (final mapEntru in map.entries)
-        p[mapEntru.key] = mapEntru.value;
+    final coreColorPalette = colorUtilities.CorePalette.of(argbFromHex(value)),
+        customPalettes = palettes,
+        toneGroup = coreColorPalette.primary;
+    customPalettes.setByKey(key, toneGroup);
+    palettes = customPalettes;
+
+    final Map map = tonal_group_convertTonalGroupToMap(paletteKeys[key], toneGroup);
+    for (final mapEntry in map.entries) {
+      p[mapEntry.key] = mapEntry.value;
     }
   }
   var JSCompiler_temp_const$jscomp$1 = custom_color_convertCustomColors(customColors, sourceColor);
 
-  var lightScheme = MyScheme(
-    brightness: Brightness.light,
-    primary: MyToken(id: '', name: '', value: p["P-40"]),
-    onPrimary: MyToken(id: '', name: '', value: p["P-100"]),
-    primaryContainer: MyToken(id: '', name: '', value: p["P-90"]),
-    onPrimaryContainer: MyToken(id: '', name: '', value: p["P-10"]),
-    secondary: MyToken(id: '', name: '', value: p["S-40"]),
-    onSecondary: MyToken(id: '', name: '', value: p["S-100"]),
-    secondaryContainer: MyToken(id: '', name: '', value: p["S-90"]),
-    onSecondaryContainer: MyToken(id: '', name: '', value: p["S-10"]),
-    tertiary: MyToken(id: '', name: '', value: p["T-40"]),
-    onTertiary: MyToken(id: '', name: '', value: p["T-100"]),
-    tertiaryContainer: MyToken(id: '', name: '', value: p["T-90"]),
-    onTertiaryContainer: MyToken(id: '', name: '', value: p["T-10"]),
-    error: MyToken(id: '', name: '', value: p["E-40"]),
-    errorContainer: MyToken(id: '', name: '', value: p["E-90"]),
-    onError: MyToken(id: '', name: '', value: p["E-100"]),
-    onErrorContainer: MyToken(id: '', name: '', value: p["E-10"]),
-    background: MyToken(id: '', name: '', value: p["N-99"]),
-    onBackground: MyToken(id: '', name: '', value: p["N-10"]),
-    surface: MyToken(id: '', name: '', value: p["N-99"]),
-    onSurface: MyToken(id: '', name: '', value: p["N-10"]),
-    surfaceVariant: MyToken(id: '', name: '', value: p["NV-90"]),
-    onSurfaceVariant: MyToken(id: '', name: '', value: p["NV-30"]),
-    outline: MyToken(id: '', name: '', value: p["NV-50"]),
-    inverseOnSurface: MyToken(id: '', name: '', value: p["N-95"]),
-    inverseSurface: MyToken(id: '', name: '', value: p["N-20"]),
-    inversePrimary: MyToken(id: '', name: '', value: p["P-80"]),
-    shadow: MyToken(id: '', name: '', value: p["N-0"]),
-    surfaceTint: MyToken(id: '', name: '', value: p["P-40"]),
-    outlineVariant: MyToken(id: '', name: '', value: p["NV-80"]),
-    scrim: MyToken(id: '', name: '', value: p["N-0"]),
+  final lightScheme = MyScheme(
+    brightness:           Brightness.light,
+    primary:              MyToken(value: p["P-40"]),
+    onPrimary:            MyToken(value: p["P-100"]),
+    primaryContainer:     MyToken(value: p["P-90"]),
+    onPrimaryContainer:   MyToken(value: p["P-10"]),
+    secondary:            MyToken(value: p["S-40"]),
+    onSecondary:          MyToken(value: p["S-100"]),
+    secondaryContainer:   MyToken(value: p["S-90"]),
+    onSecondaryContainer: MyToken(value: p["S-10"]),
+    tertiary:             MyToken(value: p["T-40"]),
+    onTertiary:           MyToken(value: p["T-100"]),
+    tertiaryContainer:    MyToken(value: p["T-90"]),
+    onTertiaryContainer:  MyToken(value: p["T-10"]),
+    error:                MyToken(value: p["E-40"]),
+    errorContainer:       MyToken(value: p["E-90"]),
+    onError:              MyToken(value: p["E-100"]),
+    onErrorContainer:     MyToken(value: p["E-10"]),
+    background:           MyToken(value: p["N-99"]),
+    onBackground:         MyToken(value: p["N-10"]),
+    surface:              MyToken(value: p["N-99"]),
+    onSurface:            MyToken(value: p["N-10"]),
+    surfaceVariant:       MyToken(value: p["NV-90"]),
+    onSurfaceVariant:     MyToken(value: p["NV-30"]),
+    outline:              MyToken(value: p["NV-50"]),
+    inverseOnSurface:     MyToken(value: p["N-95"]),
+    inverseSurface:       MyToken(value: p["N-20"]),
+    inversePrimary:       MyToken(value: p["P-80"]),
+    shadow:               MyToken(value: p["N-0"]),
+    surfaceTint:          MyToken(value: p["P-40"]),
+    outlineVariant:       MyToken(value: p["NV-80"]),
+    scrim:                MyToken(value: p["N-0"]),
   );
-  var darkScheme = MyScheme(
-    brightness: Brightness.dark,
-    primary: MyToken(id: '', name: '', value: p["P-80"]),
-    onPrimary: MyToken(id: '', name: '', value: p["P-20"]),
-    primaryContainer: MyToken(id: '', name: '', value: p["P-30"]),
-    onPrimaryContainer: MyToken(id: '', name: '', value: p["P-90"]),
-    secondary: MyToken(id: '', name: '', value: p["S-80"]),
-    onSecondary: MyToken(id: '', name: '', value: p["S-20"]),
-    secondaryContainer: MyToken(id: '', name: '', value: p["S-30"]),
-    onSecondaryContainer: MyToken(id: '', name: '', value: p["S-90"]),
-    tertiary: MyToken(id: '', name: '', value: p["T-80"]),
-    onTertiary: MyToken(id: '', name: '', value: p["T-20"]),
-    tertiaryContainer: MyToken(id: '', name: '', value: p["T-30"]),
-    onTertiaryContainer: MyToken(id: '', name: '', value: p["T-90"]),
-    error: MyToken(id: '', name: '', value: p["E-80"]),
-    errorContainer: MyToken(id: '', name: '', value: p["E-30"]),
-    onError: MyToken(id: '', name: '', value: p["E-20"]),
-    onErrorContainer: MyToken(id: '', name: '', value: p["E-90"]),
-    background: MyToken(id: '', name: '', value: p["N-10"]),
-    onBackground: MyToken(id: '', name: '', value: p["N-90"]),
-    surface: MyToken(id: '', name: '', value: p["N-10"]),
-    onSurface: MyToken(id: '', name: '', value: p["N-90"]),
-    surfaceVariant: MyToken(id: '', name: '', value: p["NV-30"]),
-    onSurfaceVariant: MyToken(id: '', name: '', value: p["NV-80"]),
-    outline: MyToken(id: '', name: '', value: p["NV-60"]),
-    inverseOnSurface: MyToken(id: '', name: '', value: p["N-10"]),
-    inverseSurface: MyToken(id: '', name: '', value: p["N-90"]),
-    inversePrimary: MyToken(id: '', name: '', value: p["P-40"]),
-    shadow: MyToken(id: '', name: '', value: p["N-0"]),
-    surfaceTint: MyToken(id: '', name: '', value: p["P-80"]),
-    outlineVariant: MyToken(id: '', name: '', value: p["NV-30"]),
-    scrim: MyToken(id: '', name: '', value: p["N-0"]),
+
+  final darkScheme = MyScheme(
+    brightness:           Brightness.dark,
+    primary:              MyToken(value: p["P-80"]),
+    onPrimary:            MyToken(value: p["P-20"]),
+    primaryContainer:     MyToken(value: p["P-30"]),
+    onPrimaryContainer:   MyToken(value: p["P-90"]),
+    secondary:            MyToken(value: p["S-80"]),
+    onSecondary:          MyToken(value: p["S-20"]),
+    secondaryContainer:   MyToken(value: p["S-30"]),
+    onSecondaryContainer: MyToken(value: p["S-90"]),
+    tertiary:             MyToken(value: p["T-80"]),
+    onTertiary:           MyToken(value: p["T-20"]),
+    tertiaryContainer:    MyToken(value: p["T-30"]),
+    onTertiaryContainer:  MyToken(value: p["T-90"]),
+    error:                MyToken(value: p["E-80"]),
+    errorContainer:       MyToken(value: p["E-30"]),
+    onError:              MyToken(value: p["E-20"]),
+    onErrorContainer:     MyToken(value: p["E-90"]),
+    background:           MyToken(value: p["N-10"]),
+    onBackground:         MyToken(value: p["N-90"]),
+    surface:              MyToken(value: p["N-10"]),
+    onSurface:            MyToken(value: p["N-90"]),
+    surfaceVariant:       MyToken(value: p["NV-30"]),
+    onSurfaceVariant:     MyToken(value: p["NV-80"]),
+    outline:              MyToken(value: p["NV-60"]),
+    inverseOnSurface:     MyToken(value: p["N-10"]),
+    inverseSurface:       MyToken(value: p["N-90"]),
+    inversePrimary:       MyToken(value: p["P-40"]),
+    shadow:               MyToken(value: p["N-0"]),
+    surfaceTint:          MyToken(value: p["P-80"]),
+    outlineVariant:       MyToken(value: p["NV-30"]),
+    scrim:                MyToken(value: p["N-0"]),
   );
-  var androidLightScheme = {
+
+  final androidLightScheme = {
     'colorAccentPrimary': p["P-90"] ?? hexFromArgb(cp.primary.get(90)),
     'colorAccentPrimaryVariant': p["P-40"] ?? hexFromArgb(cp.primary.get(40)),
     'colorAccentSecondary': p["S-90"] ?? hexFromArgb(cp.secondary.get(90)),
@@ -533,7 +538,7 @@ MyDemoThemeData custom_generateCustomTheme(options, {
     'volumeBackground': p["N-25"] ?? hexFromArgb(cp.neutral.get(25)),
     'scrim': p["N-80"] ?? hexFromArgb(cp.neutral.get(80)),
   };
-  var androidDarkScheme = {
+  final androidDarkScheme = {
     'colorAccentPrimary': p["P-90"] ?? hexFromArgb(cp.primary.get(90)),
     'colorAccentPrimaryVariant': p["P-70"] ?? hexFromArgb(cp.primary.get(70)),
     'colorAccentSecondary': p["S-90"] ?? hexFromArgb(cp.secondary.get(90)),
@@ -566,11 +571,11 @@ MyDemoThemeData custom_generateCustomTheme(options, {
     seed: sourceColor,
     extendedColors: customColors,
     customColors: JSCompiler_temp_const$jscomp$1,
-    schemes: {
-      'light': lightScheme,
-      'dark': darkScheme,
-      // 'androidLight': androidLightScheme,
-      // 'androidDark': androidDarkScheme,
+    lightScheme: lightScheme,
+    darkScheme: darkScheme,
+    androidSchemes: {
+      'androidLight': androidLightScheme,
+      'androidDark': androidDarkScheme,
     },
     palettes: palettes,
     coreColors: coreColors,
@@ -646,7 +651,9 @@ class MyDemoThemeData {
     required this.baseline,
     required this.extendedColors,
     required this.coreColors,
-    required this.schemes,
+    required this.lightScheme,
+    required this.darkScheme,
+    this.androidSchemes,
     required this.palettes,
     required this.styles,
     this.customColors,
@@ -655,10 +662,12 @@ class MyDemoThemeData {
   String seed;
   String name;
   bool baseline;
-  List extendedColors;
-  dynamic coreColors;
-  Map<String, MyScheme> schemes;
-  dynamic palettes;
+  List<MyCustomColor> extendedColors;
+  Map<String, String?> coreColors;
+  MyScheme lightScheme;
+  MyScheme darkScheme;
+  Map? androidSchemes;
+  MyCorePalette palettes;
   dynamic styles;
   dynamic customColors;
 
@@ -669,8 +678,10 @@ class MyDemoThemeData {
       'baseline': baseline,
       'extendedColors': extendedColors,
       'coreColors': coreColors,
-      'schemes': schemes,
-      'palettes': palettes,
+      'lightScheme': lightScheme,
+      'darkScheme': darkScheme,
+      'androidSchemes': androidSchemes,
+      'palettes': palettes.toJson(),
       'styles': styles,
       'customColors': customColors,
     };
@@ -680,10 +691,12 @@ class MyDemoThemeData {
     String? seed,
     String? name,
     bool? baseline,
-    List? extendedColors,
-    dynamic coreColors,
-    Map<String, MyScheme>? schemes,
-    dynamic palettes,
+    List<MyCustomColor>? extendedColors,
+    Map<String, String?>? coreColors,
+    MyScheme? lightScheme,
+    MyScheme? darkScheme,
+    Map? androidSchemes,
+    MyCorePalette? palettes,
     dynamic styles,
     dynamic customColors,
   }) {
@@ -693,7 +706,9 @@ class MyDemoThemeData {
       baseline: baseline ?? this.baseline,
       extendedColors: extendedColors ?? this.extendedColors,
       coreColors: coreColors ?? this.coreColors,
-      schemes: schemes ?? this.schemes,
+      lightScheme: lightScheme ?? this.lightScheme,
+      darkScheme: darkScheme ?? this.darkScheme,
+      androidSchemes: androidSchemes ?? this.androidSchemes,
       palettes: palettes ?? this.palettes,
       styles: styles ?? this.styles,
       customColors: customColors ?? this.customColors,
@@ -704,16 +719,16 @@ class MyDemoThemeData {
 
 class MyToken {
   MyToken({
-    this.name,
-    this.value,
-    this.id,
-  });
+    this.name = '',
+    dynamic value,
+    this.id = '',
+  }): value = value;
 
-  dynamic name;
+  String name;
   dynamic value;
-  dynamic id;
+  String id;
 
-  Map toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
       'value': value,
@@ -748,6 +763,17 @@ class MyCorePalette {
     'error': error.xToJson(),
   };
 
+  setByKey(String key, colorUtilities.TonalPalette palette) {
+    switch (key) {
+      case 'primary':        primary        = palette; break;
+      case 'secondary':      secondary      = palette; break;
+      case 'tertiary':       tertiary       = palette; break;
+      case 'neutral':        neutral        = palette; break;
+      case 'neutralVariant': neutralVariant = palette; break;
+      case 'error':          error          = palette; break;
+    }
+  }
+
 }
 
 extension TonalPaletteX on colorUtilities.TonalPalette {
@@ -755,8 +781,8 @@ extension TonalPaletteX on colorUtilities.TonalPalette {
     var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
     final result = {};
     for (final range in tonalRange) {
-    final value = this.get(range);
-    result[range] = hexFromArgb(value);
+      final value = this.get(range);
+      result[range] = hexFromArgb(value);
     }
     return result;
   }

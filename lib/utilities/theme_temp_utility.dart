@@ -40,7 +40,6 @@ class ThemeTempUtility {
     return encoder.convert(jsonObject);
   }
 
-  /// No. 1 Function
   static MyDemoThemeData baseline_generateBaseline({
     List<MyCustomColor> customColors = const [],
   }) {
@@ -54,18 +53,16 @@ class ThemeTempUtility {
       coreColors: {
         'primary': sourceColor,
       },
-      schemes: {
-        'light': baseline_getScheme(Brightness.light),
-        'dark': baseline_getScheme(Brightness.dark),
-      },
-      palettes: {
-        'primary': baseline_getPalette("primary"),
-        'secondary': baseline_getPalette("secondary"),
-        'tertiary': baseline_getPalette("tertiary"),
-        'error': baseline_getPalette("error"),
-        'neutral': baseline_getPalette("neutral"),
-        'neutralVariant': baseline_getPalette("neutral-variant")
-      },
+      lightScheme: baseline_getScheme(Brightness.light),
+      darkScheme: baseline_getScheme(Brightness.dark),
+      palettes: MyCorePalette(
+        primary: baseline_getPalette("primary"),
+        secondary: baseline_getPalette("secondary"),
+        tertiary: baseline_getPalette("tertiary"),
+        error: baseline_getPalette("error"),
+        neutral: baseline_getPalette("neutral"),
+        neutralVariant: baseline_getPalette("neutral-variant")
+      ),
       styles: {
         'display': baseline_getFontStyleGroup("display"),
         'headline': baseline_getFontStyleGroup("headline"),
@@ -116,7 +113,6 @@ class ThemeTempUtility {
     );
   }
 
-  /// No. 3 Function
   static MyToken? baseline_getColorById(String tokenId, String group) {
     return latest_findTokenById(
       tokenId,
@@ -126,7 +122,6 @@ class ThemeTempUtility {
     );
   }
 
-  /// No. 4 Function
   static MyToken? latest_findTokenById(String tokenId, String? vGroup, {
     bool resolve = false,
     bool hex = false,
@@ -163,7 +158,6 @@ class ThemeTempUtility {
     return null;
   }
 
-  /// No. 5 Function
   static MyToken latest_convertToken(id, Map value, {
     required bool resolve,
     required bool hex,
@@ -216,7 +210,6 @@ class ThemeTempUtility {
     );
   }
 
-  /// No. 6 Function
   static colorUtilities.TonalPalette baseline_getPalette(section$jscomp$0) {
     final prefix = 'md.ref.palette.${section$jscomp$0}';
     final tokens = latest_findAllTokens((section, id) => id.startsWith(prefix) ? true : false);
@@ -242,7 +235,6 @@ class ThemeTempUtility {
     ));
   }
 
-  /// No. 7 Function
   static List<MyToken> latest_findAllTokens(Function match) {
     final tokens = TOKENS_3P;
     final results = <MyToken>[];
@@ -265,7 +257,6 @@ class ThemeTempUtility {
     return results;
   }
 
-  /// No. 8 Function
   static baseline_getFontStyleGroup(section) {
     return {
       "large": baseline_getFontStyle('${section}-large'),
@@ -274,7 +265,6 @@ class ThemeTempUtility {
     };
   }
 
-  /// No. 9 Function
   static baseline_getFontStyle(section) {
     final prefix = 'md.sys.typescale.${section}',
         fontFamily = latest_findTokenById('${prefix}.font', null, resolve: true),
@@ -410,37 +400,43 @@ class MyScheme {
   };
 
   ColorScheme toColorScheme() {
+    _convert(dynamic v) {
+      return v is num
+          ? fromHex(hexFromArgb(v.toInt()))
+          : fromHex(v);
+    }
+
     return ColorScheme(
       brightness: brightness!,
 
-      primary: fromHex(primary?.value),
-      onPrimary: fromHex(onPrimary?.value),
-      primaryContainer: fromHex(primaryContainer?.value),
-      onPrimaryContainer: fromHex(onPrimaryContainer?.value),
+      primary: _convert(primary?.value),
+      onPrimary: _convert(onPrimary?.value),
+      primaryContainer: _convert(primaryContainer?.value),
+      onPrimaryContainer: _convert(onPrimaryContainer?.value),
 
-      secondary: fromHex(secondary?.value),
-      onSecondary: fromHex(onSecondary?.value),
-      secondaryContainer: fromHex(secondaryContainer?.value),
-      onSecondaryContainer: fromHex(onSecondaryContainer?.value),
+      secondary: _convert(secondary?.value),
+      onSecondary: _convert(onSecondary?.value),
+      secondaryContainer: _convert(secondaryContainer?.value),
+      onSecondaryContainer: _convert(onSecondaryContainer?.value),
 
-      tertiary: fromHex(tertiary?.value),
-      onTertiary: fromHex(onTertiary?.value),
-      tertiaryContainer: fromHex(tertiaryContainer?.value),
-      onTertiaryContainer: fromHex(onTertiaryContainer?.value),
+      tertiary: _convert(tertiary?.value),
+      onTertiary: _convert(onTertiary?.value),
+      tertiaryContainer: _convert(tertiaryContainer?.value),
+      onTertiaryContainer: _convert(onTertiaryContainer?.value),
 
-      error: fromHex(error?.value),
-      onError: fromHex(onError?.value),
-      errorContainer: fromHex(errorContainer?.value),
-      onErrorContainer: fromHex(onErrorContainer?.value),
+      error: _convert(error?.value),
+      onError: _convert(onError?.value),
+      errorContainer: _convert(errorContainer?.value),
+      onErrorContainer: _convert(onErrorContainer?.value),
 
-      background: fromHex(background?.value),
-      onBackground: fromHex(onBackground?.value),
-      surface: fromHex(surface?.value),
-      onSurface: fromHex(onSurface?.value),
+      background: _convert(background?.value),
+      onBackground: _convert(onBackground?.value),
+      surface: _convert(surface?.value),
+      onSurface: _convert(onSurface?.value),
 
-      outline: fromHex(outline?.value),
-      surfaceVariant: fromHex(surfaceVariant?.value),
-      onSurfaceVariant: fromHex(onSurfaceVariant?.value),
+      outline: _convert(outline?.value),
+      surfaceVariant: _convert(surfaceVariant?.value),
+      onSurfaceVariant: _convert(onSurfaceVariant?.value),
     );
   }
 

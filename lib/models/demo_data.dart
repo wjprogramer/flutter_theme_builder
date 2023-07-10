@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
-import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/test.dart';
 
 Themes demoData1() {
@@ -15,7 +14,7 @@ Themes demoData1() {
         name: 'My name 2',
         harmonized: false,
         color: '#5f5519',
-      )
+      ),
     ],
     coreColors: {
       'primary': '#006b62',
@@ -28,11 +27,11 @@ Themes demoData1() {
   return Themes(
     ThemeData.from(
       useMaterial3: true,
-      colorScheme: themes.schemes['light']!.toColorScheme(),
+      colorScheme: themes.lightScheme.toColorScheme(),
     ),
     ThemeData.from(
       useMaterial3: true,
-      colorScheme: themes.schemes['dark']!.toColorScheme(),
+      colorScheme: themes.darkScheme.toColorScheme(),
     ),
   );
 
