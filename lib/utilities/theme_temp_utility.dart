@@ -42,10 +42,9 @@ class ThemeTempUtility {
 
   /// No. 1 Function
   static MyDemoThemeData baseline_generateBaseline({
-    List customColors = const [],
+    List<MyCustomColor> customColors = const [],
   }) {
     final sourceColor = "#6750A4";
-    // final context = options.is3p ? "3p" : "1p";
 
     return MyDemoThemeData(
       seed: sourceColor,

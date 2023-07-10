@@ -1,7 +1,6 @@
-import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
-import 'package:flutter_theme_builder/models/themes.dart';
+
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/other_utils.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
@@ -78,15 +77,14 @@ void testSomething() {
   myAssertEqual(argbFromHex('#9d906d'), 4288516205);
 
   // Custom schemes
-  final a = custom_generateCustomTheme({
-    'coreColors': {
+  final a = custom_generateCustomTheme({},
+    coreColors: {
       'primary': '#006b62',
       'secondary': '#9d906d',
       'tertiary': '#a288ab',
       'neutral': '#938f94',
     },
-    'is3p': false,
-    'customColors': <MyCustomColor>[
+    customColors: <MyCustomColor>[
       MyCustomColor(
         name: 'My name 1',
         harmonized: true,
@@ -96,9 +94,9 @@ void testSomething() {
         name: 'My name 2',
         harmonized: false,
         color: '#5f5519',
-      )
+      ),
     ],
-  });
+  );
   print(a.toJson());
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
@@ -280,27 +278,10 @@ dynamic color_replaceArgbWithHex(key, value) {
 }
 
 // 1698
-color_convertTonal(colorUtilities.TonalPalette palette) {
-  var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
-  final result = {};
-  for (final range in tonalRange) {
-    final value = palette.get(range);
-    result[range] = hexFromArgb(value);
-  }
-  return result;
-}
+// 被替換成 TonalPaletteX.xToJson
 
 // 1708
-color_convertCorePalette(colorUtilities.CorePalette palette) {
-  return {
-    'primary': color_convertTonal(palette.primary),
-    'secondary': color_convertTonal(palette.secondary),
-    'tertiary': color_convertTonal(palette.tertiary),
-    'neutral': color_convertTonal(palette.neutral),
-    'neutralVariant': color_convertTonal(palette.neutralVariant),
-    'error': color_convertTonal(palette.error),
-  };
-}
+// color_convertCorePalette 被替換了
 
 // 1752
 custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
@@ -349,7 +330,7 @@ custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor)
     final palette = colorUtilities.CorePalette.of(argbFromHex(JSCompiler_inline_result$jscomp$1['value']));
 
     final rrr = Map.from(JSCompiler_inline_result$jscomp$1);
-    rrr['palettes'] = color_convertCorePalette(palette);
+    rrr['palettes'] = palette.toMyCorePalette();
     return rrr;
   }).toList();
 
@@ -403,24 +384,19 @@ tonal_group_convertTonalGroupToMap(prefix, group) {
 }
 
 // 2061
-MyDemoThemeData custom_generateCustomTheme(options) {
-  var $jscomp$nullish$tmp222;
-  final customColors = null != ($jscomp$nullish$tmp222 = null == options
-      ? null
-      : options['customColors'])
-      ? $jscomp$nullish$tmp222
-      : [];
-  var $jscomp$nullish$tmp223;
-  final c = null != ($jscomp$nullish$tmp223 = options['content']) ? $jscomp$nullish$tmp223 : false,
-      coreColors = options['coreColors'],
-      baseline = ThemeTempUtility.baseline_generateBaseline(
-        customColors: options['customColors'],
-      );
-  final sourceColor = null != coreColors['primary']
-      ? coreColors['primary']
-      : baseline;
+MyDemoThemeData custom_generateCustomTheme(options, {
+  List<MyCustomColor> customColors = const [],
+  required Map coreColors,
+  bool isContent = false,
+}) {
+  final baseline = ThemeTempUtility.baseline_generateBaseline(
+    customColors: customColors,
+  );
+  final sourceColor = coreColors['primary'] ?? baseline;
   final source = argbFromHex(sourceColor),
-      cp = c ? colorUtilities.CorePalette.contentOf(source) : colorUtilities.CorePalette.of(source);
+      cp = isContent
+          ? colorUtilities.CorePalette.contentOf(source)
+          : colorUtilities.CorePalette.of(source);
   var palettes = {
     'primary': tonal_group_tonesToTonalGroup(cp.primary),
     'secondary': tonal_group_tonesToTonalGroup(cp.secondary),
@@ -446,25 +422,25 @@ MyDemoThemeData custom_generateCustomTheme(options) {
   p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['neutralVariant'], palettes['neutralVariant'])));
   p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['error'], palettes['error'])));
 
-  for (final entry in (coreColors as Map).entries) {
+  for (final entry in coreColors.entries) {
     final key = entry.key,
         value = entry.value;
 
     if (value != null) {
       final coreColorPalette = colorUtilities.CorePalette.of(argbFromHex(value)),
-      customPalettes = palettes ?? {},
+      customPalettes = palettes,
       toneGroup = tonal_group_tonesToTonalGroup(coreColorPalette.primary);
       customPalettes[key] = toneGroup;
       palettes = customPalettes;
 
-      final Map map = tonal_group_convertTonalGroupToMap((paletteKeys ?? {})[key], toneGroup);
+      final Map map = tonal_group_convertTonalGroupToMap(paletteKeys[key], toneGroup);
       for (final mapEntru in map.entries)
         p[mapEntru.key] = mapEntru.value;
     }
   }
   var JSCompiler_temp_const$jscomp$1 = custom_color_convertCustomColors(customColors, sourceColor);
 
-  var JSCompiler_temp_const$jscomp$2 = MyScheme(
+  var lightScheme = MyScheme(
     brightness: Brightness.light,
     primary: MyToken(id: '', name: '', value: p["P-40"]),
     onPrimary: MyToken(id: '', name: '', value: p["P-100"]),
@@ -497,7 +473,7 @@ MyDemoThemeData custom_generateCustomTheme(options) {
     outlineVariant: MyToken(id: '', name: '', value: p["NV-80"]),
     scrim: MyToken(id: '', name: '', value: p["N-0"]),
   );
-  var JSCompiler_inline_result = MyScheme(
+  var darkScheme = MyScheme(
     brightness: Brightness.dark,
     primary: MyToken(id: '', name: '', value: p["P-80"]),
     onPrimary: MyToken(id: '', name: '', value: p["P-20"]),
@@ -530,95 +506,76 @@ MyDemoThemeData custom_generateCustomTheme(options) {
     outlineVariant: MyToken(id: '', name: '', value: p["NV-30"]),
     scrim: MyToken(id: '', name: '', value: p["N-0"]),
   );
-  var $jscomp$inline_1016, $jscomp$inline_1018, $jscomp$inline_1020, $jscomp$inline_1022, $jscomp$inline_1024, $jscomp$inline_1026, $jscomp$inline_1028, $jscomp$inline_1030, $jscomp$inline_1032, $jscomp$inline_1034, $jscomp$inline_1036, $jscomp$inline_1038, $jscomp$inline_1040, $jscomp$inline_1042, $jscomp$inline_1044, $jscomp$inline_1046, $jscomp$inline_1048, $jscomp$inline_1050,
-  $jscomp$inline_1052, $jscomp$inline_1054, $jscomp$inline_1056, $jscomp$inline_1058, $jscomp$inline_1060, $jscomp$inline_1062, $jscomp$inline_1064;
-  var JSCompiler_temp_const$jscomp$3 = {
-    'colorAccentPrimary': null != ($jscomp$inline_1016 = p["P-90"]) ? $jscomp$inline_1016 : hexFromArgb(cp.primary.get(90)),
-    'colorAccentPrimaryVariant': null != ($jscomp$inline_1018 = p["P-40"]) ? $jscomp$inline_1018 : hexFromArgb(cp.primary.get(40)),
-    'colorAccentSecondary': null != ($jscomp$inline_1020 = p["S-90"]) ? $jscomp$inline_1020 : hexFromArgb(cp.secondary.get(90)),
-    'colorAccentSecondaryVariant': null != ($jscomp$inline_1022 = p["S-40"]) ? $jscomp$inline_1022 : hexFromArgb(cp.secondary.get(40)),
-    'colorAccentTertiary': null != ($jscomp$inline_1024 = p["T-90"]) ? $jscomp$inline_1024 : hexFromArgb(cp.tertiary.get(90)),
-    'colorAccentTertiaryVariant': null != ($jscomp$inline_1026 = p["T-40"]) ? $jscomp$inline_1026 : hexFromArgb(cp.tertiary.get(40)),
-    'textColorPrimary': null != ($jscomp$inline_1028 = p["N-10"]) ? $jscomp$inline_1028 : hexFromArgb(cp.neutral.get(10)),
-    'textColorSecondary': null != ($jscomp$inline_1030 = p["NV-30"]) ? $jscomp$inline_1030 : hexFromArgb(cp.neutralVariant.get(30)),
-    'textColorTertiary': null != ($jscomp$inline_1032 = p["NV-50"]) ? $jscomp$inline_1032 : hexFromArgb(cp.neutralVariant.get(50)),
-    'textColorPrimaryInverse': null != ($jscomp$inline_1034 = p["N-95"]) ? $jscomp$inline_1034 : hexFromArgb(cp.neutral.get(95)),
-    'textColorSecondaryInverse': null != ($jscomp$inline_1036 = p["N-80"]) ? $jscomp$inline_1036 : hexFromArgb(cp.neutral.get(80)),
-    'textColorTertiaryInverse': null != ($jscomp$inline_1038 = p["N-60"]) ? $jscomp$inline_1038 : hexFromArgb(cp.neutral.get(60)),
-    'colorBackground': null != ($jscomp$inline_1040 = p["N-95"]) ? $jscomp$inline_1040 : hexFromArgb(cp.neutral.get(95)),
-    'colorBackgroundFloating': null != ($jscomp$inline_1042 = p["N-98"]) ? $jscomp$inline_1042 : hexFromArgb(cp.neutral.get(98)),
-    'colorSurface': null != ($jscomp$inline_1044 = p["N-98"]) ? $jscomp$inline_1044 : hexFromArgb(cp.neutral.get(98)),
-    'colorSurfaceVariant': null != ($jscomp$inline_1046 = p["N-90"]) ? $jscomp$inline_1046 : hexFromArgb(cp.neutral.get(90)),
-    'colorSurfaceHighlight': null != ($jscomp$inline_1048 = p["N-100"]) ? $jscomp$inline_1048 : hexFromArgb(cp.neutral.get(100)),
-    'surfaceHeader': null != ($jscomp$inline_1050 = p["N-90"]) ? $jscomp$inline_1050 : hexFromArgb(cp.neutral.get(90)),
-    'underSurface': null != ($jscomp$inline_1052 = p["N-0"]) ? $jscomp$inline_1052 : hexFromArgb(cp.neutral.get(0)),
-    'offState': null != ($jscomp$inline_1054 = p["N-20"]) ? $jscomp$inline_1054 : hexFromArgb(cp.neutral.get(20)),
-    'accentSurface': null != ($jscomp$inline_1056 = p["NV-95"]) ? $jscomp$inline_1056 : hexFromArgb(cp.secondary.get(95)),
-    'textPrimaryOnAccent': null != ($jscomp$inline_1058 = p["N-10"]) ? $jscomp$inline_1058 : hexFromArgb(cp.neutral.get(10)),
-    'textSecondaryOnAccent': null != ($jscomp$inline_1060 = p["NV-30"]) ? $jscomp$inline_1060 : hexFromArgb(cp.neutralVariant.get(30)),
-    'volumeBackground': null != ($jscomp$inline_1062 = p["N-25"]) ? $jscomp$inline_1062 : hexFromArgb(cp.neutral.get(25)),
-    'scrim': null != ($jscomp$inline_1064 = p["N-80"]) ? $jscomp$inline_1064 : hexFromArgb(cp.neutral.get(80))
+  var androidLightScheme = {
+    'colorAccentPrimary': p["P-90"] ?? hexFromArgb(cp.primary.get(90)),
+    'colorAccentPrimaryVariant': p["P-40"] ?? hexFromArgb(cp.primary.get(40)),
+    'colorAccentSecondary': p["S-90"] ?? hexFromArgb(cp.secondary.get(90)),
+    'colorAccentSecondaryVariant': p["S-40"] ?? hexFromArgb(cp.secondary.get(40)),
+    'colorAccentTertiary': p["T-90"] ?? hexFromArgb(cp.tertiary.get(90)),
+    'colorAccentTertiaryVariant': p["T-40"] ?? hexFromArgb(cp.tertiary.get(40)),
+    'textColorPrimary': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'textColorSecondary': p["NV-30"] ?? hexFromArgb(cp.neutralVariant.get(30)),
+    'textColorTertiary': p["NV-50"] ?? hexFromArgb(cp.neutralVariant.get(50)),
+    'textColorPrimaryInverse': p["N-95"] ?? hexFromArgb(cp.neutral.get(95)),
+    'textColorSecondaryInverse': p["N-80"] ?? hexFromArgb(cp.neutral.get(80)),
+    'textColorTertiaryInverse': p["N-60"] ?? hexFromArgb(cp.neutral.get(60)),
+    'colorBackground': p["N-95"] ?? hexFromArgb(cp.neutral.get(95)),
+    'colorBackgroundFloating': p["N-98"] ?? hexFromArgb(cp.neutral.get(98)),
+    'colorSurface': p["N-98"] ?? hexFromArgb(cp.neutral.get(98)),
+    'colorSurfaceVariant': p["N-90"] ?? hexFromArgb(cp.neutral.get(90)),
+    'colorSurfaceHighlight': p["N-100"] ?? hexFromArgb(cp.neutral.get(100)),
+    'surfaceHeader': p["N-90"] ?? hexFromArgb(cp.neutral.get(90)),
+    'underSurface': p["N-0"] ?? hexFromArgb(cp.neutral.get(0)),
+    'offState': p["N-20"] ?? hexFromArgb(cp.neutral.get(20)),
+    'accentSurface': p["NV-95"] ?? hexFromArgb(cp.secondary.get(95)),
+    'textPrimaryOnAccent': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'textSecondaryOnAccent': p["NV-30"] ?? hexFromArgb(cp.neutralVariant.get(30)),
+    'volumeBackground': p["N-25"] ?? hexFromArgb(cp.neutral.get(25)),
+    'scrim': p["N-80"] ?? hexFromArgb(cp.neutral.get(80)),
   };
-  var $jscomp$inline_1070, $jscomp$inline_1072, $jscomp$inline_1074, $jscomp$inline_1076, $jscomp$inline_1078, $jscomp$inline_1080,
-  $jscomp$inline_1082, $jscomp$inline_1084, $jscomp$inline_1086, $jscomp$inline_1088, $jscomp$inline_1090, $jscomp$inline_1092, $jscomp$inline_1094, $jscomp$inline_1096, $jscomp$inline_1098, $jscomp$inline_1100, $jscomp$inline_1102, $jscomp$inline_1104, $jscomp$inline_1106, $jscomp$inline_1108, $jscomp$inline_1110, $jscomp$inline_1112, $jscomp$inline_1114, $jscomp$inline_1116, $jscomp$inline_1118;
-  var JSCompiler_inline_result$jscomp$0 = {
-    'colorAccentPrimary': null != ($jscomp$inline_1070 = p["P-90"]) ? $jscomp$inline_1070 : hexFromArgb(cp.primary.get(90)),
-    'colorAccentPrimaryVariant': null != ($jscomp$inline_1072 = p["P-70"]) ? $jscomp$inline_1072 : hexFromArgb(cp.primary.get(70)),
-    'colorAccentSecondary': null != ($jscomp$inline_1074 = p["S-90"]) ? $jscomp$inline_1074 : hexFromArgb(cp.secondary.get(90)),
-    'colorAccentSecondaryVariant': null != ($jscomp$inline_1076 = p["S-70"]) ? $jscomp$inline_1076 : hexFromArgb(cp.secondary.get(70)),
-    'colorAccentTertiary': null != ($jscomp$inline_1078 = p["T-90"]) ? $jscomp$inline_1078 : hexFromArgb(cp.tertiary.get(90)),
-    'colorAccentTertiaryVariant': null != ($jscomp$inline_1080 = p["T-70"]) ? $jscomp$inline_1080 : hexFromArgb(cp.tertiary.get(70)),
-    'textColorPrimary': null != ($jscomp$inline_1082 = p["N-95"]) ? $jscomp$inline_1082 : hexFromArgb(cp.neutral.get(95)),
-    'textColorSecondary': null != ($jscomp$inline_1084 = p["NV-80"]) ? $jscomp$inline_1084 : hexFromArgb(cp.neutralVariant.get(80)),
-    'textColorTertiary': null != ($jscomp$inline_1086 = p["NV-60"]) ? $jscomp$inline_1086 : hexFromArgb(cp.neutralVariant.get(60)),
-    'textColorPrimaryInverse': null != ($jscomp$inline_1088 = p["N-10"]) ? $jscomp$inline_1088 : hexFromArgb(cp.neutral.get(10)),
-    'textColorSecondaryInverse': null != ($jscomp$inline_1090 = p["N-30"]) ? $jscomp$inline_1090 : hexFromArgb(cp.neutral.get(30)),
-    'textColorTertiaryInverse': null != ($jscomp$inline_1092 = p["N-50"]) ? $jscomp$inline_1092 : hexFromArgb(cp.neutral.get(50)),
-    'colorBackground': null != ($jscomp$inline_1094 = p["N-10"]) ? $jscomp$inline_1094 : hexFromArgb(cp.neutral.get(10)),
-    'colorBackgroundFloating': null != ($jscomp$inline_1096 = p["N-10"]) ? $jscomp$inline_1096 : hexFromArgb(cp.neutral.get(10)),
-    'colorSurface': null != ($jscomp$inline_1098 = p["N-20"]) ? $jscomp$inline_1098 : hexFromArgb(cp.neutral.get(20)),
-    'colorSurfaceVariant': null != ($jscomp$inline_1100 = p["N-30"]) ? $jscomp$inline_1100 : hexFromArgb(cp.neutral.get(30)),
-    'colorSurfaceHighlight': null != ($jscomp$inline_1102 = p["N-35"]) ? $jscomp$inline_1102 : hexFromArgb(cp.neutral.get(35)),
-    'surfaceHeader': null != ($jscomp$inline_1104 = p["N-30"]) ? $jscomp$inline_1104 : hexFromArgb(cp.neutral.get(30)),
-    'underSurface': null != ($jscomp$inline_1106 = p["N-0"]) ? $jscomp$inline_1106 : hexFromArgb(cp.neutral.get(0)),
-    'offState': null != ($jscomp$inline_1108 = p["N-20"]) ? $jscomp$inline_1108 : hexFromArgb(cp.neutral.get(20)),
-    'accentSurface': null != ($jscomp$inline_1110 = p["NV-95"]) ? $jscomp$inline_1110 : hexFromArgb(cp.secondary.get(95)),
-    'textPrimaryOnAccent': null != ($jscomp$inline_1112 = p["N-10"]) ? $jscomp$inline_1112 : hexFromArgb(cp.neutral.get(10)),
-    'textSecondaryOnAccent': null != ($jscomp$inline_1114 = p["NV-30"]) ? $jscomp$inline_1114 : hexFromArgb(cp.neutralVariant.get(30)),
-    'volumeBackground': null != ($jscomp$inline_1116 = p["N-25"]) ? $jscomp$inline_1116 : hexFromArgb(cp.neutral.get(25)),
-    'scrim': null != ($jscomp$inline_1118 = p["N-80"]) ? $jscomp$inline_1118 : hexFromArgb(cp.neutral.get(80))
+  var androidDarkScheme = {
+    'colorAccentPrimary': p["P-90"] ?? hexFromArgb(cp.primary.get(90)),
+    'colorAccentPrimaryVariant': p["P-70"] ?? hexFromArgb(cp.primary.get(70)),
+    'colorAccentSecondary': p["S-90"] ?? hexFromArgb(cp.secondary.get(90)),
+    'colorAccentSecondaryVariant': p["S-70"] ?? hexFromArgb(cp.secondary.get(70)),
+    'colorAccentTertiary': p["T-90"] ?? hexFromArgb(cp.tertiary.get(90)),
+    'colorAccentTertiaryVariant': p["T-70"] ?? hexFromArgb(cp.tertiary.get(70)),
+    'textColorPrimary': p["N-95"] ?? hexFromArgb(cp.neutral.get(95)),
+    'textColorSecondary': p["NV-80"] ?? hexFromArgb(cp.neutralVariant.get(80)),
+    'textColorTertiary': p["NV-60"] ?? hexFromArgb(cp.neutralVariant.get(60)),
+    'textColorPrimaryInverse': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'textColorSecondaryInverse': p["N-30"] ?? hexFromArgb(cp.neutral.get(30)),
+    'textColorTertiaryInverse': p["N-50"] ?? hexFromArgb(cp.neutral.get(50)),
+    'colorBackground': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'colorBackgroundFloating': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'colorSurface': p["N-20"] ?? hexFromArgb(cp.neutral.get(20)),
+    'colorSurfaceVariant': p["N-30"] ?? hexFromArgb(cp.neutral.get(30)),
+    'colorSurfaceHighlight': p["N-35"] ?? hexFromArgb(cp.neutral.get(35)),
+    'surfaceHeader': p["N-30"] ?? hexFromArgb(cp.neutral.get(30)),
+    'underSurface': p["N-0"] ?? hexFromArgb(cp.neutral.get(0)),
+    'offState': p["N-20"] ?? hexFromArgb(cp.neutral.get(20)),
+    'accentSurface': p["NV-95"] ?? hexFromArgb(cp.secondary.get(95)),
+    'textPrimaryOnAccent': p["N-10"] ?? hexFromArgb(cp.neutral.get(10)),
+    'textSecondaryOnAccent': p["NV-30"] ?? hexFromArgb(cp.neutralVariant.get(30)),
+    'volumeBackground': p["N-25"] ?? hexFromArgb(cp.neutral.get(25)),
+    'scrim': p["N-80"] ?? hexFromArgb(cp.neutral.get(80)),
   };
 
   return baseline.copyWith(
     baseline: false,
     seed: sourceColor,
-    extendedColors: null != customColors ? customColors : [],
+    extendedColors: customColors,
     customColors: JSCompiler_temp_const$jscomp$1,
     schemes: {
-      'light': JSCompiler_temp_const$jscomp$2,
-      'dark': JSCompiler_inline_result,
-      // 'androidLight': JSCompiler_temp_const$jscomp$3,
-      // 'androidDark': JSCompiler_inline_result$jscomp$0
+      'light': lightScheme,
+      'dark': darkScheme,
+      // 'androidLight': androidLightScheme,
+      // 'androidDark': androidDarkScheme,
     },
     palettes: palettes,
     coreColors: coreColors,
   );
-  // return JSCompiler_temp_const$jscomp$0.call(JSCompiler_temp_const, {}, baseline, {
-  //   'baseline': !1,
-  //   'seed': sourceColor,
-  //   'extendedColors': null != customColors ? customColors : [],
-  //   'customColors': JSCompiler_temp_const$jscomp$1,
-  //   'schemes': {
-  //     'light': JSCompiler_temp_const$jscomp$2,
-  //     'dark': JSCompiler_inline_result,
-  //     // 'androidLight': JSCompiler_temp_const$jscomp$3,
-  //     // 'androidDark': JSCompiler_inline_result$jscomp$0
-  //   },
-  //   'palettes': palettes,
-  //   'coreColors': coreColors,
-  // });
 }
-
 
 class MyCustomColor {
   MyCustomColor({
@@ -630,6 +587,12 @@ class MyCustomColor {
   String name;
   bool harmonized;
   String color;
+
+  Map toJson() => {
+    'name': name,
+    'harmonized': harmonized,
+    'color': color,
+  };
 }
 
 extension _StringX on String {
@@ -718,11 +681,11 @@ class MyDemoThemeData {
     String? name,
     bool? baseline,
     List? extendedColors,
-    dynamic? coreColors,
+    dynamic coreColors,
     Map<String, MyScheme>? schemes,
-    dynamic? palettes,
-    dynamic? styles,
-    dynamic? customColors,
+    dynamic palettes,
+    dynamic styles,
+    dynamic customColors,
   }) {
     return MyDemoThemeData(
       seed: seed ?? this.seed,
@@ -750,7 +713,7 @@ class MyToken {
   dynamic value;
   dynamic id;
 
-  toJson() {
+  Map toJson() {
     return {
       'name': name,
       'value': value,
@@ -758,6 +721,60 @@ class MyToken {
     };
   }
 }
+
+class MyCorePalette {
+  MyCorePalette({
+    required this.primary,
+    required this.secondary,
+    required this.tertiary,
+    required this.neutral,
+    required this.neutralVariant,
+    required this.error,
+  });
+
+  colorUtilities.TonalPalette primary;
+  colorUtilities.TonalPalette secondary;
+  colorUtilities.TonalPalette tertiary;
+  colorUtilities.TonalPalette neutral;
+  colorUtilities.TonalPalette neutralVariant;
+  colorUtilities.TonalPalette error;
+
+  Map toJson() => {
+    'primary': primary.xToJson(),
+    'secondary': secondary.xToJson(),
+    'tertiary': tertiary.xToJson(),
+    'neutral': neutral.xToJson(),
+    'neutralVariant': neutralVariant.xToJson(),
+    'error': error.xToJson(),
+  };
+
+}
+
+extension TonalPaletteX on colorUtilities.TonalPalette {
+  Map xToJson() {
+    var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
+    final result = {};
+    for (final range in tonalRange) {
+    final value = this.get(range);
+    result[range] = hexFromArgb(value);
+    }
+    return result;
+  }
+}
+
+extension CorePalette on colorUtilities.CorePalette {
+  MyCorePalette toMyCorePalette() {
+    return MyCorePalette(
+      primary: primary,
+      secondary: secondary,
+      tertiary: tertiary,
+      neutral: neutral,
+      neutralVariant: neutralVariant,
+      error: error,
+    );
+  }
+}
+
 
 
 
