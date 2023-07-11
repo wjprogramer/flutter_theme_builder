@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_builder/models/demo_data.dart';
+import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:material_color_utilities/material_color_utilities.dart';
 import 'package:material_color_utilities/scheme/scheme.dart';
@@ -73,7 +73,6 @@ class ThemeProvider extends ChangeNotifier {
     if (kDebugMode) {
       return demoData1();
     }
-
 
     final lightScheme = Scheme.light(primaryColor.value);
     final darkScheme = Scheme.dark(primaryColor.value);

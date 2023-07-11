@@ -2,8 +2,14 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:flutter_theme_builder/extensions/extensions.dart';
+import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
-import 'package:flutter_theme_builder/utils/other_utils.dart';
+import 'package:flutter_theme_builder/utils/material/cam16.dart';
+import 'package:flutter_theme_builder/utils/material/color.dart';
+import 'package:flutter_theme_builder/utils/material/color_hct.dart';
+import 'package:flutter_theme_builder/utils/math/math.dart';
+import 'package:flutter_theme_builder/utils/core/others.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
@@ -104,187 +110,13 @@ void testSomething() {
 
 }
 
-// 415 OK
-num math_utils_signum(n) {
-  return 0 > n ? -1 : 0 == n ? 0 : 1;
-}
 
-// 419
-math_utils_sanitizeDegreesInt(degrees) {
-  degrees %= 360;
-  0 > degrees && (degrees += 360);
-  return degrees;
-}
-
-// 425
-math_utils_sanitizeDegreesDouble(degrees) {
-  degrees %= 360;
-  0 > degrees && (degrees += 360);
-  return degrees;
-}
-
-// 435
-const utils$color_utils_SRGB_TO_XYZ = [
-  [.41233895, .35762064, .18051042],
-  [.2126, .7152, .0722],
-  [.01932141, .11916382, .95034478]
-],
-    utils$color_utils_XYZ_TO_SRGB = [
-      [3.2413774792388685, -1.5376652402851851, -.49885366846268053],
-      [-.9691452513005321, 1.8758853451067872, .04156585616912061],
-      [.05562093689691305, -.20395524564742123, 1.0571799111220335]
-    ],
-    utils$color_utils_WHITE_POINT_D65 = <double>[95.047, 100, 108.883];
-
-// 447
-color_utils_argbFromRgb(red, green, blue) {
-  return (-16777216 | (red & 255) << 16 | (green & 255) << 8 | blue & 255) >>> 0;
-}
-
-// 487 OK
-utils$color_utils_labInvf(ft) {
-  final ft3 = ft * ft * ft;
-  return ft3 > 216 / 24389 ? ft3 : (116 * ft - 16) / (24389 / 27);
-}
-
-// OK
-num color_utils_linearized(int rgbComponent) {
-  final normalized = rgbComponent / 255;
-  return .040449936 >= normalized
-      ? normalized / 12.92 * 100
-      : 100 * math.pow((normalized + .055) / 1.055, 2.4);
-}
-
-// 507 OK
-final hct$viewing_conditions$ViewingConditions$DEFAULT = (([
-  List<double> whitePoint = utils$color_utils_WHITE_POINT_D65,
-  _adaptingLuminance,
-  double backgroundLstar = 50,
-  double surround = 2,
-  discountingIlluminant = false,
-]) {
-  var adaptingLuminance = 200 / math.pi * 100 * utils$color_utils_labInvf(66 / 116) / 100;
-
-  return colorUtilities.ViewingConditions.make(
-    whitePoint: whitePoint,
-    adaptingLuminance: adaptingLuminance,
-    backgroundLstar: backgroundLstar,
-    surround: surround,
-    discountingIlluminant: discountingIlluminant,
-  );
-})();
-
-// 552 OK
-colorUtilities.Cam16 Cam16_fromIntInViewingConditions(int argb) {
-  final redL = color_utils_linearized((argb & 16711680) >> 16);
-  final greenL = color_utils_linearized((argb & 65280) >> 8);
-  final blueL = color_utils_linearized(argb & 255);
-  final x = .41233895 * redL + .35762064 * greenL + .18051042 * blueL,
-      y = .2126 * redL + .7152 * greenL + .0722 * blueL,
-      z = .01932141 * redL + .11916382 * greenL + .95034478 * blueL,
-      rD = hct$viewing_conditions$ViewingConditions$DEFAULT.rgbD[0] * (.401288 * x + .650173 * y - .051461 * z),
-      gD = hct$viewing_conditions$ViewingConditions$DEFAULT.rgbD[1] * (-.250268 * x + 1.204414 * y + .045854 * z),
-      bD = hct$viewing_conditions$ViewingConditions$DEFAULT.rgbD[2] *
-          (-.002079 * x + .048952 * y + .953127 * z),
-      rAF = math.pow(hct$viewing_conditions$ViewingConditions$DEFAULT.fl * rD.abs() / 100, .42),
-      gAF = math.pow(hct$viewing_conditions$ViewingConditions$DEFAULT.fl * gD.abs() / 100, .42),
-      bAF = math.pow(hct$viewing_conditions$ViewingConditions$DEFAULT.fl * bD.abs() / 100,
-          .42),
-      rA = 400 * math_utils_signum(rD) * rAF / (rAF + 27.13),
-      gA = 400 * math_utils_signum(gD) * gAF / (gAF + 27.13),
-      bA = 400 * math_utils_signum(bD) * bAF / (bAF + 27.13),
-      a = (11 * rA + -12 * gA + bA) / 11,
-      b = (rA + gA - 2 * bA) / 9,
-      atanDegrees = 180 * math.atan2(b, a) / math.pi,
-      hue = 0 > atanDegrees ? atanDegrees + 360 : 360 <= atanDegrees ?
-      atanDegrees - 360 : atanDegrees,
-      hueRadians = hue * math.pi / 180,
-      j = 100.0 * math.pow((40 * rA + 20 * gA + bA) / 20 * hct$viewing_conditions$ViewingConditions$DEFAULT.nbb / hct$viewing_conditions$ViewingConditions$DEFAULT.aw, hct$viewing_conditions$ViewingConditions$DEFAULT.c * hct$viewing_conditions$ViewingConditions$DEFAULT.z),
-      alpha = math.pow(5E4 / 13.0 * .25 * (math.cos((20.14 > hue ? hue + 360 : hue) * math.pi / 180 + 2) + 3.8) * hct$viewing_conditions$ViewingConditions$DEFAULT.nC * hct$viewing_conditions$ViewingConditions$DEFAULT.ncb * math.sqrt(a * a + b * b) / ((20 * rA + 20 * gA + 21 * bA) / 20 + .305), .9) * math.pow(1.64 - math.pow(.29, hct$viewing_conditions$ViewingConditions$DEFAULT.backgroundYTowhitePointY),
-          .73),
-      c = alpha * math.sqrt(j / 100),
-      mstar = 1 / .0228 * math.log(1 + .0228 * c * hct$viewing_conditions$ViewingConditions$DEFAULT.fLRoot);
-
-  print('$x, $y, $z');
-
-  return colorUtilities.Cam16(
-    /* hue    */ hue,
-    /* chroma */ c,
-    /* j      */ j.toDouble(),
-    /* q      */ 4 / hct$viewing_conditions$ViewingConditions$DEFAULT.c * math.sqrt(j / 100) * (hct$viewing_conditions$ViewingConditions$DEFAULT.aw + 4) * hct$viewing_conditions$ViewingConditions$DEFAULT.fLRoot,
-    /* m      */ 0, // FIXME: js 版本沒有這個值
-    /* s      */ 50 * math.sqrt(alpha * hct$viewing_conditions$ViewingConditions$DEFAULT.c / (hct$viewing_conditions$ViewingConditions$DEFAULT.aw + 4)),
-    /* jstar  */ (1 + 100 * .007) * j / (1 + .007 * j),
-    /* astar  */ mstar * math.cos(hueRadians),
-    /* bstar  */ mstar * math.sin(hueRadians),
-  );
-}
-
-// 1640
-String hexFromArgb(int argb) {
-  final g = argb >> 8 & 255,
-      b = argb & 255,
-      outParts = [(argb >> 16 & 255).toRadixString(16), g.toRadixString(16), b.toRadixString(16)];
-
-  for (var i = 0; i < outParts.length; i++) {
-    final part = outParts[i];
-    if (1 == part.length) {
-      outParts[i] = "0" + part;
-    }
-  }
-  return "#" + outParts.join("");
-}
-
-// 1652
-argbFromHex(String h) {
-  var hex = h;
-  hex = hex.replaceAll("#", "");
-  final isThree = 3 == hex.length,
-      isSix = 6 == hex.length,
-      isEight = 8 == hex.length;
-  if (!isThree && !isSix && !isEight) {
-    throw Exception("unexpected hex " + hex);
-  }
-  var r = 0;
-  var g = 0;
-  var b = 0;
-
-  if (isThree) {
-    r = int.parse(hex.substring(0, 1).repeat(2), radix: 16);
-    g = int.parse(hex.substring(1, 2).repeat(2), radix: 16);
-    b = int.parse(hex.substring(2, 3).repeat(2), radix: 16);
-  } else if (isSix) {
-    r = int.parse(hex.substring(0, 2), radix: 16);
-    g = int.parse(hex.substring(2, 4), radix: 16);
-    b = int.parse(hex.substring(4, 6), radix: 16);
-  } else if (isEight) {
-    r = int.parse(hex.substring(2, 4), radix: 16);
-    g = int.parse(hex.substring(4, 6), radix: 16);
-    b = int.parse(hex.substring(6, 8), radix: 16);
-  }
-
-  return (
-      -16777216 |
-      (r & 255) << 16 |
-      (g & 255) << 8 |
-      b & 255
-  ).toUnsigned(32); // JS 版本為 `>>> 0`
-}
-
-// 1683
 dynamic color_replaceArgbWithHex(key, value) {
   return value is num
       ? hexFromArgb(value.toInt())
       : value;
 }
 
-// 1698
-// 被替換成 TonalPaletteX.xToJson
-
-// 1708
-// color_convertCorePalette 被替換了
-
-// 1752
 custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
   final res = colors.map((color$jscomp$0) {
     final sourceValue = argbFromHex(sourceColor);
@@ -338,7 +170,6 @@ custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor)
   return res;
 }
 
-// 2010
 Map<int, String> tonal_group_tonesToTonalGroup(colorUtilities.TonalPalette tonalPalette) {
   return {
     100: hexFromArgb(tonalPalette.get(100)),
@@ -360,7 +191,6 @@ Map<int, String> tonal_group_tonesToTonalGroup(colorUtilities.TonalPalette tonal
   };
 }
 
-// 2036
 tonal_group_convertTonalGroupToMap(prefix, colorUtilities.TonalPalette group) {
   final map = {};
 
@@ -384,7 +214,6 @@ tonal_group_convertTonalGroupToMap(prefix, colorUtilities.TonalPalette group) {
   return map;
 }
 
-// 2061
 MyDemoThemeData custom_generateCustomTheme(options, {
   List<MyCustomColor> customColors = const [],
   required Map<String, String?> coreColors,
@@ -583,226 +412,11 @@ MyDemoThemeData custom_generateCustomTheme(options, {
   );
 }
 
-class MyCustomColor {
-  MyCustomColor({
-    required this.name,
-    required this.harmonized,
-    required this.color,
-  });
 
-  String name;
-  bool harmonized;
-  String color;
 
-  Map toJson() => {
-    'name': name,
-    'harmonized': harmonized,
-    'color': color,
-  };
-}
 
-extension _StringX on String {
-  String repeat(int count) {
-    var r = '';
-    for (var i = 0; i < count; i++) {
-      r += this;
-    }
-    return r;
-  }
-}
 
-extension _BigIntX on BigInt {
-  // BigInt operator >>>(BigInt other) {
-  //   return this;
-  // }
-}
 
-Map myJsonConverter(Map data, { required dynamic toEncodable(key, value)}) {
-  final newData = <dynamic, dynamic>{};
-  newData.addAll(data);
-
-  tourMap(Map<dynamic, dynamic> d) {
-    for (final entry in d.entries) {
-      var newValue = toEncodable(entry.key, entry.value);
-      newValue = newValue is Map ? convertToDynamicMap(newValue) : newValue;
-      d[entry.key] = newValue;
-
-      if (newValue is Map) {
-        tourMap(newValue);
-      }
-    }
-  }
-
-  tourMap(newData);
-  return newData;
-}
-
-Map<dynamic, dynamic> convertToDynamicMap(Map v) {
-  final newMap = <dynamic, dynamic>{};
-  for (final entry in v.entries) {
-    newMap[entry.key] = entry.value;
-  }
-  return newMap;
-}
-
-class MyDemoThemeData {
-  MyDemoThemeData({
-    required this.seed,
-    required this.name,
-    required this.baseline,
-    required this.extendedColors,
-    required this.coreColors,
-    required this.lightScheme,
-    required this.darkScheme,
-    this.androidSchemes,
-    required this.palettes,
-    required this.styles,
-    this.customColors,
-  });
-
-  String seed;
-  String name;
-  bool baseline;
-  List<MyCustomColor> extendedColors;
-  Map<String, String?> coreColors;
-  MyScheme lightScheme;
-  MyScheme darkScheme;
-  Map? androidSchemes;
-  MyCorePalette palettes;
-  dynamic styles;
-  dynamic customColors;
-
-  Map toJson() {
-    return {
-      'seed': seed,
-      'name': name,
-      'baseline': baseline,
-      'extendedColors': extendedColors.map((e) => e.toJson()).toList(),
-      'coreColors': coreColors,
-      'lightScheme': lightScheme.toJson(),
-      'darkScheme': darkScheme.toJson(),
-      'androidSchemes': androidSchemes,
-      'palettes': palettes.toJson(),
-      'styles': styles,
-      'customColors': customColors,
-    };
-  }
-
-  MyDemoThemeData copyWith({
-    String? seed,
-    String? name,
-    bool? baseline,
-    List<MyCustomColor>? extendedColors,
-    Map<String, String?>? coreColors,
-    MyScheme? lightScheme,
-    MyScheme? darkScheme,
-    Map? androidSchemes,
-    MyCorePalette? palettes,
-    dynamic styles,
-    dynamic customColors,
-  }) {
-    return MyDemoThemeData(
-      seed: seed ?? this.seed,
-      name: name ?? this.name,
-      baseline: baseline ?? this.baseline,
-      extendedColors: extendedColors ?? this.extendedColors,
-      coreColors: coreColors ?? this.coreColors,
-      lightScheme: lightScheme ?? this.lightScheme,
-      darkScheme: darkScheme ?? this.darkScheme,
-      androidSchemes: androidSchemes ?? this.androidSchemes,
-      palettes: palettes ?? this.palettes,
-      styles: styles ?? this.styles,
-      customColors: customColors ?? this.customColors,
-    );
-  }
-
-}
-
-class MyToken {
-  MyToken({
-    this.name = '',
-    dynamic value,
-    this.id = '',
-  }): value = value;
-
-  String name;
-  dynamic value;
-  String id;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'value': value.toString(),
-      'id': id,
-    };
-  }
-}
-
-class MyCorePalette {
-  MyCorePalette({
-    required this.primary,
-    required this.secondary,
-    required this.tertiary,
-    required this.neutral,
-    required this.neutralVariant,
-    required this.error,
-  }) {}
-
-  colorUtilities.TonalPalette primary;
-  colorUtilities.TonalPalette secondary;
-  colorUtilities.TonalPalette tertiary;
-  colorUtilities.TonalPalette neutral;
-  colorUtilities.TonalPalette neutralVariant;
-  colorUtilities.TonalPalette error;
-
-  Map toJson() {
-    return {
-    'primary': primary.xToJson(),
-    'secondary': secondary.xToJson(),
-    'tertiary': tertiary.xToJson(),
-    'neutral': neutral.xToJson(),
-    'neutralVariant': neutralVariant.xToJson(),
-    'error': error.xToJson(),
-    };
-  }
-
-  setByKey(String key, colorUtilities.TonalPalette palette) {
-    switch (key) {
-      case 'primary':        primary        = palette; break;
-      case 'secondary':      secondary      = palette; break;
-      case 'tertiary':       tertiary       = palette; break;
-      case 'neutral':        neutral        = palette; break;
-      case 'neutralVariant': neutralVariant = palette; break;
-      case 'error':          error          = palette; break;
-    }
-  }
-
-}
-
-extension TonalPaletteX on colorUtilities.TonalPalette {
-  Map xToJson() {
-    var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
-    final result = {};
-    for (final range in tonalRange) {
-      final value = this.get(range);
-      result[range.toString()] = hexFromArgb(value);
-    }
-    return result;
-  }
-}
-
-extension CorePalette on colorUtilities.CorePalette {
-  MyCorePalette toMyCorePalette() {
-    return MyCorePalette(
-      primary: primary,
-      secondary: secondary,
-      tertiary: tertiary,
-      neutral: neutral,
-      neutralVariant: neutralVariant,
-      error: error,
-    );
-  }
-}
 
 String getPrettyJSONString(jsonObject){
   var encoder = JsonEncoder.withIndent("     ");

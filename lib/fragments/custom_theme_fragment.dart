@@ -4,7 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
-import 'package:flutter_theme_builder/utils/test.dart';
+import 'package:flutter_theme_builder/utils/test/test.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 import 'package:provider/provider.dart';
 
