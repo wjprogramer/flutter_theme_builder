@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/models/models.dart';
+import 'package:flutter_theme_builder/models/themes.dart';
 
 class MyDemoThemeData {
   MyDemoThemeData({
@@ -68,6 +70,19 @@ class MyDemoThemeData {
       palettes: palettes ?? this.palettes,
       styles: styles ?? this.styles,
       customColors: customColors ?? this.customColors,
+    );
+  }
+
+  Themes getThemes() {
+    return Themes(
+      ThemeData.from(
+        useMaterial3: true,
+        colorScheme: lightScheme.toColorScheme(),
+      ),
+      ThemeData.from(
+        useMaterial3: true,
+        colorScheme: darkScheme.toColorScheme(),
+      ),
     );
   }
 

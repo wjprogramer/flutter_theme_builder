@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/models/models.dart';
-import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 
-Themes generateCustomThemes({
+MyDemoThemeData generateCustomThemes({
   required Color primaryColor,
   Color? secondaryColor,
   Color? tertiaryColor,
@@ -17,7 +16,7 @@ Themes generateCustomThemes({
   if (tertiaryColor != null) { coreColors['tertiary'] = hexFromArgb(tertiaryColor.value); }
   if (neutralColor != null) { coreColors['neutral'] = hexFromArgb(neutralColor.value); }
 
-  final themes = custom_generateCustomTheme(
+  return custom_generateCustomTheme(
     customColors: <MyCustomColor>[
       MyCustomColor(
         name: 'My name 1',
@@ -31,17 +30,6 @@ Themes generateCustomThemes({
       ),
     ],
     coreColors: coreColors,
-  );
-
-  return Themes(
-    ThemeData.from(
-      useMaterial3: true,
-      colorScheme: themes.lightScheme.toColorScheme(),
-    ),
-    ThemeData.from(
-      useMaterial3: true,
-      colorScheme: themes.darkScheme.toColorScheme(),
-    ),
   );
 
 }

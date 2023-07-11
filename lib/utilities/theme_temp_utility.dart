@@ -25,10 +25,10 @@ class ThemeTempUtility {
         useMaterial3: true,
         colorScheme: baseline_getScheme(Brightness.light).toColorScheme(),
       ),
-        ThemeData.from(
-          useMaterial3: true,
-          colorScheme: baseline_getScheme(Brightness.dark).toColorScheme(),
-        )
+      ThemeData.from(
+        useMaterial3: true,
+        colorScheme: baseline_getScheme(Brightness.dark).toColorScheme(),
+      ),
     );
   }
 

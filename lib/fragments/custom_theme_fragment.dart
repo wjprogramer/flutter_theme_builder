@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
@@ -23,9 +22,15 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   TextTheme get _textTheme => _themeData.textTheme;
 
   Color _primaryColor = Colors.white;
-  Color _secondaryColor = Colors.white;
-  Color _tertiaryColor = Colors.white;
-  Color _neutralColor = Colors.white;
+
+  Color? __secondaryColor = Colors.white;
+  Color get _secondaryColor => __secondaryColor!;
+
+  Color? __tertiaryColor = Colors.white;
+  Color get _tertiaryColor => __tertiaryColor!;
+
+  Color? __neutralColor = Colors.white;
+  Color get _neutralColor => __neutralColor!;
 
   final _leftFocusNode = FocusNode();
 
@@ -36,9 +41,11 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     WidgetsBinding.instance.addPostFrameCallback((_timeStamp) {
       final themeProvider = context.read<ThemeProvider>();
       _primaryColor = themeProvider.themeData.colorScheme.primary;
-      _secondaryColor = themeProvider.themeData.colorScheme.secondary;
-      _tertiaryColor = themeProvider.themeData.colorScheme.tertiary;
-      _neutralColor = themeProvider.themeData.colorScheme.surface;
+      __secondaryColor = themeProvider.themeData.colorScheme.secondary;
+      __tertiaryColor = themeProvider.themeData.colorScheme.tertiary;
+      __neutralColor = themeProvider.themeData.colorScheme.surface;
+
+      setState(() { });
     });
   }
 
@@ -60,14 +67,9 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: _buildLeft(),
-                  ),
+                  Expanded(child: _buildLeft()),
                   VerticalDivider(width: 1),
-                  Expanded(
-                    flex: 2,
-                    child: _buildRight(),
-                  ),
+                  Expanded(flex: 2, child: _buildRight()),
                 ],
               );
             }
@@ -80,8 +82,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   }
 
   Widget _buildLeft() {
-    final colorScheme = _themeProvider.customThemes.light.colorScheme;
-
     return SelectionArea(
       focusNode: _leftFocusNode,
       child: ListView(
@@ -120,7 +120,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 color: _themeData.colorScheme.secondary,
                 onColorSelected: (color) {
                   setState(() {
-                    _secondaryColor = color;
+                    __secondaryColor = color;
                     _updateThemeByCoreColor();
                   });
                 },
@@ -130,7 +130,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 color: _themeData.colorScheme.tertiary,
                 onColorSelected: (color) {
                   setState(() {
-                    _tertiaryColor = color;
+                    __tertiaryColor = color;
                     _updateThemeByCoreColor();
                   });
                 },
@@ -141,7 +141,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 color: _themeData.colorScheme.surface,
                 onColorSelected: (color) {
                   setState(() {
-                    _neutralColor = color;
+                    __neutralColor = color;
                     _updateThemeByCoreColor();
                   });
                 },
@@ -159,13 +159,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
               'Input a custom color that automatically gets assigned a set of complementary tones.',
               style: _textTheme.bodyLarge,
             ),
-
-            // TextButton(
-            //   onPressed: () {
-            //     _themeProvider.setThemes(primaryColor: Color(0xFF01d7f1));
-            //   },
-            //   child: Text('SetTheme'),
-            // ),
           ].map((e) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: e,
@@ -309,24 +302,13 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   }
 
   List<Widget> _buildRightListItems() {
-    final lightTheme = _themeProvider.customThemes.light;
-    final darkTheme = _themeProvider.customThemes.dark;
-
-    ThemeTempUtility.test();
-    final testThemes = ThemeTempUtility.testThemes();
+    final themes = _themeProvider.customThemes.getThemes();
+    final lightTheme = themes.light;
+    final darkTheme = themes.dark;
 
     testSomething();
-
-    // ThemeTempUtility.custom_generateCustomTheme({
-    //   'coreColors': {
-    //     // 數值只有兩個可能
-    //     // 1. 只有 primary
-    //     // 2. 有四個值 primary, secondary, tertiary, neutral
-    //     // primary
-    //   },
-    //   'is3p': true,
-    //   'customColors': [],
-    // });
+    ThemeTempUtility.test();
+    ThemeTempUtility.testThemes();
 
     return [
       Center(
@@ -347,16 +329,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       ),
       _buildScheme(lightTheme),
       _buildScheme(darkTheme),
-
-
-      if (kDebugMode) ...[
-
-        Divider(),
-        _buildScheme(testThemes.light),
-        _buildScheme(testThemes.dark),
-
-
-      ],
     ];
   }
 
@@ -568,7 +540,7 @@ class _SchemeColorCell {
     required this.name,
     required this.bgColor,
     required this.textColor,
-    this.height = 64.0,
+    this.height = 80.0, // 64.0
   });
 
   int flex;

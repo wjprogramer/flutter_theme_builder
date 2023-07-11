@@ -1,9 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
-import 'package:flutter_theme_builder/models/themes.dart';
-import 'package:material_color_utilities/material_color_utilities.dart';
-import 'package:material_color_utilities/scheme/scheme.dart';
+import 'package:flutter_theme_builder/models/models.dart';
 
 enum ThemeType {
   custom,
@@ -11,9 +8,6 @@ enum ThemeType {
 }
 
 class ThemeProvider extends ChangeNotifier {
-  ThemeProvider() {
-  }
-
   ThemeType _themeType = ThemeType.dynamic;
   ThemeType get themeType => _themeType;
   set themeType(ThemeType v) {
@@ -21,14 +15,11 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Themes _customThemes = _buildThemes(
+  MyDemoThemeData _customThemes = _buildThemes(
     primaryColor: Color(0xFF6750A4),
-    secondaryColor: Color(0xFF625B71),
-    tertiaryColor: Color(0xFF7D5260),
-    neutralColor: Color(0xFF939094),
   );
-  Themes get customThemes => _customThemes;
-  set customThemes(Themes v) {
+  MyDemoThemeData get customThemes => _customThemes;
+  set customThemes(MyDemoThemeData v) {
     _customThemes = v;
     notifyListeners();
   }
@@ -37,9 +28,11 @@ class ThemeProvider extends ChangeNotifier {
   Brightness get brightness => _brightness;
 
   ThemeData get themeData {
+    final themes = _customThemes.getThemes();
+
     return _brightness == Brightness.light
-        ? _customThemes.light
-        : _customThemes.dark;
+        ? themes.light
+        : themes.dark;
   }
 
   void toggleBrightness() {
@@ -68,18 +61,16 @@ class ThemeProvider extends ChangeNotifier {
   // 1. ColorScheme.fromSwatch
   // 2. Scheme.lightFromCorePalette
   // 3. Color primaryColor; Scheme.light(primaryColor.value);
-  static Themes _buildThemes({
+  static MyDemoThemeData _buildThemes({
     required Color primaryColor,
     Color? secondaryColor,
     Color? tertiaryColor,
     Color? neutralColor,
-  }) {
-    return generateCustomThemes(
-      primaryColor: primaryColor,
-      secondaryColor: secondaryColor,
-      tertiaryColor: tertiaryColor,
-      neutralColor: neutralColor,
-    );
-  }
+  }) => generateCustomThemes(
+    primaryColor: primaryColor,
+    secondaryColor: secondaryColor,
+    tertiaryColor: tertiaryColor,
+    neutralColor: neutralColor,
+  );
 
 }
