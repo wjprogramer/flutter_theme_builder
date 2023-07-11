@@ -80,3 +80,20 @@ argbFromHex(String h) {
       b & 255
   ).toUnsigned(32); // JS 版本為 `>>> 0`
 }
+
+dynamic color_replaceArgbWithHex(key, value) {
+  return value is num
+      ? hexFromArgb(value.toInt())
+      : value;
+}
+
+
+
+
+
+
+
+
+
+
+

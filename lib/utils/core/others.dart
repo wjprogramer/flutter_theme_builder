@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_theme_builder/utils/utils.dart';
 
 void myAssertEqual(a, b) {
@@ -47,4 +49,9 @@ Map<dynamic, dynamic> convertToDynamicMap(Map v) {
     newMap[entry.key] = entry.value;
   }
   return newMap;
+}
+
+String getPrettyJSONString(jsonObject){
+  var encoder = JsonEncoder.withIndent("     ");
+  return encoder.convert(jsonObject);
 }

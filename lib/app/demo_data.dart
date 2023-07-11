@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
-import 'package:flutter_theme_builder/utils/test/test.dart';
+import 'package:flutter_theme_builder/utils/utils.dart';
 
 Themes demoData1() {
   final themes = custom_generateCustomTheme({},
