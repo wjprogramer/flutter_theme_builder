@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
-import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 
 class DynamicThemeFragment extends StatefulWidget {
   const DynamicThemeFragment({Key? key}) : super(key: key);

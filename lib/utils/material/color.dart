@@ -1,8 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter_theme_builder/extensions/extensions.dart';
-import 'package:flutter_theme_builder/utils/material/color.dart';
-import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
 const utils$color_utils_SRGB_TO_XYZ = [
   [.41233895, .35762064, .18051042],

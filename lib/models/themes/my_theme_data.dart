@@ -1,7 +1,4 @@
 import 'package:flutter_theme_builder/models/models.dart';
-import 'package:flutter_theme_builder/models/themes/my_scheme.dart';
-import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
-import 'package:flutter_theme_builder/utils/utils.dart';
 
 class MyDemoThemeData {
   MyDemoThemeData({

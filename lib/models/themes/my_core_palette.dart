@@ -1,5 +1,4 @@
 import 'package:flutter_theme_builder/extensions/extensions.dart';
-import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
 class MyCorePalette {
