@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -97,7 +98,7 @@ void testSomething() {
       ),
     ],
   );
-  print(customTheme.toJson());
+  print(getPrettyJSONString(customTheme.toJson()));
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
 
@@ -676,10 +677,10 @@ class MyDemoThemeData {
       'seed': seed,
       'name': name,
       'baseline': baseline,
-      'extendedColors': extendedColors,
+      'extendedColors': extendedColors.map((e) => e.toJson()).toList(),
       'coreColors': coreColors,
-      'lightScheme': lightScheme,
-      'darkScheme': darkScheme,
+      'lightScheme': lightScheme.toJson(),
+      'darkScheme': darkScheme.toJson(),
       'androidSchemes': androidSchemes,
       'palettes': palettes.toJson(),
       'styles': styles,
@@ -731,7 +732,7 @@ class MyToken {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'value': value,
+      'value': value.toString(),
       'id': id,
     };
   }
@@ -745,7 +746,7 @@ class MyCorePalette {
     required this.neutral,
     required this.neutralVariant,
     required this.error,
-  });
+  }) {}
 
   colorUtilities.TonalPalette primary;
   colorUtilities.TonalPalette secondary;
@@ -754,14 +755,16 @@ class MyCorePalette {
   colorUtilities.TonalPalette neutralVariant;
   colorUtilities.TonalPalette error;
 
-  Map toJson() => {
+  Map toJson() {
+    return {
     'primary': primary.xToJson(),
     'secondary': secondary.xToJson(),
     'tertiary': tertiary.xToJson(),
     'neutral': neutral.xToJson(),
     'neutralVariant': neutralVariant.xToJson(),
     'error': error.xToJson(),
-  };
+    };
+  }
 
   setByKey(String key, colorUtilities.TonalPalette palette) {
     switch (key) {
@@ -782,7 +785,7 @@ extension TonalPaletteX on colorUtilities.TonalPalette {
     final result = {};
     for (final range in tonalRange) {
       final value = this.get(range);
-      result[range] = hexFromArgb(value);
+      result[range.toString()] = hexFromArgb(value);
     }
     return result;
   }
@@ -801,6 +804,9 @@ extension CorePalette on colorUtilities.CorePalette {
   }
 }
 
-
+String getPrettyJSONString(jsonObject){
+  var encoder = JsonEncoder.withIndent("     ");
+  return encoder.convert(jsonObject);
+}
 
 

@@ -34,12 +34,6 @@ class ThemeTempUtility {
     );
   }
 
-  /// My utils
-  static String _getPrettyJSONString(jsonObject){
-    var encoder = JsonEncoder.withIndent("     ");
-    return encoder.convert(jsonObject);
-  }
-
   static MyDemoThemeData baseline_generateBaseline({
     List<MyCustomColor> customColors = const [],
   }) {
