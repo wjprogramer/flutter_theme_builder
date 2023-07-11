@@ -3,8 +3,21 @@ import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 
-Themes demoData1() {
-  final themes = custom_generateCustomTheme({},
+Themes generateCustomThemes({
+  required Color primaryColor,
+  Color? secondaryColor,
+  Color? tertiaryColor,
+  Color? neutralColor,
+}) {
+  final coreColors = <String, String>{
+    'primaryColor': hexFromArgb(primaryColor.value),
+  };
+
+  if (secondaryColor != null) { coreColors['secondary'] = hexFromArgb(secondaryColor.value); }
+  if (tertiaryColor != null) { coreColors['tertiary'] = hexFromArgb(tertiaryColor.value); }
+  if (neutralColor != null) { coreColors['neutral'] = hexFromArgb(neutralColor.value); }
+
+  final themes = custom_generateCustomTheme(
     customColors: <MyCustomColor>[
       MyCustomColor(
         name: 'My name 1',
@@ -17,12 +30,7 @@ Themes demoData1() {
         color: '#5f5519',
       ),
     ],
-    coreColors: {
-      'primary': '#006b62',
-      'secondary': '#9d906d',
-      'tertiary': '#a288ab',
-      'neutral': '#938f94',
-    },
+    coreColors: coreColors,
   );
 
   return Themes(

@@ -64,85 +64,21 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // NOTES:
+  // 1. ColorScheme.fromSwatch
+  // 2. Scheme.lightFromCorePalette
+  // 3. Color primaryColor; Scheme.light(primaryColor.value);
   static Themes _buildThemes({
     required Color primaryColor,
     Color? secondaryColor,
     Color? tertiaryColor,
     Color? neutralColor,
   }) {
-    if (kDebugMode) {
-      return demoData1();
-    }
-
-    final lightScheme = Scheme.light(primaryColor.value);
-    final darkScheme = Scheme.dark(primaryColor.value);
-
-    // ColorScheme.fromSwatch(
-    //
-    // );
-    //
-    // final lightScheme = Scheme.lightFromCorePalette(
-    //   CorePalette(),
-    // );
-    // final darkScheme = Scheme.lightFromCorePalette(
-    //
-    // );
-
-    return Themes(
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.light,
-          seedColor: primaryColor,
-          secondary: secondaryColor,
-          tertiary: tertiaryColor,
-          onSurface: neutralColor,
-          onBackground: neutralColor,
-        ),
-        // colorScheme: _convertToColorScheme(Brightness.light, lightScheme),
-      ),
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.dark,
-          seedColor: primaryColor,
-          secondary: secondaryColor,
-          tertiary: tertiaryColor,
-          onSurface: neutralColor,
-          onBackground: neutralColor,
-        ),
-        // colorScheme: _convertToColorScheme(Brightness.dark, darkScheme),
-      ),
-    );
-  }
-
-  static ColorScheme _convertToColorScheme(Brightness brightness, Scheme scheme) {
-    return ColorScheme(
-      brightness: brightness,
-      primary: Color(scheme.primary),
-      onPrimary: Color(scheme.onPrimary),
-      primaryContainer: Color(scheme.primaryContainer),
-      onPrimaryContainer: Color(scheme.onPrimaryContainer),
-      secondary: Color(scheme.secondary),
-      onSecondary: Color(scheme.onSecondary),
-      secondaryContainer: Color(scheme.secondaryContainer),
-      onSecondaryContainer: Color(scheme.onSecondaryContainer),
-      tertiary: Color(scheme.tertiary),
-      onTertiary: Color(scheme.onTertiary),
-      tertiaryContainer: Color(scheme.tertiaryContainer),
-      onTertiaryContainer: Color(scheme.onTertiaryContainer),
-      error: Color(scheme.error),
-      onError: Color(scheme.onError),
-      errorContainer: Color(scheme.errorContainer),
-      onErrorContainer: Color(scheme.onErrorContainer),
-      background: Color(scheme.background),
-      onBackground: Color(scheme.onBackground),
-      surface: Color(scheme.surface),
-      onSurface: Color(scheme.onSurface),
-      surfaceVariant: Color(scheme.surfaceVariant),
-      onSurfaceVariant: Color(scheme.onSurfaceVariant),
-      outline: Color(scheme.outline),
-      outlineVariant: Color(scheme.outlineVariant),
+    return generateCustomThemes(
+      primaryColor: primaryColor,
+      secondaryColor: secondaryColor,
+      tertiaryColor: tertiaryColor,
+      neutralColor: neutralColor,
     );
   }
 

@@ -77,7 +77,7 @@ void testSomething() {
   myAssertEqual(argbFromHex('#9d906d'), 4288516205);
 
   // Custom schemes
-  final customTheme = custom_generateCustomTheme({},
+  final customTheme = custom_generateCustomTheme(
     coreColors: {
       'primary': '#006b62',
       'secondary': '#9d906d',

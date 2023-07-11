@@ -11,7 +11,7 @@ import 'package:flutter_theme_builder/utils/core/others.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
-custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
+List<Map<dynamic, dynamic>> custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
   final res = colors.map((color$jscomp$0) {
     final sourceValue = argbFromHex(sourceColor);
     var JSCompiler_inline_result = {
@@ -64,7 +64,7 @@ custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor)
   return res;
 }
 
-MyDemoThemeData custom_generateCustomTheme(options, {
+MyDemoThemeData custom_generateCustomTheme({
   List<MyCustomColor> customColors = const [],
   required Map<String, String?> coreColors,
   bool isContent = false,
