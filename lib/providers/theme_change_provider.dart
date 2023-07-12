@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
+import 'package:flutter_theme_builder/utils/utils.dart';
 
 enum ThemeType {
   custom,
@@ -72,5 +73,15 @@ class ThemeProvider extends ChangeNotifier {
     tertiaryColor: tertiaryColor,
     neutralColor: neutralColor,
   );
+
+  setThemesByAssetImage(String assetPath) async {
+    try {
+      final a = await buildThemeFromImage(assetPath);
+      _customThemes = a;
+      notifyListeners();
+    } catch (e) {
+
+    }
+  }
 
 }

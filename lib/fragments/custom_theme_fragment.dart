@@ -7,6 +7,8 @@ import 'package:flutter_theme_builder/utils/test/test.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 import 'package:provider/provider.dart';
 
+const _INSTANT_APPLY_CORE_COLOR_CHANGES = true;
+
 typedef _ColorSelected = Function(Color color);
 
 class CustomThemeFragment extends StatefulWidget {
@@ -184,66 +186,58 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     required Color color,
     required _ColorSelected onColorSelected,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _themeData.colorScheme.surfaceVariant,
-            borderRadius: BorderRadius.circular(24),
+    return Container(
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _themeData.colorScheme.surfaceVariant,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: subtitle != null
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => _pickColor(
+              color: color,
+              onColorSelected: onColorSelected,
+            ),
+            child: Container(
+              height: 48,
+              width: 48,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
+            ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: subtitle != null
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () => _pickColor(
-                  color: color,
-                  onColorSelected: onColorSelected,
-                ),
-                child: Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: color,
+          8.width,
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.start,
+                  style: _textTheme.bodyLarge?.copyWith(
+                    color: _themeData.colorScheme.onSurfaceVariant,
                   ),
                 ),
-              ),
-              8.width,
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      title,
-                      textAlign: TextAlign.start,
-                      style: _textTheme.bodyLarge?.copyWith(
-                        color: _themeData.colorScheme.onSurfaceVariant,
-                      ),
+                if (subtitle != null)
+                  SelectableText(
+                    subtitle,
+                    textAlign: TextAlign.start,
+                    style: _textTheme.bodySmall?.copyWith(
+                      color: _themeData.colorScheme.onSurfaceVariant,
                     ),
-                    if (subtitle != null)
-                      SelectableText(
-                        subtitle,
-                        textAlign: TextAlign.start,
-                        style: _textTheme.bodySmall?.copyWith(
-                          color: _themeData.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
+              ],
+            ),
           ),
-        ),
-        Text(
-          '#' + color.value.toRadixString(16),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -252,6 +246,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     required _ColorSelected onColorSelected,
   }) async {
     Color resultColor = _primaryColor;
+
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -261,9 +256,12 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25))),
           content: SingleChildScrollView(
             child: SlidePicker(
-              pickerColor: _primaryColor,
+              pickerColor: _INSTANT_APPLY_CORE_COLOR_CHANGES ? resultColor : _primaryColor,
               onColorChanged: (v) {
                 resultColor = v;
+                if (_INSTANT_APPLY_CORE_COLOR_CHANGES) {
+                  onColorSelected(v);
+                }
               },
               colorModel: ColorModel.hsv,
               enableAlpha: false,

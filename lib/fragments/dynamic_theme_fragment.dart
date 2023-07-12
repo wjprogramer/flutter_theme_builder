@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
+import 'package:flutter_theme_builder/app/asset_path.dart';
+import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
+import 'package:flutter_theme_builder/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class DynamicThemeFragment extends StatefulWidget {
   const DynamicThemeFragment({Key? key}) : super(key: key);
@@ -11,55 +15,59 @@ class DynamicThemeFragment extends StatefulWidget {
 class _DynamicThemeFragmentState extends State<DynamicThemeFragment> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= 720) {
-          return Row(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: _buildLeft()),
-              Expanded(child: _buildRight()),
-            ],
-          );
-        }
+    return Consumer<ThemeProvider>(
+      builder: (_, themeProvider, ___) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth >= 720) {
+              return Row(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(child: _buildLeft(themeProvider)),
+                  Expanded(child: _buildRight(themeProvider)),
+                ],
+              );
+            }
 
-        // < 720: 1 column
-        return _buildMainList();
-        // DemoMobile1
+            // < 720: 1 column
+            return _buildMainList(themeProvider);
+            // DemoMobile1
+          },
+        );
       },
     );
   }
 
-  Widget _buildMainList() {
+  Widget _buildMainList(ThemeProvider themeProvider) {
     return ListView(
       padding: const EdgeInsets.all(32),
       children: [
-        ..._buildLeftItems(),
-        ..._buildRightItems(),
+        ..._buildLeftItems(themeProvider),
+        ..._buildRightItems(themeProvider),
       ],
     );
   }
 
-  Widget _buildLeft() {
+  Widget _buildLeft(ThemeProvider themeProvider) {
     return ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: 48,
       ),
-      children: _buildLeftItems(),
+      children: _buildLeftItems(themeProvider),
     );
   }
 
-  Widget _buildRight() {
+  Widget _buildRight(ThemeProvider themeProvider) {
     return Container(
       child: ListView(
         padding: const EdgeInsets.all(32),
-        children: _buildRightItems(),
+        children: _buildRightItems(themeProvider),
       ),
     );
   }
 
-  List<Widget> _buildLeftItems() {
+  List<Widget> _buildLeftItems(ThemeProvider themeProvider) {
     return [
       64.height,
       Text(
@@ -71,10 +79,23 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> {
       Text(
         'Learn more about dynamic color.',
       ),
+
+      32.height,
+      TextButton(
+        onPressed: () async {
+          try {
+            await themeProvider.setThemesByAssetImage(AssetPaths.theme1);
+          } catch (e) {
+          }
+        },
+        child: Text('Dynamic'),
+      ),
+      32.height,
+
     ];
   }
 
-  List<Widget> _buildRightItems() {
+  List<Widget> _buildRightItems(ThemeProvider themeProvider) {
     return [
       // Center(
       //   child: DemoMobile1(),

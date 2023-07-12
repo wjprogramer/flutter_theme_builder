@@ -14,8 +14,8 @@ const utils$color_utils_XYZ_TO_SRGB = [
 ];
 const utils$color_utils_WHITE_POINT_D65 = <double>[95.047, 100, 108.883];
 
-color_utils_argbFromRgb(red, green, blue) {
-  return (-16777216 | (red & 255) << 16 | (green & 255) << 8 | blue & 255) >>> 0;
+num color_utils_argbFromRgb(red, green, blue) {
+  return (-16777216 | (red & 255) << 16 | (green & 255) << 8 | blue & 255).toUnsigned(32); // JS 版本為 `>>> 0`
 }
 
 utils$color_utils_labInvf(ft) {

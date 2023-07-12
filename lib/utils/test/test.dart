@@ -1,12 +1,14 @@
 import 'dart:ui';
 
+import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
+import 'package:flutter_theme_builder/utils/core/image.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
-void testSomething() {
+Future<void> testSomething() async {
   const argb = 4284437785;
 
   // CAM 16
@@ -100,6 +102,11 @@ void testSomething() {
   print(getPrettyJSONString(customTheme.toJson()));
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
+
+  // Image to theme
+  print('image to theme');
+  print(await image_sourceColorsFromImage(AssetPaths.theme1));
+
 
 }
 
