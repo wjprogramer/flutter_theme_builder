@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
+import 'package:flutter_theme_builder/themes/compute_themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,19 @@ class DynamicThemeFragment extends StatefulWidget {
   State<DynamicThemeFragment> createState() => _DynamicThemeFragmentState();
 }
 
-class _DynamicThemeFragmentState extends State<DynamicThemeFragment> {
+class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with SingleTickerProviderStateMixin {
+  var _tmp = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
@@ -80,6 +93,46 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> {
         'Learn more about dynamic color.',
       ),
 
+      Wrap(
+        children: [
+          AssetPaths.theme1,
+          AssetPaths.theme2,
+          AssetPaths.theme3,
+          AssetPaths.theme4,
+        ].map((assetPath) => GestureDetector(
+          onTap: () {
+            computeBuildThemeFromImage(
+              assetPath,
+            );
+
+            setState(() {
+              _tmp = !_tmp;
+            });
+            return;
+            themeProvider.setThemesByAssetImage(assetPath);
+          },
+          child: AnimatedContainer(
+            width: 57,
+            height: 114,
+            duration: const Duration(milliseconds: 500),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(assetPath),
+              ),
+              borderRadius: _tmp
+                  ? BorderRadius.circular(80)
+                  : BorderRadius.circular(8),
+            ),
+          ),
+        )).toList(),
+      ),
+
+      32.height,
+      TextButton(
+        onPressed: () {
+        },
+        child: Text('Dynamic'),
+      ),
       32.height,
       TextButton(
         onPressed: () async {

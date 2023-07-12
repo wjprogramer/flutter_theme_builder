@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 import 'dart:math' as math;
 
@@ -12,16 +13,16 @@ import 'package:material_color_utilities/material_color_utilities.dart' as color
 Future<MyDemoThemeData> buildThemeFromImage(String assetPath, {
   List<MyCustomColor> customColors = const [],
   bool isContent = false,
+  Int8List? imageData,
 }) async {
-  final color = (await image_sourceColorsFromImage(assetPath))[0];
+  final String color = (await image_sourceColorsFromImage(assetPath, imageData: imageData))[0];
   final theme = dynamic_generateDynamicTheme(
     color, customColors: customColors, isContent: isContent,
   );
-
   return theme;
 }
 
-dynamic_generateDynamicTheme(sourceColor, {
+MyDemoThemeData dynamic_generateDynamicTheme(sourceColor, {
   List<MyCustomColor> customColors = const [],
   bool isContent = false,
 }) {
@@ -50,9 +51,11 @@ dynamic_generateDynamicTheme(sourceColor, {
   return baseline;
 }
 
-Future<List<String>> image_sourceColorsFromImage(String assetPath) async {
-  final pixels = await image_bufferToPixels(assetPath);
-  final result = await quantizer_celebi$QuantizerCelebi$quantize(pixels);
+Future<List<String>> image_sourceColorsFromImage(String assetPath, {
+  Int8List? imageData,
+}) async {
+  final _pixels = await image_bufferToPixels(assetPath, imageData: imageData);
+  final result = await quantizer_celebi$QuantizerCelebi$quantize(_pixels);
 
   final a = colorUtilities.Score.score(result.colorToCount);
   return a
@@ -61,16 +64,18 @@ Future<List<String>> image_sourceColorsFromImage(String assetPath) async {
       .map((e) => e.toUpperCase()).toList();
 }
 
-Future<List<num>> image_bufferToPixels(String assetPath) async {
-  final imageData = (await assetImageToByte(assetPath)).buffer.asInt8List();
+Future<List<num>> image_bufferToPixels(String assetPath, {
+  Int8List? imageData,
+}) async {
+  final _imageData = imageData ?? (await assetImageToByte(assetPath)).buffer.asInt8List();
   final pixels = <num>[];
 
-  for (var i = 0; i < imageData.length; i += 4) {
-    if (i + 3 >= imageData.length) {
+  for (var i = 0; i < _imageData.length; i += 3) {
+    if (i + 3 >= _imageData.length) {
       continue;
     }
-    if (imageData[i + 3] < 255) {
-      pixels.add(color_utils_argbFromRgb(imageData[i], imageData[i + 1], imageData[i + 2]));
+    if (_imageData[i + 3] < 255) {
+      pixels.add(color_utils_argbFromRgb(_imageData[i], _imageData[i + 1], _imageData[i + 2]));
     }
   }
 

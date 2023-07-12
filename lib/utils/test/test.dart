@@ -103,10 +103,5 @@ Future<void> testSomething() async {
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
 
-  // Image to theme
-  print('image to theme');
-  print(await image_sourceColorsFromImage(AssetPaths.theme1));
-
-
 }
 

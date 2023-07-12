@@ -80,7 +80,7 @@ class ThemeProvider extends ChangeNotifier {
       _customThemes = a;
       notifyListeners();
     } catch (e) {
-
+      print(e);
     }
   }
 
