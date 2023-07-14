@@ -1,9 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter_theme_builder/app/asset_path.dart';
-import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
-import 'package:flutter_theme_builder/utils/core/image.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
@@ -79,26 +76,26 @@ Future<void> testSomething() async {
   myAssertEqual(argbFromHex('#9d906d'), 4288516205);
 
   // Custom schemes
-  final customTheme = custom_generateCustomTheme(
-    coreColors: {
-      'primary': '#006b62',
-      'secondary': '#9d906d',
-      'tertiary': '#a288ab',
-      'neutral': '#938f94',
-    },
-    customColors: <MyCustomColor>[
-      MyCustomColor(
-        name: 'My name 1',
-        harmonized: true,
-        color: '#5f5519',
-      ),
-      MyCustomColor(
-        name: 'My name 2',
-        harmonized: false,
-        color: '#5f5519',
-      ),
-    ],
-  );
+  // final customTheme = custom_generateCustomTheme(
+  //   coreColors: {
+  //     'primary': '#006b62',
+  //     'secondary': '#9d906d',
+  //     'tertiary': '#a288ab',
+  //     'neutral': '#938f94',
+  //   },
+  //   customColors: <MyCustomColor>[
+  //     MyCustomColor(
+  //       name: 'My name 1',
+  //       harmonized: true,
+  //       color: '#5f5519',
+  //     ),
+  //     MyCustomColor(
+  //       name: 'My name 2',
+  //       harmonized: false,
+  //       color: '#5f5519',
+  //     ),
+  //   ],
+  // );
   // print(getPrettyJSONString(customTheme.toJson()));
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();

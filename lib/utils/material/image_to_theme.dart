@@ -27,9 +27,9 @@ MyDemoThemeData dynamic_generateDynamicTheme(sourceColor, {
   bool isContent = false,
 }) {
   final source = argbFromHex(sourceColor);
-  final palette = isContent
-      ? colorUtilities.CorePalette.contentOf(source)
-      : colorUtilities.CorePalette.of(source);
+  // final palette = isContent
+  //     ? colorUtilities.CorePalette.contentOf(source)
+  //     : colorUtilities.CorePalette.of(source);
   final light = isContent
       ? colorUtilities.Scheme.lightFromCorePalette(colorUtilities.CorePalette.of(source))
       : colorUtilities.Scheme.lightFromCorePalette(colorUtilities.CorePalette.contentOf(source));

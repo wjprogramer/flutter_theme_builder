@@ -14,7 +14,7 @@ extension TonalPaletteX on colorUtilities.TonalPalette {
   Map xToJson() {
     // JS 版本:
     // var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
-    var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
+    // var tonalRange = [100, 99, 98, 95, 90, 80, 70, 60, 50, 40, 35, 30, 25, 20, 15, 10, 5, 0];
     final result = {};
     for (final range in colorUtilities.TonalPalette.commonTones) {
       final value = this.get(range);

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/themes/compute_themes.dart';
-import 'package:flutter_theme_builder/utils/utils.dart';
 
 enum ThemeType {
   custom,

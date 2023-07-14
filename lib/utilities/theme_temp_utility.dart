@@ -11,10 +11,10 @@ class ThemeTempUtility {
     // final a = baseline_generateBaseline();
     // print(_getPrettyJSONString(a));
 
-    final a = baseline_getColorById('md.sys.color.secondary', 'light');
+    // final a = baseline_getColorById('md.sys.color.secondary', 'light');
     // print(a);
 
-    final b = baseline_getColorById('md.sys.color.tertiary', 'light');
+    // final b = baseline_getColorById('md.sys.color.tertiary', 'light');
     // print(b);
 
   }
