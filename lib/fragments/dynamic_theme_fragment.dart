@@ -101,14 +101,9 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
           AssetPaths.theme4,
         ].map((assetPath) => GestureDetector(
           onTap: () {
-            computeBuildThemeFromImage(
-              assetPath,
-            );
-
             setState(() {
               _tmp = !_tmp;
             });
-            return;
             themeProvider.setThemesByAssetImage(assetPath);
           },
           child: AnimatedContainer(

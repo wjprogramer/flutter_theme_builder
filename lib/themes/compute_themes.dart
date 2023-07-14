@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/utils/core/image.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 
-computeBuildThemeFromImage(String assetPath) async {
+Future<MyDemoThemeData> computeBuildThemeFromImage(String assetPath) async {
   final imageData = (await assetImageToByte(assetPath)).buffer.asInt8List();
 
   final x = await compute(
@@ -16,8 +17,7 @@ computeBuildThemeFromImage(String assetPath) async {
     })
   );
 
-  print('~~~~~computeBuildThemeFromImage~~~~~');
-  print(x);
+  return MyDemoThemeData.fromJson(jsonDecode(x));
 }
 
 _compute(String rawMap) async {
@@ -25,10 +25,14 @@ _compute(String rawMap) async {
 
   final assetPath = map['assetPath'] as String;
   final imageData = map['imageData'] as List;
-  final a = await buildThemeFromImage(assetPath, imageData: Int8List.fromList(imageData.whereType<num>().map((e) => e.toInt()).toList()));
+  final a = await buildThemeFromImage(
+      assetPath,
+      imageData: Int8List.fromList(
+          imageData
+              .whereType<num>()
+              .map((e) => e.toInt()).toList()
+      )
+  );
 
-  return jsonEncode({
-    'pathX': assetPath,
-    'a': a.toJson(),
-  });
+  return jsonEncode(a.toJson());
 }

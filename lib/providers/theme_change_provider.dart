@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
+import 'package:flutter_theme_builder/themes/compute_themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 
 enum ThemeType {
@@ -49,6 +50,7 @@ class ThemeProvider extends ChangeNotifier {
     Color? tertiaryColor,
     Color? neutralColor,
   }) {
+    print('primaryColor: $primaryColor');
     _customThemes = _buildThemes(
       primaryColor: primaryColor,
       secondaryColor: secondaryColor,
@@ -76,7 +78,8 @@ class ThemeProvider extends ChangeNotifier {
 
   setThemesByAssetImage(String assetPath) async {
     try {
-      final a = await buildThemeFromImage(assetPath);
+      final a = await computeBuildThemeFromImage(assetPath);
+      print('seed: ${a.seed}');
       _customThemes = a;
       notifyListeners();
     } catch (e) {

@@ -45,6 +45,32 @@ class MyDemoThemeData {
     };
   }
 
+  factory MyDemoThemeData.fromJson(Map data) {
+    return MyDemoThemeData(
+      seed: data['seed'],
+      name: data['name'],
+      baseline: data['baseline'],
+      extendedColors: (data['extendedColors'] as List).map((e) => MyCustomColor.fromJson(e)).toList(),
+      coreColors: _coreColorsFromJson(data['coreColors']),
+      lightScheme: MyScheme.fromJson(data['lightScheme']),
+      darkScheme: MyScheme.fromJson(data['darkScheme']),
+      // androidSchemes: data['androidSchemes'],
+      palettes: MyCorePalette.fromJson(data['palettes']),
+      styles: data['styles'],
+      customColors: data['customColors'],
+    );
+  }
+
+  static Map<String, String?> _coreColorsFromJson(Map data) {
+    final res = <String, String?>{};
+    data.entries.forEach((e) {
+      if (e.key is String && e.value is String?) {
+        res[e.key] = e.value;
+      }
+    });
+    return res;
+  }
+
   MyDemoThemeData copyWith({
     String? seed,
     String? name,

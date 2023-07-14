@@ -99,7 +99,7 @@ Future<void> testSomething() async {
       ),
     ],
   );
-  print(getPrettyJSONString(customTheme.toJson()));
+  // print(getPrettyJSONString(customTheme.toJson()));
 
   ThemeTempUtility.baseline_getScheme(Brightness.light).toColorScheme();
 

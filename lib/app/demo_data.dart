@@ -9,7 +9,7 @@ MyDemoThemeData generateCustomThemes({
   Color? neutralColor,
 }) {
   final coreColors = <String, String>{
-    'primaryColor': hexFromArgb(primaryColor.value),
+    'primary': hexFromArgb(primaryColor.value),
   };
 
   if (secondaryColor != null) { coreColors['secondary'] = hexFromArgb(secondaryColor.value); }

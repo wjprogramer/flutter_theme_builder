@@ -35,7 +35,7 @@ colorUtilities.Cam16 Cam16_fromIntInViewingConditions(int argb) {
       c = alpha * math.sqrt(j / 100),
       mstar = 1 / .0228 * math.log(1 + .0228 * c * hct$viewing_conditions$ViewingConditions$DEFAULT.fLRoot);
 
-  print('$x, $y, $z');
+  // print('$x, $y, $z');
 
   return colorUtilities.Cam16(
     /* hue    */ hue,

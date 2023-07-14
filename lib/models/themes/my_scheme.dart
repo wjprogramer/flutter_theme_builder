@@ -70,6 +70,7 @@ class MyScheme {
   MyToken? scrim;
 
   toJson() => {
+    'brightness': brightness == Brightness.dark ? 'dark' : 'light',
     'primary': primary?.toJson(),
     'onPrimary': onPrimary?.toJson(),
     'primaryContainer': primaryContainer?.toJson(),
@@ -101,6 +102,42 @@ class MyScheme {
     'outlineVariant': outlineVariant?.toJson(),
     'scrim': scrim?.toJson(),
   };
+
+  factory MyScheme.fromJson(Map data) {
+    return MyScheme(
+      brightness: data['brightness'] == 'light' ? Brightness.light : Brightness.dark,
+      primary: data['primary'] != null ? MyToken.fromJson(data['primary']) : null,
+      onPrimary: data['onPrimary'] != null ? MyToken.fromJson(data['onPrimary']) : null,
+      primaryContainer: data['primaryContainer'] != null ? MyToken.fromJson(data['primaryContainer']) : null,
+      onPrimaryContainer: data['onPrimaryContainer'] != null ? MyToken.fromJson(data['onPrimaryContainer']) : null,
+      secondary: data['secondary'] != null ? MyToken.fromJson(data['secondary']) : null,
+      onSecondary: data['onSecondary'] != null ? MyToken.fromJson(data['onSecondary']) : null,
+      secondaryContainer: data['secondaryContainer'] != null ? MyToken.fromJson(data['secondaryContainer']) : null,
+      onSecondaryContainer: data['onSecondaryContainer'] != null ? MyToken.fromJson(data['onSecondaryContainer']) : null,
+      tertiary: data['tertiary'] != null ? MyToken.fromJson(data['tertiary']) : null,
+      onTertiary: data['onTertiary'] != null ? MyToken.fromJson(data['onTertiary']) : null,
+      tertiaryContainer: data['tertiaryContainer'] != null ? MyToken.fromJson(data['tertiaryContainer']) : null,
+      onTertiaryContainer: data['onTertiaryContainer'] != null ? MyToken.fromJson(data['onTertiaryContainer']) : null,
+      error: data['error'] != null ? MyToken.fromJson(data['error']) : null,
+      onError: data['onError'] != null ? MyToken.fromJson(data['onError']) : null,
+      errorContainer: data['errorContainer'] != null ? MyToken.fromJson(data['errorContainer']) : null,
+      onErrorContainer: data['onErrorContainer'] != null ? MyToken.fromJson(data['onErrorContainer']) : null,
+      outline: data['outline'] != null ? MyToken.fromJson(data['outline']) : null,
+      background: data['background'] != null ? MyToken.fromJson(data['background']) : null,
+      onBackground: data['onBackground'] != null ? MyToken.fromJson(data['onBackground']) : null,
+      surface: data['surface'] != null ? MyToken.fromJson(data['surface']) : null,
+      onSurface: data['onSurface'] != null ? MyToken.fromJson(data['onSurface']) : null,
+      surfaceVariant: data['surfaceVariant'] != null ? MyToken.fromJson(data['surfaceVariant']) : null,
+      onSurfaceVariant: data['onSurfaceVariant'] != null ? MyToken.fromJson(data['onSurfaceVariant']) : null,
+      inverseSurface: data['inverseSurface'] != null ? MyToken.fromJson(data['inverseSurface']) : null,
+      inverseOnSurface: data['inverseOnSurface'] != null ? MyToken.fromJson(data['inverseOnSurface']) : null,
+      inversePrimary: data['inversePrimary'] != null ? MyToken.fromJson(data['inversePrimary']) : null,
+      shadow: data['shadow'] != null ? MyToken.fromJson(data['shadow']) : null,
+      surfaceTint: data['surfaceTint'] != null ? MyToken.fromJson(data['surfaceTint']) : null,
+      outlineVariant: data['outlineVariant'] != null ? MyToken.fromJson(data['outlineVariant']) : null,
+      scrim: data['scrim'] != null ? MyToken.fromJson(data['scrim']) : null,
+    );
+  }
 
   ColorScheme toColorScheme() {
     _convert(dynamic v) {

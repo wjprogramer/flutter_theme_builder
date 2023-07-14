@@ -16,4 +16,12 @@ class MyToken {
       'id': id,
     };
   }
+
+  factory MyToken.fromJson(Map data) {
+    return MyToken(
+      name: data['name'],
+      value: data['value'],
+      id: data['id'],
+    );
+  }
 }
