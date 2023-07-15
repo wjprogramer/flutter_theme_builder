@@ -3,14 +3,14 @@ import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/widgets/mobile_container.dart';
 
-class DemoMobile1 extends StatefulWidget {
-  const DemoMobile1({Key? key}) : super(key: key);
+class DemoMobile2 extends StatefulWidget {
+  const DemoMobile2({Key? key}) : super(key: key);
 
   @override
-  State<DemoMobile1> createState() => _DemoMobile1State();
+  State<DemoMobile2> createState() => _DemoMobile2State();
 }
 
-class _DemoMobile1State extends State<DemoMobile1> {
+class _DemoMobile2State extends State<DemoMobile2> {
   late TextTheme _textTheme;
 
   @override
@@ -45,26 +45,18 @@ class _DemoMobile1State extends State<DemoMobile1> {
           ),
           Expanded(
             child: Scaffold(
-              appBar: AppBar(
-                leading: BackButton(
-                  onPressed: () {},
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.more_vert,
-                    ),
-                  ),
-                ],
-              ),
+              appBar: AppBar(),
               body: ListView(
                 children: [
-                  Text(
-                    'Monstera\nUnique',
-                    textAlign: TextAlign.center,
-                    style: _textTheme.displayLarge,
-                  ),
+                  ...[
+                    Text(
+                      'Today',
+                      style: _textTheme.displayLarge,
+                    ),
+                  ].map((e) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: e,
+                  )),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
                     child: Image.asset(

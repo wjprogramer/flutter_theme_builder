@@ -3,12 +3,18 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
+import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
+import 'package:flutter_theme_builder/utils/material/color.dart';
 import 'package:flutter_theme_builder/utils/test/test.dart';
+import 'package:flutter_theme_builder/widgets/color_circle_label.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
+import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
 import 'package:flutter_theme_builder/widgets/hover_builder.dart';
+import 'package:flutter_theme_builder/widgets/tonal_palette_tones_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
 const _INSTANT_APPLY_CORE_COLOR_CHANGES = true;
 
@@ -25,7 +31,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   var _initialized = false;
   late ThemeProvider _themeProvider;
   ThemeData _themeData = ThemeData();
-  TextTheme get _textTheme => _themeData.textTheme;
+  late TextTheme _textTheme;
   late ColorScheme _colorScheme;
 
   Color _primaryColor = Colors.white;
@@ -44,6 +50,8 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   var _cellsCopiedStatus = <List<bool>>[];
   var _colorRows = <List<_SchemeColorCell>>[];
   var _lockOtherCoreColors = false;
+  final _myCustomColors = <_MyCustomColor>[];
+  var _coreTonalPalettesBarsVisible = false;
 
   @override
   void initState() {
@@ -74,7 +82,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
 
   void _listenThemeProvider() {
     _onThemeChanged(_themeProvider.themeData);
-
     setState(() { });
   }
 
@@ -82,141 +89,146 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     _themeData = theme;
     _colorScheme = _themeData.colorScheme;
 
-    _colorRows = <List<_SchemeColorCell>>[
+    if (_cellsCopiedStatus.isEmpty) {
+      _tryResetCopiedStatus(_generateColorCells(_colorScheme));
+    }
+  }
+
+  List<List<_SchemeColorCell>> _generateColorCells(ColorScheme colorScheme) {
+    return <List<_SchemeColorCell>>[
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Primary',
-          bgColor: _colorScheme.primary,
-          textColor: _colorScheme.onPrimary,
+          bgColor: colorScheme.primary,
+          textColor: colorScheme.onPrimary,
           height: 118,
         ),
         _SchemeColorCell(
           name: 'On Primary',
-          bgColor: _colorScheme.onPrimary,
-          textColor: _colorScheme.primary,
+          bgColor: colorScheme.onPrimary,
+          textColor: colorScheme.primary,
           height: 118,
         ),
         _SchemeColorCell(
           name: 'Primary Container',
-          bgColor: _colorScheme.primaryContainer,
-          textColor: _colorScheme.onPrimaryContainer,
+          bgColor: colorScheme.primaryContainer,
+          textColor: colorScheme.onPrimaryContainer,
           height: 118,
         ),
         _SchemeColorCell(
           name: 'On Primary Container',
-          bgColor: _colorScheme.onPrimaryContainer,
-          textColor: _colorScheme.primaryContainer,
+          bgColor: colorScheme.onPrimaryContainer,
+          textColor: colorScheme.primaryContainer,
           height: 118,
         ),
       ],
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Secondary',
-          bgColor: _colorScheme.secondary,
-          textColor: _colorScheme.onSecondary,
+          bgColor: colorScheme.secondary,
+          textColor: colorScheme.onSecondary,
         ),
         _SchemeColorCell(
           name: 'On Secondary',
-          bgColor: _colorScheme.onSecondary,
-          textColor: _colorScheme.secondary,
+          bgColor: colorScheme.onSecondary,
+          textColor: colorScheme.secondary,
         ),
         _SchemeColorCell(
           name: 'Secondary Container',
-          bgColor: _colorScheme.secondaryContainer,
-          textColor: _colorScheme.onSecondaryContainer,
+          bgColor: colorScheme.secondaryContainer,
+          textColor: colorScheme.onSecondaryContainer,
         ),
         _SchemeColorCell(
           name: 'On Secondary Container',
-          bgColor: _colorScheme.onSecondaryContainer,
-          textColor: _colorScheme.secondaryContainer,
+          bgColor: colorScheme.onSecondaryContainer,
+          textColor: colorScheme.secondaryContainer,
         ),
       ],
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Tertiary',
-          bgColor: _colorScheme.tertiary,
-          textColor: _colorScheme.onTertiary,
+          bgColor: colorScheme.tertiary,
+          textColor: colorScheme.onTertiary,
         ),
         _SchemeColorCell(
           name: 'On Tertiary',
-          bgColor: _colorScheme.onTertiary,
-          textColor: _colorScheme.tertiary,
+          bgColor: colorScheme.onTertiary,
+          textColor: colorScheme.tertiary,
         ),
         _SchemeColorCell(
           name: 'Tertiary Container',
-          bgColor: _colorScheme.tertiaryContainer,
-          textColor: _colorScheme.onTertiaryContainer,
+          bgColor: colorScheme.tertiaryContainer,
+          textColor: colorScheme.onTertiaryContainer,
         ),
         _SchemeColorCell(
           name: 'On Tertiary Container',
-          bgColor: _colorScheme.onTertiaryContainer,
-          textColor: _colorScheme.tertiaryContainer,
+          bgColor: colorScheme.onTertiaryContainer,
+          textColor: colorScheme.tertiaryContainer,
         ),
       ],
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Error',
-          bgColor: _colorScheme.error,
-          textColor: _colorScheme.onError,
+          bgColor: colorScheme.error,
+          textColor: colorScheme.onError,
         ),
         _SchemeColorCell(
           name: 'On Error',
-          bgColor: _colorScheme.onError,
-          textColor: _colorScheme.error,
+          bgColor: colorScheme.onError,
+          textColor: colorScheme.error,
         ),
         _SchemeColorCell(
           name: 'Error Container',
-          bgColor: _colorScheme.errorContainer,
-          textColor: _colorScheme.onErrorContainer,
+          bgColor: colorScheme.errorContainer,
+          textColor: colorScheme.onErrorContainer,
         ),
         _SchemeColorCell(
           name: 'On Error Container',
-          bgColor: _colorScheme.onErrorContainer,
-          textColor: _colorScheme.errorContainer,
+          bgColor: colorScheme.onErrorContainer,
+          textColor: colorScheme.errorContainer,
         ),
       ],
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Background',
-          bgColor: _colorScheme.background,
-          textColor: _colorScheme.onBackground,
+          bgColor: colorScheme.background,
+          textColor: colorScheme.onBackground,
         ),
         _SchemeColorCell(
           name: 'On Background',
-          bgColor: _colorScheme.onBackground,
-          textColor: _colorScheme.background,
+          bgColor: colorScheme.onBackground,
+          textColor: colorScheme.background,
         ),
         _SchemeColorCell(
           name: 'Surface',
-          bgColor: _colorScheme.surface,
-          textColor: _colorScheme.onSurface,
+          bgColor: colorScheme.surface,
+          textColor: colorScheme.onSurface,
         ),
         _SchemeColorCell(
           name: 'On Surface',
-          bgColor: _colorScheme.onSurface,
-          textColor: _colorScheme.surface,
+          bgColor: colorScheme.onSurface,
+          textColor: colorScheme.surface,
         ),
       ],
       <_SchemeColorCell>[
         _SchemeColorCell(
           name: 'Outline',
-          bgColor: _colorScheme.outline,
-          textColor: _colorScheme.background,
+          bgColor: colorScheme.outline,
+          textColor: colorScheme.background,
           flex: 2,
         ),
         _SchemeColorCell(
           name: 'Surface Variant',
-          bgColor: _colorScheme.surfaceVariant,
-          textColor: _colorScheme.onSurfaceVariant,
+          bgColor: colorScheme.surfaceVariant,
+          textColor: colorScheme.onSurfaceVariant,
         ),
         _SchemeColorCell(
           name: 'On Surface Variant',
-          bgColor: _colorScheme.onSurfaceVariant,
-          textColor: _colorScheme.surfaceVariant,
+          bgColor: colorScheme.onSurfaceVariant,
+          textColor: colorScheme.surfaceVariant,
         ),
       ],
     ];
-    _tryResetCopiedStatus(_colorRows);
   }
 
   @override
@@ -228,6 +240,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
         return Consumer<ThemeProvider>(
           builder: (_, themeProvider, ___) {
             _themeProvider = themeProvider;
+            _textTheme = Theme.of(context).textTheme;
 
             if (!_initialized) {
               return Center(
@@ -334,6 +347,82 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
               'Input a custom color that automatically gets assigned a set of complementary tones.',
               style: _textTheme.bodyLarge,
             ),
+            if (_myCustomColors.isNotEmpty)
+              Row(
+                children: [
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8, bottom: 4),
+                    child: Text(
+                      'Harmonize',
+                      style: _textTheme.bodySmall,
+                    ),
+                  ),
+                ],
+              ),
+            ..._myCustomColors.map((e) => Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      // _pickColor(
+                      //   color: color,
+                      //   onColorSelected: onColorSelected,
+                      // );
+                    },
+                    child: ColorCircleLabel(
+                      color: e.color,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: e.textEditingController,
+                    onChanged: (text) {
+                      setState(() {
+                        e.name = text;
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+
+                  },
+                  icon: Icon(Icons.delete),
+                ),
+                Checkbox(
+                  value: false,
+                  onChanged: (_) {},
+                ),
+              ],
+            )),
+            20.height,
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _myCustomColors.add(_MyCustomColor(
+                        name: 'Hello',
+                        harmonized: true,
+                        color: hexFromArgb(Colors.blue.value),
+                      ));
+                    });
+                  },
+                  style: IconButton.styleFrom(
+                    backgroundColor: _themeData.colorScheme.surfaceVariant,
+                  ),
+                  icon: Icon(Icons.add),
+                ),
+                16.width,
+                Text(
+                  'Add a color',
+                  style: _textTheme.bodyLarge,
+                ),
+              ],
+            ),
           ].map((e) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: e,
@@ -378,13 +467,8 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 color: color,
                 onColorSelected: onColorSelected,
               ),
-              child: Container(
-                height: 48,
-                width: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
+              child: ColorCircleLabel(
+                color: color,
               ),
             ),
             8.width,
@@ -412,19 +496,32 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
               ),
             ),
             if (isPrimary)
-              Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Checkbox(
-                    value: _lockOtherCoreColors,
-                    onChanged: (v) {
-                      setState(() {
-                        _lockOtherCoreColors = v ?? _lockOtherCoreColors;
-                      });
-                    },
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Checkbox(
+                      value: _lockOtherCoreColors,
+                      onChanged: (v) {
+                        setState(() {
+                          _lockOtherCoreColors = v ?? _lockOtherCoreColors;
+                        });
+                      },
+                    ),
                   ),
-                ),
+                  Positioned(
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    child: Text(
+                      'Lock',
+                      style: TextStyle(
+                        fontSize: 8,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
               ),
           ],
         ),
@@ -436,7 +533,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     required Color color,
     required _ColorSelected onColorSelected,
   }) async {
-    Color resultColor = _primaryColor;
+    Color resultColor = color;
 
     await showDialog(
       context: context,
@@ -447,7 +544,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25))),
           content: SingleChildScrollView(
             child: SlidePicker(
-              pickerColor: _INSTANT_APPLY_CORE_COLOR_CHANGES ? resultColor : _primaryColor,
+              pickerColor: _INSTANT_APPLY_CORE_COLOR_CHANGES ? resultColor : color,
               onColorChanged: (v) {
                 resultColor = v;
                 if (_INSTANT_APPLY_CORE_COLOR_CHANGES) {
@@ -471,7 +568,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
 
   Widget _buildRight() {
     return ListView(
-      padding: const EdgeInsets.all(32),
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 44),
       children: [
         ..._buildRightListItems(),
       ],
@@ -500,11 +597,20 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     ThemeTempUtility.testThemes();
 
     return [
-      Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 408),
-          child: DemoMobile1(),
-        ),
+      Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        alignment: WrapAlignment.spaceEvenly,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 408),
+            child: DemoMobile1(),
+          ),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 408),
+            child: DemoMobile2(),
+          ),
+        ],
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -518,12 +624,60 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       ),
       _buildScheme(lightTheme),
       _buildScheme(darkTheme),
+      if (_coreTonalPalettesBarsVisible) ...[
+        _buildTonalPaletteTonesBar('Primary', _themeProvider.customThemes.palettes.primary),
+        _buildTonalPaletteTonesBar('Secondary', _themeProvider.customThemes.palettes.secondary),
+        _buildTonalPaletteTonesBar('Tertiary', _themeProvider.customThemes.palettes.tertiary),
+        _buildTonalPaletteTonesBar('Error', _themeProvider.customThemes.palettes.error),
+        _buildTonalPaletteTonesBar('Neutral', _themeProvider.customThemes.palettes.neutral),
+        _buildTonalPaletteTonesBar('Neutral Variant', _themeProvider.customThemes.palettes.neutralVariant),
+      ],
+      20.height,
+      ...[
+        Align(
+          alignment: Alignment.centerLeft,
+          child: InkWell(
+            onTap: () {
+              setState(() {
+                _coreTonalPalettesBarsVisible = !_coreTonalPalettesBarsVisible;
+              });
+            },
+            child: Text(
+              '${_coreTonalPalettesBarsVisible ? 'Hide' : 'Show'} tonal palettes',
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
+      // _showCoreTonalPalettesBars
     ];
   }
 
+  Widget _buildTonalPaletteTonesBar(String text, colorUtilities.TonalPalette palette) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          text,
+          style: _textTheme.titleSmall,
+        ),
+        8.height,
+        TonalPaletteTonesBar(
+          tonalPalette: palette,
+        ),
+        20.height,
+      ],
+    );
+  }
+
   Widget _buildScheme(ThemeData theme) {
+    final colorRows = _generateColorCells(theme.colorScheme);
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -532,8 +686,8 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
             textAlign: TextAlign.start,
           ),
           16.height,
-          ..._colorRows.mapIndexed((row, ri) {
-            final isLastRow = ri == (_colorRows.length - 1);
+          ...colorRows.mapIndexed((row, ri) {
+            final isLastRow = ri == (colorRows.length - 1);
             final isFirstRow = ri == 0;
 
             return Padding(
@@ -639,4 +793,25 @@ class _SchemeColorCell {
   Color bgColor;
   Color textColor;
   double height;
+}
+
+class _MyCustomColor {
+  _MyCustomColor({
+    required String name,
+    required bool harmonized,
+    required String color,
+  }) : value = MyCustomColor(name: name, harmonized: harmonized, color: color) {
+    textEditingController.text = name;
+  }
+
+  MyCustomColor value;
+  final textEditingController = TextEditingController();
+
+  String get name => value.name;
+  set name(v) {
+    value.name = v;
+  }
+
+  Color get color => colorFromHex(value.color)!;
+
 }

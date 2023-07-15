@@ -30,6 +30,7 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeData get themeData {
     final themes = _customThemes.getThemes();
+    // print(getPrettyJSONString(_customThemes.toJson()));
 
     return _brightness == Brightness.light
         ? themes.light

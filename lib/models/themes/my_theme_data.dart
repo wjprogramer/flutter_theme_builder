@@ -100,14 +100,22 @@ class MyDemoThemeData {
   }
 
   Themes getThemes() {
+    final textTheme = ThemeData.light().textTheme;
+
+    // return Themes(
+    //   ThemeData.light(useMaterial3: true),
+    //   ThemeData.dark(useMaterial3: true),
+    // );
     return Themes(
       ThemeData.from(
         useMaterial3: true,
         colorScheme: lightScheme.toColorScheme(),
+        textTheme: textTheme,
       ),
       ThemeData.from(
         useMaterial3: true,
         colorScheme: darkScheme.toColorScheme(),
+        textTheme: textTheme,
       ),
     );
   }
