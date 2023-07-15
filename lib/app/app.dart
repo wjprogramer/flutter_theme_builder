@@ -12,9 +12,16 @@ class MyApp extends StatelessWidget {
       create: (_) => ThemeProvider(),
       child: Consumer<ThemeProvider>(
         builder: (_, themeProvider, ___) {
+          final themes = themeProvider.customThemes.getThemes();
+          print('app build: ${themeProvider.themeData.brightness}');
+
           return MaterialApp(
             title: 'Flutter Demo',
-            theme: themeProvider.themeData,
+            themeMode: themeProvider.themeData.brightness == Brightness.light
+                ? ThemeMode.light
+                : ThemeMode.dark,
+            theme: themes.light,
+            darkTheme: themes.dark,
             debugShowCheckedModeBanner: false,
             home: MainPage(),
           );

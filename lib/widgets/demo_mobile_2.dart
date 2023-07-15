@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/widgets/mobile_container.dart';
 
@@ -58,70 +59,82 @@ class _DemoMobile2State extends State<DemoMobile2> {
                     child: e,
                   )),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-                    child: Image.asset(
-                      AssetPaths.hero,
-                    ),
-                  ),
-                  16.height,
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: IntrinsicHeight(
-                      child: Row(
-                        children: [
-                          24.width,
-                          ...[
-                            _buildCard(
-                              icon: Icons.auto_awesome,
-                              title: 'Most Popular',
-                              body: 'This is a popular plant in our store',
-                            ),
-                            _buildCard(
-                              icon: Icons.assignment,
-                              title: 'Easy Care',
-                              body: 'This plant is appropriate for beginners',
-                            ),
-                            _buildCard(
-                              icon: Icons.park,
-                              title: 'Faux Available',
-                              body: 'Get the same look without the maintenance',
-                            ),
-                          ].map((e) => Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: e,
-                          )).toList(),
-                          24.width,
-                        ],
+                    padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+                    child: DefaultTextStyle(
+                      style: TextStyle(
+                        color: theme.colorScheme.onTertiaryContainer,
+                      ),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.lightbulb,
+                                color: theme.colorScheme.onTertiaryContainer,
+                              ),
+                              8.width,
+                              Expanded(
+                                child: Text(
+                                  'During the winter your plants slow down and need less water.',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.onTertiaryContainer,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                  16.height,
                   ...[
-                    12.height,
-                    Text(
-                      'Care',
-                      style: _textTheme.headlineSmall,
-                    ),
-                    _buildListTile(
-                      Icons.water,
-                      'Water every Tuesday',
-                    ),
-                    _buildListTile(
-                      Icons.eco,
-                      'Feed once monthly',
-                    ),
-                    12.height,
-                    Text(
-                      'About',
-                      style: _textTheme.headlineSmall,
-                    ),
-                    _buildListTile(
-                      Icons.brightness_high,
-                      'Moderate light',
-                    ),
-                    _buildListTile(
-                      Icons.grass,
-                      'Slightly dry, well-draining soil',
-                    ),
+                    ...<_CardData>[
+                      _CardData(
+                        svgBackgroundAsset: AssetPaths.plant1,
+                        bgHeight: 250,
+                        bgRight: -80,
+                        bgBottom: -132,
+                        title: 'Living Room',
+                        sub1: 'Water',
+                        content1: 'hoya australis',
+                        sub2: 'Feed',
+                        content2: 'monstera siltepecana',
+                        checked1: true,
+                        checked2: true,
+                      ),
+                      _CardData(
+                        svgBackgroundAsset: AssetPaths.plant2,
+                        bgHeight: 150,
+                        bgRight: -80,
+                        bgBottom: -32,
+                        title: 'Kitchen',
+                        sub1: 'Water',
+                        content1: 'pilea peperomiodes',
+                        sub2: 'Water',
+                        content2: 'hoya australis',
+                        checked1: true,
+                        checked2: true,
+                      ),
+                      _CardData(
+                        svgBackgroundAsset: AssetPaths.plant3,
+                        bgHeight: 275,
+                        bgRight: -80,
+                        bgBottom: -157,
+                        title: 'Bedroom',
+                        sub1: 'Water',
+                        content1: 'monstera siltepecana',
+                        sub2: 'Water',
+                        content2: 'philodendron brandi',
+                        checked1: true,
+                        checked2: true,
+                      ),
+                    ].map((data) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildCard(theme, data),
+                    )),
                   ].map((e) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: e,
@@ -154,40 +167,107 @@ class _DemoMobile2State extends State<DemoMobile2> {
     );
   }
 
-  Widget _buildCard({
-    required IconData icon,
-    required String title,
-    required String body,
-  }) {
+  Widget _buildCard(ThemeData theme, _CardData data) {
+    final a = theme.colorScheme.surface;
+
     return Card(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: 130,
-          minHeight: 120,
-          minWidth: 130,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Icon(
-                icon,
-              ),
-              16.height,
-              Text(
-                title,
-                style: _textTheme.titleSmall,
-              ),
-              4.height,
-              Text(
-                body,
-                style: _textTheme.bodySmall,
-              ),
-            ],
+      // color: theme.colorScheme.onSurface,
+      // TODO: 參考的網站上寫 onSurface，但實際卻是 primary with opacity
+      color: theme.colorScheme.primary.withOpacity(.05),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon(
+                //   icon,
+                // ),
+                // 16.height,
+                Text(
+                  data.title,
+                  style: _textTheme.headlineSmall,
+                ),
+                24.height,
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Checkbox(
+                      value: data.checked1, onChanged: (_) {},
+                    ),
+                    40.width,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            data.sub1,
+                            style: _textTheme.bodyMedium,
+                          ),
+                          Text(
+                            data.content1,
+                            style: _textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                24.height,
+
+                // 4.height,
+                // Text(
+                //   body,
+                //   style: _textTheme.bodySmall,
+                // ),
+              ],
+            ),
           ),
-        ),
+          Positioned(
+            right: data.bgRight,
+            bottom: data.bgBottom,
+            child: SvgPicture.asset(
+              data.svgBackgroundAsset,
+              height: data.bgHeight,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+class _CardData {
+
+  _CardData({
+    required this.svgBackgroundAsset,
+    required this.bgHeight,
+    required this.bgRight,
+    required this.bgBottom,
+    required this.title,
+    required this.sub1,
+    required this.content1,
+    required this.sub2,
+    required this.content2,
+    required this.checked1,
+    required this.checked2,
+  });
+
+  String svgBackgroundAsset;
+  double bgHeight;
+  double bgRight;
+  double bgBottom;
+
+  String title;
+  String sub1;
+  String content1;
+  String sub2;
+  String content2;
+  bool checked1;
+  bool checked2;
+
+}
+

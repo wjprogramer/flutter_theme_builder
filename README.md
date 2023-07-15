@@ -1,16 +1,27 @@
 # flutter_theme_builder
 
-A new Flutter project.
+## FVM
 
-## Getting Started
+```
+fvm use 3.10.6 -f
+```
 
-This project is a starting point for a Flutter application.
+IDE
 
-A few resources to get you started if this is your first Flutter project:
+`.idea/workspace.xml`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```xml
+<component name="VcsManagerConfiguration">
+  <ignored-roots>
+    <path value="$PROJECT_DIR$/.fvm/flutter_sdk" />
+  </ignored-roots>
+</component>
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Flutter SDK Path
+
+`path\to\flutter_theme_builder\.fvm\flutter_sdk`
+
+
+
+

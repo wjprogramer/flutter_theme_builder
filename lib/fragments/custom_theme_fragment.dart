@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/models/models.dart';
@@ -577,6 +578,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
 
   Widget _buildMain() {
     final items = [
+      32.height,
       ..._buildRightListItems(),
     ];
 
@@ -609,6 +611,14 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 408),
             child: DemoMobile2(),
+          ),
+        ],
+      ),
+      Wrap(
+        children: [
+          FloatingActionButton(
+            onPressed: () {},
+            child: Icon(Icons.add),
           ),
         ],
       ),
@@ -741,8 +751,27 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                                       duration: const Duration(milliseconds: 200),
                                       opacity: isHovered ? 1 : 0,
                                       child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(Icons.copy, color: cell.textColor),
+                                        onPressed: () async {
+                                          if (_cellsCopiedStatus[ri][ci]) {
+                                            return;
+                                          }
+
+                                          await Clipboard.setData(ClipboardData(text: hexFromArgb(cell.bgColor.value)));
+                                          setState(() {
+                                            _cellsCopiedStatus[ri][ci] = true;
+                                          });
+
+                                          await Future.delayed(const Duration(milliseconds: 800));
+                                          if (mounted) {
+                                            setState(() {
+                                              _cellsCopiedStatus[ri][ci] = false;
+                                            });
+                                          }
+                                        },
+                                        icon: Icon(
+                                          _cellsCopiedStatus[ri][ci] ? Icons.check : Icons.copy,
+                                          color: cell.textColor,
+                                        ),
                                       ),
                                     ),
                                   ),

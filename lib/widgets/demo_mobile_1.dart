@@ -80,16 +80,19 @@ class _DemoMobile1State extends State<DemoMobile1> {
                           24.width,
                           ...[
                             _buildCard(
+                              theme,
                               icon: Icons.auto_awesome,
                               title: 'Most Popular',
                               body: 'This is a popular plant in our store',
                             ),
                             _buildCard(
+                              theme,
                               icon: Icons.assignment,
                               title: 'Easy Care',
                               body: 'This plant is appropriate for beginners',
                             ),
                             _buildCard(
+                              theme,
                               icon: Icons.park,
                               title: 'Faux Available',
                               body: 'Get the same look without the maintenance',
@@ -162,7 +165,7 @@ class _DemoMobile1State extends State<DemoMobile1> {
     );
   }
 
-  Widget _buildCard({
+  Widget _buildCard(theme, {
     required IconData icon,
     required String title,
     required String body,
@@ -181,16 +184,21 @@ class _DemoMobile1State extends State<DemoMobile1> {
             children: [
               Icon(
                 icon,
+                color: theme.colorScheme.onTertiaryContainer,
               ),
               16.height,
               Text(
                 title,
-                style: _textTheme.titleSmall,
+                style: _textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.onTertiaryContainer,
+                ),
               ),
               4.height,
               Text(
                 body,
-                style: _textTheme.bodySmall,
+                style: _textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onTertiaryContainer,
+                ),
               ),
             ],
           ),
