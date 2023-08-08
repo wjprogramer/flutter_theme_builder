@@ -20,3 +20,11 @@ class Themes {
   final ThemeData dark;
 }
 
+class TempThemeValues {
+  TempThemeValues._();
+
+  static const fontSize88 = 88.0;
+
+  static const lineHeight11 = 1.1;
+}
+

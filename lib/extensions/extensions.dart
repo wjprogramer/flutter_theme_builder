@@ -1,3 +1,4 @@
+export 'material/colors.dart';
 export 'material/material.dart';
 
 extension StringX on String {

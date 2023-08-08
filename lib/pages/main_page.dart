@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/fragments/custom_theme_fragment.dart';
 import 'package:flutter_theme_builder/fragments/dynamic_theme_fragment.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
@@ -13,6 +14,19 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   var _fragmentType = _FragmentType.dynamic;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _init();
+    });
+  }
+
+  void _init() {
+    final themeProvider = context.read<ThemeProvider>();
+    themeProvider.setThemesByAssetImage(AssetPaths.theme1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +52,7 @@ class _MainPageState extends State<MainPage> {
       // preferredSize: Size.fromHeight(kToolbarHeight),
       leading: IconButton(
         onPressed: () {
+
         },
         icon: Icon(
           Icons.color_lens_outlined,
@@ -48,6 +63,8 @@ class _MainPageState extends State<MainPage> {
         children: [
           TextButton.icon(
             onPressed: () {
+              themeProvider.themeType = ThemeType.dynamic;
+
               setState(() {
                 _fragmentType = _FragmentType.dynamic;
               });
@@ -57,6 +74,8 @@ class _MainPageState extends State<MainPage> {
           ),
           TextButton.icon(
             onPressed: () {
+              themeProvider.themeType = ThemeType.custom;
+
               setState(() {
                 _fragmentType = _FragmentType.custom;
               });

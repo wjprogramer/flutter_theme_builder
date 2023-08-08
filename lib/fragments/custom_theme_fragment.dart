@@ -59,7 +59,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_timeStamp) {
-      _onThemeChanged(Theme.of(context));
+      _onThemeChanged(_themeProvider.themeData);
 
       final themeProvider = context.read<ThemeProvider>();
       _primaryColor = themeProvider.themeData.colorScheme.primary;
@@ -87,6 +87,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   }
 
   void _onThemeChanged(ThemeData theme) {
+    print('_onThemeChanged ${_themeProvider.themeType}');
     _themeData = theme;
     _colorScheme = _themeData.colorScheme;
 
@@ -572,6 +573,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 44),
       children: [
         ..._buildRightListItems(),
+        120.height,
       ],
     );
   }

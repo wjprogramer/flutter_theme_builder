@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
+import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/themes/compute_themes.dart';
 
 enum ThemeType {
@@ -9,6 +10,13 @@ enum ThemeType {
 }
 
 class ThemeProvider extends ChangeNotifier {
+  ThemeProvider() {
+    _dynamicThemes = Themes(
+      ThemeData.light(useMaterial3: true),
+      ThemeData.dark(useMaterial3: true),
+    );
+  }
+
   ThemeType _themeType = ThemeType.dynamic;
   ThemeType get themeType => _themeType;
   set themeType(ThemeType v) {
@@ -16,8 +24,15 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _dynamicThemeImageSource = '';
+  String get dynamicThemeImageSource => _dynamicThemeImageSource;
+
+  late Themes _dynamicThemes;
+  Themes get dynamicThemes => _dynamicThemes;
+
   MyDemoThemeData _customThemes = _buildThemes(
-    primaryColor: Color(0xFF6750A4),
+    primaryColor: Color(0xFFf77ebe),
+    // primaryColor: Color(0xFF6750A4),
   );
   MyDemoThemeData get customThemes => _customThemes;
   set customThemes(MyDemoThemeData v) {
@@ -29,12 +44,21 @@ class ThemeProvider extends ChangeNotifier {
   Brightness get brightness => _brightness;
 
   ThemeData get themeData {
-    final themes = _customThemes.getThemes();
+    final themes = _currentThemes;
     // print(getPrettyJSONString(_customThemes.toJson()));
 
     return _brightness == Brightness.light
         ? themes.light
         : themes.dark;
+  }
+
+  Themes get _currentThemes {
+    switch (themeType) {
+      case ThemeType.dynamic:
+        return _dynamicThemes;
+      case ThemeType.custom:
+        return _customThemes.getThemes();
+    }
   }
 
   void toggleBrightness() {
@@ -76,15 +100,40 @@ class ThemeProvider extends ChangeNotifier {
     neutralColor: neutralColor,
   );
 
-  setThemesByAssetImage(String assetPath) async {
+  Future<void> setThemesByAssetImage(String assetPath) async {
     try {
-      final a = await computeBuildThemeFromImage(assetPath);
-      print('seed: ${a.seed}');
-      _customThemes = a;
+      _dynamicThemes = await _generateThemesFromImage(assetPath);
       notifyListeners();
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<Themes> _generateThemesFromImage(String assetPath) async {
+    _dynamicThemeImageSource = assetPath;
+
+    final assetImage = AssetImage(assetPath);
+    final lightScheme = await ColorScheme.fromImageProvider(
+      provider: assetImage,
+      brightness: Brightness.light,
+    );
+    final darkScheme = await ColorScheme.fromImageProvider(
+      provider: assetImage,
+      brightness: Brightness.dark,
+    );
+
+    return Themes(
+      ThemeData.from(
+        useMaterial3: true,
+        colorScheme: lightScheme,
+        textTheme: ThemeData.light().textTheme,
+      ),
+      ThemeData.from(
+        useMaterial3: true,
+        colorScheme: darkScheme,
+        textTheme: ThemeData.dark().textTheme,
+      ),
+    );
   }
 
 }
