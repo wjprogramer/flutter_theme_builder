@@ -8,14 +8,24 @@ part 'theme_temp_utility_data.dart';
 
 class ThemeTempUtility {
   static void test() {
-    // final a = baseline_generateBaseline();
-    // print(_getPrettyJSONString(a));
+    final a = baseline_generateBaseline();
+    print(getPrettyJSONString(a));
 
-    // final a = baseline_getColorById('md.sys.color.secondary', 'light');
-    // print(a);
+    final b = baseline_getColorById('md.sys.color.secondary', 'light');
+    print(b);
 
-    // final b = baseline_getColorById('md.sys.color.tertiary', 'light');
-    // print(b);
+    final c = baseline_getColorById('md.sys.color.tertiary', 'light');
+    print(c);
+
+    final d = {
+      'name': 'fuck',
+      'value': 4284255994,
+      'inner': {
+        'v': 4284255994,
+      },
+    };
+    final e = myJsonConverter(d, toEncodable: color_replaceArgbWithHex);
+    print(getPrettyJSONString(e));
 
   }
 
@@ -62,7 +72,7 @@ class ThemeTempUtility {
         'label': baseline_getFontStyleGroup("label"),
         'title': baseline_getFontStyleGroup("title")
       },
-      // 'customColors': custom_color_convertCustomColors(customColors, sourceColor)
+      customColors: custom_color_convertCustomColors(customColors, sourceColor)
     );
   }
 

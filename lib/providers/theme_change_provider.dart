@@ -73,6 +73,7 @@ class ThemeProvider extends ChangeNotifier {
     Color? secondaryColor,
     Color? tertiaryColor,
     Color? neutralColor,
+    List<MyCustomColor>? customColors,
   }) {
     print('primaryColor: $primaryColor');
     _customThemes = _buildThemes(
@@ -80,6 +81,7 @@ class ThemeProvider extends ChangeNotifier {
       secondaryColor: secondaryColor,
       tertiaryColor: tertiaryColor,
       neutralColor: neutralColor,
+      customColors: customColors,
     );
     notifyListeners();
   }
@@ -93,11 +95,13 @@ class ThemeProvider extends ChangeNotifier {
     Color? secondaryColor,
     Color? tertiaryColor,
     Color? neutralColor,
+    List<MyCustomColor>? customColors,
   }) => generateCustomThemes(
     primaryColor: primaryColor,
     secondaryColor: secondaryColor,
     tertiaryColor: tertiaryColor,
     neutralColor: neutralColor,
+    customColors: customColors,
   );
 
   Future<void> setThemesByAssetImage(String assetPath) async {

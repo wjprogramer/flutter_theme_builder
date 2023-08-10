@@ -256,7 +256,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: _buildLeft()),
+                  Expanded(child: _buildLeft(trailingSpace: true)),
                   VerticalDivider(width: 1),
                   Expanded(flex: 2, child: _buildRight()),
                 ],
@@ -270,170 +270,184 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     );
   }
 
-  Widget _buildLeft() {
+  Widget _buildLeft({
+    required bool trailingSpace,
+  }) {
     return SelectionArea(
       focusNode: _leftFocusNode,
       child: ListView(
         children: [
-          64.height,
-          ...[
-            Text(
-              'Build a custom color scheme to map dynamic color, use as fallback colors, or implement a branded theme. The color system automatically handles critical adjustments that provide accessible color contrast. Learn more about color roles.',
-              style: _textTheme.bodyLarge,
-            ),
-            18.height,
-            Text(
-              'Core colors',
-              style: _textTheme.titleLarge,
-            ),
-            18.height,
-            Text(
-              'Input one or more brand color to define your color scheme.',
-              style: _textTheme.bodyLarge,
-            ),
-            10.height,
-            ...[
-              _coreColorCard(
-                isPrimary: true,
-                title: 'Primary',
-                subtitle: 'Acts as custom source color',
-                color: _themeData.colorScheme.primary,
-                onColorSelected: (color) {
-                  setState(() {
-                    _primaryColor = color;
-                    _updateThemeByCoreColor();
-                  });
-                }
-              ),
-              _coreColorCard(
-                title: 'Secondary',
-                color: _themeData.colorScheme.secondary,
-                onColorSelected: (color) {
-                  setState(() {
-                    __secondaryColor = color;
-                    _updateThemeByCoreColor();
-                  });
-                },
-              ),
-              _coreColorCard(
-                title: 'Tertiary',
-                color: _themeData.colorScheme.tertiary,
-                onColorSelected: (color) {
-                  setState(() {
-                    __tertiaryColor = color;
-                    _updateThemeByCoreColor();
-                  });
-                },
-              ),
-              _coreColorCard(
-                title: 'Neutral',
-                subtitle: 'Used for background and surfaces',
-                color: _themeData.colorScheme.surface,
-                onColorSelected: (color) {
-                  setState(() {
-                    __neutralColor = color;
-                    _updateThemeByCoreColor();
-                  });
-                },
-              ),
-            ].map((e) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: e,
-            )),
-            36.height,
-            Text(
-              'Extended Colors',
-              style: _textTheme.headlineSmall,
-            ),
-            Text(
-              'Input a custom color that automatically gets assigned a set of complementary tones.',
-              style: _textTheme.bodyLarge,
-            ),
-            if (_myCustomColors.isNotEmpty)
-              Row(
-                children: [
-                  Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 4),
-                    child: Text(
-                      'Harmonize',
-                      style: _textTheme.bodySmall,
-                    ),
-                  ),
-                ],
-              ),
-            ..._myCustomColors.map((e) => Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: GestureDetector(
-                    onTap: () {
-                      // _pickColor(
-                      //   color: color,
-                      //   onColorSelected: onColorSelected,
-                      // );
-                    },
-                    child: ColorCircleLabel(
-                      color: e.color,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: e.textEditingController,
-                    onChanged: (text) {
-                      setState(() {
-                        e.name = text;
-                      });
-                    },
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-
-                  },
-                  icon: Icon(Icons.delete),
-                ),
-                Checkbox(
-                  value: false,
-                  onChanged: (_) {},
-                ),
-              ],
-            )),
-            20.height,
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _myCustomColors.add(_MyCustomColor(
-                        name: 'Hello',
-                        harmonized: true,
-                        color: hexFromArgb(Colors.blue.value),
-                      ));
-                    });
-                  },
-                  style: IconButton.styleFrom(
-                    backgroundColor: _themeData.colorScheme.surfaceVariant,
-                  ),
-                  icon: Icon(Icons.add),
-                ),
-                16.width,
-                Text(
-                  'Add a color',
-                  style: _textTheme.bodyLarge,
-                ),
-              ],
-            ),
-          ].map((e) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: e,
-          )),
-          20.height,
+          ..._buildLeftItems(),
+          if (trailingSpace)
+            120.height,
         ],
       ),
     );
   }
+
+  List<Widget> _buildLeftItems() {
+    return [
+      64.height,
+      ...[
+        Text(
+          'Build a custom color scheme to map dynamic color, use as fallback colors, or implement a branded theme. The color system automatically handles critical adjustments that provide accessible color contrast. Learn more about color roles.',
+          style: _textTheme.bodyLarge,
+        ),
+        18.height,
+        Text(
+          'Core colors',
+          style: _textTheme.titleLarge,
+        ),
+        18.height,
+        Text(
+          'Input one or more brand color to define your color scheme.',
+          style: _descriptionStyle,
+        ),
+        10.height,
+        ...[
+          _coreColorCard(
+              isPrimary: true,
+              title: 'Primary',
+              subtitle: 'Acts as custom source color',
+              color: _themeData.colorScheme.primary,
+              onColorSelected: (color) {
+                setState(() {
+                  _primaryColor = color;
+                  _updateThemeByCoreColor();
+                });
+              }
+          ),
+          _coreColorCard(
+            title: 'Secondary',
+            color: _themeData.colorScheme.secondary,
+            onColorSelected: (color) {
+              setState(() {
+                __secondaryColor = color;
+                _updateThemeByCoreColor();
+              });
+            },
+          ),
+          _coreColorCard(
+            title: 'Tertiary',
+            color: _themeData.colorScheme.tertiary,
+            onColorSelected: (color) {
+              setState(() {
+                __tertiaryColor = color;
+                _updateThemeByCoreColor();
+              });
+            },
+          ),
+          _coreColorCard(
+            title: 'Neutral',
+            subtitle: 'Used for background and surfaces',
+            color: _themeData.colorScheme.surface,
+            onColorSelected: (color) {
+              setState(() {
+                __neutralColor = color;
+                _updateThemeByCoreColor();
+              });
+            },
+          ),
+        ].map((e) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: e,
+        )),
+        36.height,
+        Text(
+          'Extended Colors',
+          style: _textTheme.headlineSmall,
+        ),
+        Text(
+          'Input a custom color that automatically gets assigned a set of complementary tones.',
+          style: _descriptionStyle,
+        ),
+        if (_myCustomColors.isNotEmpty)
+          Row(
+            children: [
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, bottom: 4),
+                child: Text(
+                  'Harmonize',
+                  style: _textTheme.bodySmall,
+                ),
+              ),
+            ],
+          ),
+        ..._myCustomColors.map((e) => Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: GestureDetector(
+                onTap: () {
+                  // _pickColor(
+                  //   color: color,
+                  //   onColorSelected: onColorSelected,
+                  // );
+                },
+                child: ColorCircleLabel(
+                  color: e.color,
+                ),
+              ),
+            ),
+            Expanded(
+              child: TextField(
+                controller: e.textEditingController,
+                onChanged: (text) {
+                  setState(() {
+                    e.name = text;
+                  });
+                },
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+
+              },
+              icon: Icon(Icons.delete),
+            ),
+            Checkbox(
+              value: false,
+              onChanged: (_) {},
+            ),
+          ],
+        )),
+        20.height,
+        Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _myCustomColors.add(_MyCustomColor(
+                    name: 'Hello',
+                    harmonized: true,
+                    color: hexFromArgb(Colors.blue.value),
+                  ));
+                });
+              },
+              style: IconButton.styleFrom(
+                backgroundColor: _themeData.colorScheme.surfaceVariant,
+              ),
+              icon: Icon(Icons.add),
+            ),
+            16.width,
+            Text(
+              'Add a color',
+              style: _textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ].map((e) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: e,
+      )),
+      20.height,
+    ];
+  }
+
+  TextStyle? get _descriptionStyle => _textTheme.bodyLarge?.copyWith(
+    color: _themeData.colorScheme.onSurface.withOpacity(.67),
+  );
 
   void _updateThemeByCoreColor() {
     _themeProvider.setThemes(
@@ -441,6 +455,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
       secondaryColor: _lockOtherCoreColors ? null : _secondaryColor,
       tertiaryColor: _lockOtherCoreColors ? null : _tertiaryColor,
       neutralColor: _lockOtherCoreColors ? null : _neutralColor,
+      customColors: _myCustomColors.map((e) => e.value).toList(),
     );
   }
 
@@ -664,7 +679,8 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
           ),
         ),
       ],
-      // _showCoreTonalPalettesBars
+      Text(_themeProvider.customThemes.customColors.toString()),
+
     ];
   }
 

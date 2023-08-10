@@ -14,7 +14,7 @@ class MyDemoThemeData {
     this.androidSchemes,
     required this.palettes,
     required this.styles,
-    this.customColors,
+    this.customColors = const [],
   });
 
   String seed;
@@ -27,7 +27,7 @@ class MyDemoThemeData {
   Map? androidSchemes;
   MyCorePalette palettes;
   dynamic styles;
-  dynamic customColors;
+  List<MyCustomColorResult> customColors;
 
   Map toJson() {
     return {
@@ -41,7 +41,7 @@ class MyDemoThemeData {
       'androidSchemes': androidSchemes,
       'palettes': palettes.toJson(),
       'styles': styles,
-      'customColors': customColors,
+      'customColors': customColors.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -57,7 +57,7 @@ class MyDemoThemeData {
       // androidSchemes: data['androidSchemes'],
       palettes: MyCorePalette.fromJson(data['palettes']),
       styles: data['styles'],
-      customColors: data['customColors'],
+      customColors: data['customColors'] == null ? [] : (data['customColors'] as List).map((e) => MyCustomColorResult.fromJson(e)).toList(),
     );
   }
 
@@ -82,7 +82,7 @@ class MyDemoThemeData {
     Map? androidSchemes,
     MyCorePalette? palettes,
     dynamic styles,
-    dynamic customColors,
+    List<MyCustomColorResult>? customColors,
   }) {
     return MyDemoThemeData(
       seed: seed ?? this.seed,

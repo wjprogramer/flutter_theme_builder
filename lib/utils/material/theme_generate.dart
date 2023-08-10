@@ -11,54 +11,59 @@ import 'package:flutter_theme_builder/utils/core/others.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
-List<Map<dynamic, dynamic>> custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
-  final res = colors.map((color$jscomp$0) {
+List<MyCustomColorResult> custom_color_convertCustomColors(List<MyCustomColor> colors, String sourceColor) {
+  final res = colors.map((myCustomColor) {
     final sourceValue = argbFromHex(sourceColor);
-    var JSCompiler_inline_result = {
-      'name': color$jscomp$0.name,
-      'value': argbFromHex(color$jscomp$0.color),
-      'blend': color$jscomp$0.harmonized
-    };
-    var value = JSCompiler_inline_result['value'];
+    final blend = myCustomColor.harmonized;
+    int value = argbFromHex(myCustomColor.color);
+
     final from = value;
-    if (JSCompiler_inline_result['blend']) {
+    if (blend) {
       final fromHct = colorUtilities.Hct.fromInt(from),
           toHct = colorUtilities.Hct.fromInt(sourceValue);
-      value = (colorUtilities.Hct.fromInt(HctSolver.solveToInt(math_utils_sanitizeDegreesDouble(fromHct.hue +
-          math.min(.5 * (180 - ((fromHct.hue - toHct.hue).abs() - 180).abs()), 15) * (180 >= math_utils_sanitizeDegreesDouble(toHct.hue - fromHct.hue) ? 1 : -1)), fromHct.chroma, fromHct.tone))).toInt();
+      value = colorUtilities.Hct.fromInt(
+          HctSolver.solveToInt(
+            math_utils_sanitizeDegreesDouble(
+                fromHct.hue +
+                    math.min(.5 * (180 - ((fromHct.hue - toHct.hue).abs() - 180).abs()), 15) *
+                        (180 >= math_utils_sanitizeDegreesDouble(toHct.hue - fromHct.hue) ? 1 : -1)
+            ),
+            fromHct.chroma,
+            fromHct.tone,
+          )
+      ).toInt();
     }
     final tones = colorUtilities.CorePalette.of(value).primary;
-    var JSCompiler_inline_result$jscomp$0 = {
-      'color': JSCompiler_inline_result,
-      'value': value,
-      'light': {
-        'color': tones.get(40),
-        'onColor': tones.get(100),
-        'colorContainer': tones.get(90),
-        'onColorContainer': tones.get(10)
-      },
-      'dark': {
-        'color': tones.get(80),
-        'onColor': tones.get(20),
-        'colorContainer': tones.get(30),
-        'onColorContainer': tones.get(90)
-      }
-    };
-    final color = JSCompiler_inline_result$jscomp$0['color'],
-        data = myJsonConverter(JSCompiler_inline_result$jscomp$0, toEncodable: color_replaceArgbWithHex);
 
-    var JSCompiler_inline_result$jscomp$1 = Map.from(data);
-    JSCompiler_inline_result$jscomp$1['color'] = {
-      'name': color['name'],
-      'harmonized': color['blend'],
-      'color': hexFromArgb(color['value']),
-    };
+    final lightColorScheme = MySingleColorScheme(
+      color: tones.get(40),
+      onColor: tones.get(100),
+      colorContainer: tones.get(90),
+      onColorContainer: tones.get(10),
+    );
+    final darkColorScheme = MySingleColorScheme(
+      color: tones.get(80),
+      onColor: tones.get(20),
+      colorContainer: tones.get(30),
+      onColorContainer: tones.get(90),
+    );
 
-    final palette = colorUtilities.CorePalette.of(argbFromHex(JSCompiler_inline_result$jscomp$1['value']));
+    final palette = colorUtilities.CorePalette.of(
+      argbFromHex(toHexFromHexOrArgb(value)),
+    );
 
-    final rrr = Map.from(JSCompiler_inline_result$jscomp$1);
-    rrr['palettes'] = palette.toMyCorePalette();
-    return rrr;
+    // region TODO: ...
+    final newRR = MyCustomColorResult(
+      name: myCustomColor.name,
+      color: myCustomColor.color,
+      harmonized: myCustomColor.harmonized,
+      light: lightColorScheme,
+      dark: darkColorScheme,
+      palettes: palette.toMyCorePalette(),
+    );
+    // endregion
+
+    return newRR;
   }).toList();
 
   return res;
@@ -85,6 +90,7 @@ MyDemoThemeData custom_generateCustomTheme({
     neutralVariant: cp.neutralVariant,
     error: cp.error,
   );
+
   final paletteKeys = {
     'primary': "P",
     'secondary': "S",
@@ -92,8 +98,7 @@ MyDemoThemeData custom_generateCustomTheme({
     'neutral': "N",
     'neutralVariant': "NV",
     'error': "E"
-  },
-      p = {};
+  }, p = {};
 
   p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['primary'], palettes.primary)));
   p.addAll((tonal_group_convertTonalGroupToMap(paletteKeys['secondary'], palettes.secondary)));

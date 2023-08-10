@@ -80,6 +80,10 @@ argbFromHex(String h) {
 }
 
 dynamic color_replaceArgbWithHex(key, value) {
+  return toHexFromHexOrArgb(value);
+}
+
+dynamic toHexFromHexOrArgb(value) {
   return value is num
       ? hexFromArgb(value.toInt())
       : value;
