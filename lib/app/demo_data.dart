@@ -18,18 +18,6 @@ MyDemoThemeData generateCustomThemes({
   if (neutralColor != null) { coreColors['neutral'] = hexFromArgb(neutralColor.value); }
 
   return custom_generateCustomTheme(
-    // customColors: <MyCustomColor>[
-    //   MyCustomColor(
-    //     name: 'My name 1',
-    //     harmonized: true,
-    //     color: '#5f5519',
-    //   ),
-    //   MyCustomColor(
-    //     name: 'My name 2',
-    //     harmonized: false,
-    //     color: '#5f5519',
-    //   ),
-    // ],
     customColors: customColors ?? [],
     coreColors: coreColors,
   );

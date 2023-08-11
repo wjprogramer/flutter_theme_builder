@@ -8,13 +8,15 @@ part 'theme_temp_utility_data.dart';
 
 class ThemeTempUtility {
   static void test() {
+    return;
+
     final a = baseline_generateBaseline();
     print(getPrettyJSONString(a));
 
-    final b = baseline_getColorById('md.sys.color.secondary', 'light');
+    final b = baseline_getColorById('md.sys.color.secondary', TOKENS_3P_GROUP.light);
     print(b);
 
-    final c = baseline_getColorById('md.sys.color.tertiary', 'light');
+    final c = baseline_getColorById('md.sys.color.tertiary', TOKENS_3P_GROUP.light);
     print(c);
 
     final d = {
@@ -78,7 +80,7 @@ class ThemeTempUtility {
 
   // 1912
   static MyScheme baseline_getScheme(Brightness brightness) {
-    final group = brightness == Brightness.light ? 'light' : 'dark';
+    final group = brightness == Brightness.light ? TOKENS_3P_GROUP.light : TOKENS_3P_GROUP.dark;
 
     return MyScheme(
       brightness: brightness,
@@ -115,7 +117,7 @@ class ThemeTempUtility {
     );
   }
 
-  static MyToken? baseline_getColorById(String tokenId, String group) {
+  static MyToken? baseline_getColorById(String tokenId, TOKENS_3P_GROUP group) {
     return latest_findTokenById(
       tokenId,
       group,
@@ -124,7 +126,7 @@ class ThemeTempUtility {
     );
   }
 
-  static MyToken? latest_findTokenById(String tokenId, String? vGroup, {
+  static MyToken? latest_findTokenById(String tokenId, TOKENS_3P_GROUP? vGroup, {
     bool resolve = false,
     bool hex = false,
   }) {
@@ -140,7 +142,6 @@ class ThemeTempUtility {
     }
 
     const tokens = TOKENS_3P;
-
     if (vGroup != null) {
       final group = tokens[vGroup];
       if (group != null) {
@@ -163,7 +164,7 @@ class ThemeTempUtility {
   static MyToken latest_convertToken(id, Map value, {
     required bool resolve,
     required bool hex,
-    String? vGroup,
+    TOKENS_3P_GROUP? vGroup,
   }) {
     final token = {...value, 'id': id };
     if (
@@ -214,6 +215,8 @@ class ThemeTempUtility {
 
   static colorUtilities.TonalPalette baseline_getPalette(section$jscomp$0) {
     final prefix = 'md.ref.palette.${section$jscomp$0}';
+
+    print('find prefix: ${prefix}');
     final tokens = latest_findAllTokens((section, id) => id.startsWith(prefix) ? true : false);
     final group = {};
     for (final token in tokens) {
@@ -249,7 +252,7 @@ class ThemeTempUtility {
             value = gEntry.value;
         if (match(section, id)) {
           final token = latest_convertToken(
-            id, value, resolve: true, hex: true, vGroup: 'palette',
+            id, value, resolve: true, hex: true, vGroup: TOKENS_3P_GROUP.palette,
           );
           results.add(token);
         }

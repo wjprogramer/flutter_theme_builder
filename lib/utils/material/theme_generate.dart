@@ -50,7 +50,7 @@ List<MyCustomColorResult> custom_color_convertCustomColors(List<MyCustomColor> c
 
     final palette = colorUtilities.CorePalette.of(
       argbFromHex(toHexFromHexOrArgb(value)),
-    );
+    ).primary;
 
     // region TODO: ...
     final newRR = MyCustomColorResult(
@@ -59,7 +59,7 @@ List<MyCustomColorResult> custom_color_convertCustomColors(List<MyCustomColor> c
       harmonized: myCustomColor.harmonized,
       light: lightColorScheme,
       dark: darkColorScheme,
-      palettes: palette.toMyCorePalette(),
+      palette: palette,
     );
     // endregion
 

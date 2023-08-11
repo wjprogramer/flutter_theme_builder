@@ -10,8 +10,10 @@ import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/material/color.dart';
 import 'package:flutter_theme_builder/utils/test/test.dart';
 import 'package:flutter_theme_builder/widgets/color_circle_label.dart';
+import 'package:flutter_theme_builder/widgets/custom_color_list_items.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
+import 'package:flutter_theme_builder/widgets/demo_widgets_list_items.dart';
 import 'package:flutter_theme_builder/widgets/hover_builder.dart';
 import 'package:flutter_theme_builder/widgets/tonal_palette_tones_bar.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +53,18 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   var _cellsCopiedStatus = <List<bool>>[];
   var _colorRows = <List<_SchemeColorCell>>[];
   var _lockOtherCoreColors = false;
-  final _myCustomColors = <_MyCustomColor>[];
+  final _myCustomColors = <_MyCustomColor>[
+    // _MyCustomColor(
+    //   name: 'My name 1',
+    //   harmonized: true,
+    //   color: '#5f5519',
+    // ),
+    // _MyCustomColor(
+    //   name: 'My name 2',
+    //   harmonized: false,
+    //   color: '#5f5519',
+    // ),
+  ];
   var _coreTonalPalettesBarsVisible = false;
 
   @override
@@ -374,16 +387,21 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
               ),
             ],
           ),
-        ..._myCustomColors.map((e) => Row(
+        ..._myCustomColors.mapIndexed((e, i) => Row(
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: GestureDetector(
                 onTap: () {
-                  // _pickColor(
-                  //   color: color,
-                  //   onColorSelected: onColorSelected,
-                  // );
+                  _pickColor(
+                    color: e.color,
+                    onColorSelected: (cc) {
+                      setState(() {
+                        e.color = cc;
+                        _updateThemeByCoreColor();
+                      });
+                    },
+                  );
                 },
                 child: ColorCircleLabel(
                   color: e.color,
@@ -402,13 +420,21 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
             ),
             IconButton(
               onPressed: () {
-
+                setState(() {
+                  _myCustomColors.removeAt(i);
+                  _updateThemeByCoreColor();
+                });
               },
               icon: Icon(Icons.delete),
             ),
             Checkbox(
-              value: false,
-              onChanged: (_) {},
+              value: e.harmonized,
+              onChanged: (v) {
+                setState(() {
+                  e.harmonized = v ?? e.harmonized;
+                  _updateThemeByCoreColor();
+                });
+              },
             ),
           ],
         )),
@@ -423,6 +449,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
                     harmonized: true,
                     color: hexFromArgb(Colors.blue.value),
                   ));
+                  _updateThemeByCoreColor();
                 });
               },
               style: IconButton.styleFrom(
@@ -610,6 +637,7 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     final themes = _themeProvider.customThemes.getThemes();
     final lightTheme = themes.light;
     final darkTheme = themes.dark;
+    final customColorsResults = _themeProvider.customThemes.customColors;
 
     testSomething();
     ThemeTempUtility.test();
@@ -632,12 +660,12 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
         ],
       ),
       Wrap(
-        children: [
-          FloatingActionButton(
-            onPressed: () {},
-            child: Icon(Icons.add),
-          ),
-        ],
+        alignment: WrapAlignment.center,
+        runAlignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 8,
+        runSpacing: 16,
+        children: buildDemoWidgetsListItems(),
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -679,7 +707,16 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
           ),
         ),
       ],
-      Text(_themeProvider.customThemes.customColors.toString()),
+      if (customColorsResults.isNotEmpty) ...[
+        ...customColorsResults.mapIndexed((e, i) => <Widget>[
+          20.height,
+          ...buildCustomColorListItems(
+            _themeData,
+            e,
+            i <= _myCustomColors.length - 1 ? _myCustomColors[i].name : null,
+          ),
+        ]).expand((element) => element),
+      ],
 
     ];
   }
@@ -855,10 +892,18 @@ class _MyCustomColor {
   final textEditingController = TextEditingController();
 
   String get name => value.name;
-  set name(v) {
+  set name(String v) {
     value.name = v;
   }
 
+  bool get harmonized => value.harmonized;
+  set harmonized(bool v) {
+    value.harmonized = v;
+  }
+
   Color get color => colorFromHex(value.color)!;
+  set color(Color v) {
+    value.color = hexFromArgb(v.value);
+  }
 
 }

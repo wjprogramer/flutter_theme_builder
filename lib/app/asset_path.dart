@@ -1,6 +1,10 @@
 class AssetPaths {
   AssetPaths._();
 
+  static bool isAsset(String path) {
+    return path.startsWith('assets/');
+  }
+
   static const hero = 'assets/images/hero.png';
   static const plant1 = 'assets/images/plant1.svg';
   static const plant2 = 'assets/images/plant2.svg';

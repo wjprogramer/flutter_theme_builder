@@ -24,6 +24,14 @@ extension TonalPaletteX on colorUtilities.TonalPalette {
   }
 }
 
+colorUtilities.TonalPalette toTonalPaletteFromJson(Map json) {
+  final res = <int>[];
+  colorUtilities.TonalPalette.commonTones.forEach((tone) {
+    res.add(json[tone.toString()]);
+  });
+  return colorUtilities.TonalPalette.fromList(res);
+}
+
 extension CorePalette on colorUtilities.CorePalette {
   MyCorePalette toMyCorePalette() {
     return MyCorePalette(

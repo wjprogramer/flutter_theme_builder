@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/extensions/material/colors.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
+import 'package:flutter_theme_builder/themes/colors.dart';
+import 'package:flutter_theme_builder/utilities/image_utility.dart';
+import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
+import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
 import 'package:flutter_theme_builder/widgets/hover_builder.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +29,7 @@ class DynamicThemeFragment extends StatefulWidget {
 class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with SingleTickerProviderStateMixin {
   var _oldPrimaryColor = _UNSET_COLOR;
   late ThemeProvider _themeProvider;
+  final _dynamicThemeImageFilePaths = <String>[];
 
   @override
   void initState() {
@@ -58,8 +65,14 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: _buildLeft(themeProvider)),
-                  Expanded(child: _buildRight(themeProvider)),
+                  Expanded(
+                    flex: 35,
+                    child: _buildLeft(themeProvider),
+                  ),
+                  Expanded(
+                    flex: 55,
+                    child: _buildRight(themeProvider),
+                  ),
                 ],
               );
             }
@@ -124,75 +137,16 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
       ),
       16.height,
       Wrap(
-        children: [
+        children: <String?>[
           AssetPaths.theme1,
           AssetPaths.theme2,
           AssetPaths.theme3,
           AssetPaths.theme4,
-        ].map((assetPath) => Padding(
-          padding: const EdgeInsets.only(right: 20),
-          child: HoverBuilder(
-            builder: (isHovered) {
-              final isSelected = themeProvider.dynamicThemeImageSource == assetPath;
-              final xxColor = isSelected
-                  ? _themeProvider.themeData.primaryColor
-                  : _oldPrimaryColor;
-
-              Widget child = GestureDetector(
-                onTap: () {
-                  themeProvider.setThemesByAssetImage(assetPath);
-                },
-                child: AnimatedContainer(
-                  width: isSelected ? 114 : 57,
-                  height: 114,
-                  duration: const Duration(milliseconds: 200),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(assetPath),
-                      fit: BoxFit.fill,
-                    ),
-                    borderRadius: isSelected || isHovered
-                        ? BorderRadius.circular(8)
-                        : BorderRadius.circular(80),
-                  ),
-                  child: Center(
-                    child: AnimatedOpacity(
-                      opacity: isSelected ? 1 : 0,
-                      duration: _X,
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: xxColor,
-                        ),
-                        child: Icon(
-                          Icons.check,
-                          color: xxColor.foregroundColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-
-              child = Container(
-                padding: isSelected
-                    ? const EdgeInsets.all(_IMAGE_LABEL_MARGIN)
-                    : const EdgeInsets.symmetric(vertical: _IMAGE_LABEL_MARGIN + _IMAGE_LABEL_BORDER_WIDTH),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: !isSelected ? null : Border.all(
-                    color: xxColor,
-                    width: _IMAGE_LABEL_BORDER_WIDTH,
-                  ),
-                ),
-                child: child,
-              );
-
-              return child;
-            },
-          ),
+          ..._dynamicThemeImageFilePaths,
+          null,
+        ].map((filePath) => _buildImageLabel(
+          themeProvider,
+          filePath,
         )).toList(),
       ),
       48.height,
@@ -212,15 +166,139 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
         child: Text('Dynamic'),
       ),
       32.height,
-
     ];
+  }
+
+  Widget _buildImageLabel(ThemeProvider themeProvider, String? uriPath) {
+    final isAssetResource = AssetPaths.isAsset(uriPath ?? '');
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 20),
+      child: HoverBuilder(
+        builder: (isHovered) {
+          final isSelected = themeProvider.dynamicThemeImageSource == uriPath;
+          final xxColor = isSelected
+              ? _themeProvider.themeData.primaryColor
+              : _oldPrimaryColor;
+
+          BoxDecoration? decoration;
+          if (uriPath != null) {
+            ImageProvider imageProvider;
+            if (isAssetResource) {
+              imageProvider = AssetImage(uriPath);
+            } else {
+              imageProvider = FileImage(File(uriPath));
+            }
+
+            decoration = BoxDecoration(
+              image: DecorationImage(
+                image: imageProvider,
+                fit: BoxFit.fill,
+              ),
+              borderRadius: isSelected || isHovered
+                  ? BorderRadius.circular(8)
+                  : BorderRadius.circular(80),
+            );
+          } else {
+            decoration = BoxDecoration(
+              border: Border.all(
+                width: _IMAGE_LABEL_BORDER_WIDTH,
+                color: _themeProvider.themeData.brightness == Brightness.light
+                    ? lightSysOutlineColor
+                    : darkSysOutlineColor,
+              ),
+              borderRadius: isHovered
+                  ? BorderRadius.circular(8)
+                  : BorderRadius.circular(80),
+            );
+          }
+
+          Widget child;
+
+          if (uriPath != null) {
+            child = AnimatedOpacity(
+              opacity: isSelected ? 1 : 0,
+              duration: _X,
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: xxColor,
+                ),
+                child: Icon(
+                  Icons.check,
+                  color: xxColor.foregroundColor,
+                ),
+              ),
+            );
+          } else {
+            child = Icon(Icons.wallpaper);
+          }
+
+          child = GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () async {
+              if (uriPath != null) {
+                themeProvider.setThemesByAssetImage(uriPath);
+              } else {
+                final file = await ImageUtility.pickImage();
+                if (file == null) {
+                  return;
+                }
+                setState(() {
+                  _dynamicThemeImageFilePaths.add(file.path);
+                });
+              }
+            },
+            child: AnimatedContainer(
+              width: isSelected ? 114 : 57,
+              height: 114,
+              duration: const Duration(milliseconds: 200),
+              decoration: decoration,
+              child: Center(
+                child: child,
+              ),
+            ),
+          );
+
+          child = Container(
+            padding: isSelected
+                ? const EdgeInsets.all(_IMAGE_LABEL_MARGIN)
+                : const EdgeInsets.symmetric(vertical: _IMAGE_LABEL_MARGIN + _IMAGE_LABEL_BORDER_WIDTH),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: !isSelected ? null : Border.all(
+                color: xxColor,
+                width: _IMAGE_LABEL_BORDER_WIDTH,
+              ),
+            ),
+            child: child,
+          );
+
+          return child;
+        },
+      ),
+    );
   }
 
   List<Widget> _buildRightItems(ThemeProvider themeProvider) {
     return [
-      // Center(
-      //   child: DemoMobile1(),
-      // ),
+      Wrap(
+        spacing: 16,
+        runSpacing: 16,
+        alignment: WrapAlignment.spaceEvenly,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 408),
+            child: DemoMobile1(),
+          ),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 408),
+            child: DemoMobile2(),
+          ),
+        ],
+      ),
       Wrap(
         children: [
           ButtonBar(),

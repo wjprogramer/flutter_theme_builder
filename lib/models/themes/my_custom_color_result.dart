@@ -1,6 +1,8 @@
+import 'package:flutter_theme_builder/extensions/extensions.dart';
 import 'package:flutter_theme_builder/models/themes/my_core_palette.dart';
 import 'package:flutter_theme_builder/models/themes/my_custom_color.dart';
 import 'package:flutter_theme_builder/models/themes/my_single_color_scheme.dart';
+import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
 class MyCustomColorResult extends MyCustomColor {
   MyCustomColorResult({
@@ -9,12 +11,12 @@ class MyCustomColorResult extends MyCustomColor {
     required super.color,
     required this.light,
     required this.dark,
-    required this.palettes,
+    required this.palette,
   });
 
   MySingleColorScheme light;
   MySingleColorScheme dark;
-  MyCorePalette palettes;
+  colorUtilities.TonalPalette palette;
 
   @override
   Map toJson() => {
@@ -23,7 +25,7 @@ class MyCustomColorResult extends MyCustomColor {
     'color': color,
     'light': light.toJson(),
     'dark': dark.toJson(),
-    'palettes': palettes.toJson(),
+    'palette': palette.xToJson(),
   };
 
   @override
@@ -34,7 +36,7 @@ class MyCustomColorResult extends MyCustomColor {
       color: data['color'],
       light: MySingleColorScheme.fromJson(data['light']),
       dark: MySingleColorScheme.fromJson(data['dark']),
-      palettes: MyCorePalette.fromJson(data['palettes']),
+      palette: toTonalPaletteFromJson(data['palette']),
     );
   }
 }

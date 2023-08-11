@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
@@ -116,13 +119,19 @@ class ThemeProvider extends ChangeNotifier {
   Future<Themes> _generateThemesFromImage(String assetPath) async {
     _dynamicThemeImageSource = assetPath;
 
-    final assetImage = AssetImage(assetPath);
+    ImageProvider imageProvider;
+    if (AssetPaths.isAsset(assetPath)) {
+      imageProvider = AssetImage(assetPath);
+    } else {
+      imageProvider = FileImage(File(assetPath));
+    }
+
     final lightScheme = await ColorScheme.fromImageProvider(
-      provider: assetImage,
+      provider: imageProvider,
       brightness: Brightness.light,
     );
     final darkScheme = await ColorScheme.fromImageProvider(
-      provider: assetImage,
+      provider: imageProvider,
       brightness: Brightness.dark,
     );
 
