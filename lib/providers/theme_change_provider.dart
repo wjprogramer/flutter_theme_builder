@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
-import 'package:flutter_theme_builder/themes/compute_themes.dart';
+import 'package:flutter_theme_builder/utils/utils.dart';
 
 enum ThemeType {
   custom,
@@ -35,7 +32,6 @@ class ThemeProvider extends ChangeNotifier {
 
   MyDemoThemeData _customThemes = _buildThemes(
     primaryColor: Color(0xFFf77ebe),
-    // primaryColor: Color(0xFF6750A4),
   );
   MyDemoThemeData get customThemes => _customThemes;
   set customThemes(MyDemoThemeData v) {
@@ -107,46 +103,14 @@ class ThemeProvider extends ChangeNotifier {
     customColors: customColors,
   );
 
-  Future<void> setThemesByAssetImage(String assetPath) async {
+  Future<void> setThemesByAssetImage(String imagePath) async {
     try {
-      _dynamicThemes = await _generateThemesFromImage(assetPath);
+      _dynamicThemes = await generateThemesFromImage(imagePath);
+      _dynamicThemeImageSource = imagePath;
       notifyListeners();
     } catch (e) {
       print(e);
     }
-  }
-
-  Future<Themes> _generateThemesFromImage(String assetPath) async {
-    _dynamicThemeImageSource = assetPath;
-
-    ImageProvider imageProvider;
-    if (AssetPaths.isAsset(assetPath)) {
-      imageProvider = AssetImage(assetPath);
-    } else {
-      imageProvider = FileImage(File(assetPath));
-    }
-
-    final lightScheme = await ColorScheme.fromImageProvider(
-      provider: imageProvider,
-      brightness: Brightness.light,
-    );
-    final darkScheme = await ColorScheme.fromImageProvider(
-      provider: imageProvider,
-      brightness: Brightness.dark,
-    );
-
-    return Themes(
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: lightScheme,
-        textTheme: ThemeData.light().textTheme,
-      ),
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: darkScheme,
-        textTheme: ThemeData.dark().textTheme,
-      ),
-    );
   }
 
 }

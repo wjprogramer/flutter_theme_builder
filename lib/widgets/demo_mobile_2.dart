@@ -149,26 +149,8 @@ class _DemoMobile2State extends State<DemoMobile2> {
     );
   }
 
-  Widget _buildListTile(IconData iconData, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Icon(
-            iconData,
-          ),
-          16.width,
-          Text(
-            text,
-            style: _textTheme.titleMedium,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCard(ThemeData theme, _CardData data) {
-    final a = theme.colorScheme.surface;
+    // theme.colorScheme.surface;
 
     return Card(
       // color: theme.colorScheme.onSurface,

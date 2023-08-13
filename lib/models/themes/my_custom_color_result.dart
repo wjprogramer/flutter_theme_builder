@@ -1,5 +1,4 @@
 import 'package:flutter_theme_builder/extensions/extensions.dart';
-import 'package:flutter_theme_builder/models/themes/my_core_palette.dart';
 import 'package:flutter_theme_builder/models/themes/my_custom_color.dart';
 import 'package:flutter_theme_builder/models/themes/my_single_color_scheme.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;

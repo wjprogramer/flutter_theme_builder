@@ -5,6 +5,8 @@ export 'material/color_hct.dart';
 export 'material/image_to_theme.dart';
 export 'material/palette.dart';
 export 'material/theme_generate.dart';
+export 'material/themes.dart';
+
 export 'math/math.dart';
 export 'math/powers.dart';
 export 'test/test.dart';

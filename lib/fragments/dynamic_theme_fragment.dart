@@ -12,10 +12,7 @@ import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:flutter_theme_builder/themes/colors.dart';
 import 'package:flutter_theme_builder/utilities/image_utility.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
-import 'package:flutter_theme_builder/widgets/color_circle_label.dart';
-import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
-import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
-import 'package:flutter_theme_builder/widgets/hover_builder.dart';
+import 'package:flutter_theme_builder/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 

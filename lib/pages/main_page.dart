@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_common_package/flutter_common_package.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/fragments/custom_theme_fragment.dart';
 import 'package:flutter_theme_builder/fragments/dynamic_theme_fragment.dart';
+import 'package:flutter_theme_builder/pages/bonus_page.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -87,14 +89,7 @@ class _MainPageState extends State<MainPage> {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            // if (themeProvider.themes.brightness == Brightness.light) {
-            //   themeProvider.themes = ThemeData.dark(useMaterial3: true);
-            // } else {
-            //   themeProvider.themes = ThemeData.light(useMaterial3: true);
-            // }
-            themeProvider.toggleBrightness();
-          },
+          onPressed: themeProvider.toggleBrightness,
           icon: Icon(
             themeProvider.brightness == Brightness.light
                 ? Icons.dark_mode
@@ -102,7 +97,9 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            push(context, BonusPage());
+          },
           icon: Icon(Icons.info_outline),
         ),
       ],

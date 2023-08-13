@@ -9,13 +9,7 @@ import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/material/color.dart';
 import 'package:flutter_theme_builder/utils/test/test.dart';
-import 'package:flutter_theme_builder/widgets/color_circle_label.dart';
-import 'package:flutter_theme_builder/widgets/custom_color_list_items.dart';
-import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
-import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
-import 'package:flutter_theme_builder/widgets/demo_widgets_list_items.dart';
-import 'package:flutter_theme_builder/widgets/hover_builder.dart';
-import 'package:flutter_theme_builder/widgets/tonal_palette_tones_bar.dart';
+import 'package:flutter_theme_builder/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
@@ -51,7 +45,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
   final _leftFocusNode = FocusNode();
 
   var _cellsCopiedStatus = <List<bool>>[];
-  var _colorRows = <List<_SchemeColorCell>>[];
   var _lockOtherCoreColors = false;
   final _myCustomColors = <_MyCustomColor>[
     // _MyCustomColor(
