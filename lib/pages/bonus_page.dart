@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_builder/utils/utils.dart';
 
 class BonusPage extends StatefulWidget {
   const BonusPage({Key? key}) : super(key: key);
@@ -15,7 +14,6 @@ class _BonusPageState extends State<BonusPage> {
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
 
         },
       ),

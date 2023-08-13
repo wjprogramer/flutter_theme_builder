@@ -29,6 +29,10 @@ void main() {
     expect(res['relation']['value'], 456);
   });
 
+  test('Color utils / hex from argb', () {
+    final colorValue = 4294957288;
 
+    expect(hexFromArgb(colorValue), '#ffd8e8');
+  });
 
 }

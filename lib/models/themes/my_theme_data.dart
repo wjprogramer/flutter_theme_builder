@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_theme_builder/enums/enums.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 
@@ -21,7 +23,7 @@ class MyDemoThemeData {
   String name;
   bool baseline;
   List<MyCustomColor> extendedColors;
-  Map<String, String?> coreColors;
+  Map<MyColorSchemeKey, String?> coreColors;
   MyScheme lightScheme;
   MyScheme darkScheme;
   Map? androidSchemes;
@@ -30,12 +32,17 @@ class MyDemoThemeData {
   List<MyCustomColorResult> customColors;
 
   Map toJson() {
+    final jsonCoreColors = <String, String?>{};
+    coreColors.forEach((key, value) {
+      jsonCoreColors[key.code] = value;
+    });
+
     return {
       'seed': seed,
       'name': name,
       'baseline': baseline,
       'extendedColors': extendedColors.map((e) => e.toJson()).toList(),
-      'coreColors': coreColors,
+      'coreColors': jsonCoreColors,
       'lightScheme': lightScheme.toJson(),
       'darkScheme': darkScheme.toJson(),
       'androidSchemes': androidSchemes,
@@ -61,11 +68,16 @@ class MyDemoThemeData {
     );
   }
 
-  static Map<String, String?> _coreColorsFromJson(Map data) {
-    final res = <String, String?>{};
+  static Map<MyColorSchemeKey, String?> _coreColorsFromJson(Map data) {
+    final res = <MyColorSchemeKey, String?>{};
     data.entries.forEach((e) {
       if (e.key is String && e.value is String?) {
-        res[e.key] = e.value;
+        final xxx = MyColorSchemeKey.values.firstWhereOrNull(
+              (yyy) => yyy.code == e.key,
+        );
+        if (xxx != null) {
+          res[xxx] = e.value;
+        }
       }
     });
     return res;
@@ -76,7 +88,7 @@ class MyDemoThemeData {
     String? name,
     bool? baseline,
     List<MyCustomColor>? extendedColors,
-    Map<String, String?>? coreColors,
+    Map<MyColorSchemeKey, String?>? coreColors,
     MyScheme? lightScheme,
     MyScheme? darkScheme,
     Map? androidSchemes,

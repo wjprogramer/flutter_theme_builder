@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_theme_builder/app/demo_data.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
@@ -95,13 +94,15 @@ class ThemeProvider extends ChangeNotifier {
     Color? tertiaryColor,
     Color? neutralColor,
     List<MyCustomColor>? customColors,
-  }) => generateCustomThemes(
-    primaryColor: primaryColor,
-    secondaryColor: secondaryColor,
-    tertiaryColor: tertiaryColor,
-    neutralColor: neutralColor,
-    customColors: customColors,
-  );
+  }) {
+    return custom_generateCustomTheme(
+      customColors: customColors ?? [],
+      primary: hexFromArgb(primaryColor.value),
+      secondary: secondaryColor == null ? null : hexFromArgb(secondaryColor.value),
+      tertiary: tertiaryColor == null ? null : hexFromArgb(tertiaryColor.value),
+      neutral: neutralColor == null ? null : hexFromArgb(neutralColor.value),
+    );
+  }
 
   Future<void> setThemesByAssetImage(String imagePath) async {
     try {

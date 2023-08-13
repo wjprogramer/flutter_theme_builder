@@ -1,3 +1,4 @@
+import 'package:flutter_theme_builder/enums/enums.dart';
 import 'package:flutter_theme_builder/extensions/extensions.dart';
 import 'package:flutter_theme_builder/utils/material/color.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
@@ -51,8 +52,8 @@ class MyCorePalette {
     return colorUtilities.TonalPalette.fromList(res);
   }
 
-  setByKey(String key, colorUtilities.TonalPalette palette) {
-    switch (key) {
+  setByKey(MyColorSchemeKey key, colorUtilities.TonalPalette palette) {
+    switch (key.code) {
       case 'primary':        primary        = palette; break;
       case 'secondary':      secondary      = palette; break;
       case 'tertiary':       tertiary       = palette; break;

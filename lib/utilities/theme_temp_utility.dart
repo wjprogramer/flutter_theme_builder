@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_theme_builder/enums/enums.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
@@ -55,7 +56,7 @@ class ThemeTempUtility {
       baseline: true,
       extendedColors: customColors,
       coreColors: {
-        'primary': sourceColor,
+        MyColorSchemeKey.primary: sourceColor,
       },
       lightScheme: baseline_getScheme(Brightness.light),
       darkScheme: baseline_getScheme(Brightness.dark),
