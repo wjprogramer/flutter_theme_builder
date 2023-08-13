@@ -1,17 +1,23 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/app/asset_path.dart';
 import 'package:flutter_theme_builder/extensions/material/colors.dart';
+import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
 import 'package:flutter_theme_builder/themes/colors.dart';
 import 'package:flutter_theme_builder/utilities/image_utility.dart';
+import 'package:flutter_theme_builder/utils/utils.dart';
+import 'package:flutter_theme_builder/widgets/color_circle_label.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_1.dart';
 import 'package:flutter_theme_builder/widgets/demo_mobile_2.dart';
 import 'package:flutter_theme_builder/widgets/hover_builder.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const _IMAGE_LABEL_MARGIN = 5.0;
 const _IMAGE_LABEL_BORDER_WIDTH = 2.0;
@@ -30,6 +36,25 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
   var _oldPrimaryColor = _UNSET_COLOR;
   late ThemeProvider _themeProvider;
   final _dynamicThemeImageFilePaths = <String>[];
+
+  ThemeData get _theme => _themeProvider.themeData;
+
+  TextStyle? get _descriptionStyle => _theme.textTheme.bodyLarge?.copyWith(
+    color: _theme.colorScheme.onSurface.withOpacity(.67),
+  );
+
+  final _myCustomColors = <_MyCustomColor>[
+    // _MyCustomColor(
+    //   name: 'My name 1',
+    //   harmonized: true,
+    //   color: '#5f5519',
+    // ),
+    // _MyCustomColor(
+    //   name: 'My name 2',
+    //   harmonized: false,
+    //   color: '#5f5519',
+    // ),
+  ];
 
   @override
   void initState() {
@@ -67,7 +92,7 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
                 children: [
                   Expanded(
                     flex: 35,
-                    child: _buildLeft(themeProvider),
+                    child: _buildLeft(themeProvider, trailingSpace: true),
                   ),
                   Expanded(
                     flex: 55,
@@ -96,12 +121,18 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
     );
   }
 
-  Widget _buildLeft(ThemeProvider themeProvider) {
+  Widget _buildLeft(ThemeProvider themeProvider, {
+    required bool trailingSpace,
+  }) {
     return ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: 48,
       ),
-      children: _buildLeftItems(themeProvider),
+      children: [
+        ..._buildLeftItems(themeProvider),
+        if (trailingSpace)
+          120.height,
+      ],
     );
   }
 
@@ -127,10 +158,19 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
       20.height,
       Text.rich(
         TextSpan(
-          text: 'A user-generated scheme is derived from a user’s wallpaper selection to create 5 key colors with dynamic color. Select a wallpaper or add your own to see user generated color in action.',
+          text: 'A user-generated scheme is derived from a user’s wallpaper selection to create 5 key colors with dynamic color. Select a wallpaper or add your own to see user generated color in action. ',
           children: [
             TextSpan(
               text: 'Learn more about dynamic color.',
+              style: TextStyle(
+                color: _themeProvider.themeData.primaryColor,
+                decoration: TextDecoration.underline,
+                decorationColor: _themeProvider.themeData.primaryColor,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  _openUrl(Uri.parse('https://m3.material.io/styles/color/dynamic-color/overview'));
+                },
             ),
           ],
         ),
@@ -150,23 +190,124 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
         )).toList(),
       ),
       48.height,
-      TextButton(
-        onPressed: () {
-        },
-        child: Text('Dynamic'),
+      Divider(),
+      24.height,
+      Text(
+        'Extended Colors',
+        style: _theme.textTheme.headlineSmall,
       ),
-      32.height,
-      TextButton(
-        onPressed: () async {
-          try {
-            await themeProvider.setThemesByAssetImage(AssetPaths.theme1);
-          } catch (e) {
-          }
-        },
-        child: Text('Dynamic'),
+      Text(
+        'Input a custom color that automatically gets assigned a set of complementary tones.',
+        style: _descriptionStyle,
       ),
+      if (_myCustomColors.isNotEmpty)
+        Row(
+          children: [
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              child: Text(
+                'Harmonize',
+                style: _theme.textTheme.bodySmall,
+              ),
+            ),
+          ],
+        ),
+      ..._myCustomColors.mapIndexed((e, i) => Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: GestureDetector(
+              onTap: () {
+                // _pickColor(
+                //   color: e.color,
+                //   onColorSelected: (cc) {
+                //     setState(() {
+                //       e.color = cc;
+                //       // _updateThemeByCoreColor();
+                //     });
+                //   },
+                // );
+              },
+              child: ColorCircleLabel(
+                color: e.color,
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: e.textEditingController,
+              onChanged: (text) {
+                setState(() {
+                  e.name = text;
+                });
+              },
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _myCustomColors.removeAt(i);
+                // _updateThemeByCoreColor();
+              });
+            },
+            icon: Icon(Icons.delete),
+          ),
+          Checkbox(
+            value: e.harmonized,
+            onChanged: (v) {
+              setState(() {
+                e.harmonized = v ?? e.harmonized;
+                // _updateThemeByCoreColor();
+              });
+            },
+          ),
+        ],
+      )),
+      20.height,
+      Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                // _myCustomColors.add(_MyCustomColor(
+                //   name: 'Hello',
+                //   harmonized: true,
+                //   color: hexFromArgb(Colors.blue.value),
+                // ));
+                // _updateThemeByCoreColor();
+              });
+            },
+            style: IconButton.styleFrom(
+              backgroundColor: _theme.colorScheme.surfaceVariant,
+            ),
+            icon: Icon(Icons.add),
+          ),
+          16.width,
+          Text(
+            'Add a color',
+            style: _theme.textTheme.bodyLarge,
+          ),
+        ],
+      ),
+      // 32.height,
+      // TextButton(
+      //   onPressed: () async {
+      //     try {
+      //       await themeProvider.setThemesByAssetImage(AssetPaths.theme1);
+      //     } catch (e) {
+      //     }
+      //   },
+      //   child: Text('Dynamic'),
+      // ),
       32.height,
     ];
+  }
+
+  Future<void> _openUrl(Uri uri) async {
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $uri');
+    }
   }
 
   Widget _buildImageLabel(ThemeProvider themeProvider, String? uriPath) {
@@ -331,4 +472,33 @@ class _DynamicThemeFragmentState extends State<DynamicThemeFragment> with Single
       ),
     ];
   }
+}
+
+class _MyCustomColor {
+  _MyCustomColor({
+    required String name,
+    required bool harmonized,
+    required String color,
+  }) : value = MyCustomColor(name: name, harmonized: harmonized, color: color) {
+    textEditingController.text = name;
+  }
+
+  MyCustomColor value;
+  final textEditingController = TextEditingController();
+
+  String get name => value.name;
+  set name(String v) {
+    value.name = v;
+  }
+
+  bool get harmonized => value.harmonized;
+  set harmonized(bool v) {
+    value.harmonized = v;
+  }
+
+  Color get color => colorFromHex(value.color)!;
+  set color(Color v) {
+    value.color = hexFromArgb(v.value);
+  }
+
 }

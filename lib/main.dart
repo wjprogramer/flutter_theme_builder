@@ -10,7 +10,7 @@ void main() {
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowTitle('My App');
     // setWindowMaxSize(const Size(400, 400));
-    setWindowMinSize(const Size(400, 400));
+    setWindowMinSize(const Size(800, 800));
   }
 
   runApp(const MyApp());
