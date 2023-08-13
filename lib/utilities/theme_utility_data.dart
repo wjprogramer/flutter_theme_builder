@@ -1,4 +1,4 @@
-part of 'theme_temp_utility.dart';
+part of 'theme_utility.dart';
 
 enum TOKENS_3P_GROUP {
   color('color'),
@@ -17,7 +17,7 @@ enum TOKENS_3P_GROUP {
   final String tokenGroupKey;
 }
 
-const TOKENS_3P_COLOR = {
+const _TOKENS_3P_COLOR = {
   "md.sys.color.scrim": {
     "name": "Scrim",
     "value": "md.ref.palette.neutral0"
@@ -144,7 +144,7 @@ const TOKENS_3P_COLOR = {
   }
 };
 
-const TOKENS_3P_LIGHT = {
+const _TOKENS_3P_LIGHT = {
   "md.sys.color.scrim": {
     "name": "Scrim",
     "value": "md.ref.palette.neutral0"
@@ -271,7 +271,7 @@ const TOKENS_3P_LIGHT = {
   }
 };
 
-const TOKENS_3P_DARK = {
+const _TOKENS_3P_DARK = {
   "md.sys.color.scrim": {
     "name": "Scrim",
     "value": "md.ref.palette.neutral0"
@@ -398,7 +398,7 @@ const TOKENS_3P_DARK = {
   }
 };
 
-const TOKENS_3P_ELEVATION = {
+const _TOKENS_3P_ELEVATION = {
   "md.sys.elevation.level0": {
     "name": "0",
     "value": {
@@ -443,7 +443,7 @@ const TOKENS_3P_ELEVATION = {
   }
 };
 
-const TOKENS_3P_MOTION = {
+const _TOKENS_3P_MOTION = {
   "md.sys.motion.path": {
     "name": "Motion path",
     "value": {
@@ -597,7 +597,7 @@ const TOKENS_3P_MOTION = {
   }
 };
 
-const TOKENS_3P_PALETTE = {
+const _TOKENS_3P_PALETTE = {
   "md.ref.palette.error0": {
     "name": "Error 0",
     "value": {
@@ -1480,7 +1480,7 @@ const TOKENS_3P_PALETTE = {
   }
 };
 
-const TOKENS_3P_SHAPE = {
+const _TOKENS_3P_SHAPE = {
   "md.sys.shape.corner.extra-small.top": {
     "name": "Extra small top rounding",
     "value": {
@@ -1639,7 +1639,7 @@ const TOKENS_3P_SHAPE = {
   }
 };
 
-const TOKENS_3P_STATE = {
+const _TOKENS_3P_STATE = {
   "md.sys.state.hover.state-layer-opacity": {
     "name": "Hover state layer opacity",
     "value": .07999999821186066
@@ -1658,7 +1658,7 @@ const TOKENS_3P_STATE = {
   }
 };
 
-const TOKENS_3P_TYPEFACE = {
+const _TOKENS_3P_TYPEFACE = {
   "md.ref.typeface.plain": {
     "name": "Plain typeface",
     "value": {
@@ -1685,7 +1685,7 @@ const TOKENS_3P_TYPEFACE = {
   }
 };
 
-const TOKENS_3P_TYPESCALE = {
+const _TOKENS_3P_TYPESCALE = {
   "md.sys.typescale.label-medium.text-transform": {
     "name": "Label Medium text transform",
     "value": 1
@@ -2367,15 +2367,15 @@ const TOKENS_3P_TYPESCALE = {
   }
 };
 
-const TOKENS_3P = {
-  TOKENS_3P_GROUP.color: TOKENS_3P_COLOR,
-  TOKENS_3P_GROUP.light: TOKENS_3P_LIGHT,
-  TOKENS_3P_GROUP.dark: TOKENS_3P_DARK,
-  TOKENS_3P_GROUP.elevation: TOKENS_3P_ELEVATION,
-  TOKENS_3P_GROUP.motion: TOKENS_3P_MOTION,
-  TOKENS_3P_GROUP.palette: TOKENS_3P_PALETTE,
-  TOKENS_3P_GROUP.shape: TOKENS_3P_SHAPE,
-  TOKENS_3P_GROUP.state: TOKENS_3P_STATE,
-  TOKENS_3P_GROUP.typeface: TOKENS_3P_TYPEFACE,
-  TOKENS_3P_GROUP.typescale: TOKENS_3P_TYPESCALE,
+const _TOKENS_3P = {
+  TOKENS_3P_GROUP.color: _TOKENS_3P_COLOR,
+  TOKENS_3P_GROUP.light: _TOKENS_3P_LIGHT,
+  TOKENS_3P_GROUP.dark: _TOKENS_3P_DARK,
+  TOKENS_3P_GROUP.elevation: _TOKENS_3P_ELEVATION,
+  TOKENS_3P_GROUP.motion: _TOKENS_3P_MOTION,
+  TOKENS_3P_GROUP.palette: _TOKENS_3P_PALETTE,
+  TOKENS_3P_GROUP.shape: _TOKENS_3P_SHAPE,
+  TOKENS_3P_GROUP.state: _TOKENS_3P_STATE,
+  TOKENS_3P_GROUP.typeface: _TOKENS_3P_TYPEFACE,
+  TOKENS_3P_GROUP.typescale: _TOKENS_3P_TYPESCALE,
 };

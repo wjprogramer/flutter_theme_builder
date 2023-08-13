@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter_theme_builder/enums/enums.dart';
 import 'package:flutter_theme_builder/models/models.dart';
-import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
+import 'package:flutter_theme_builder/utilities/theme_utility.dart';
 import 'package:flutter_theme_builder/utils/material/color.dart';
 import 'package:flutter_theme_builder/utils/math/math.dart';
 import 'package:material_color_utilities/hct/hct_solver.dart';
@@ -72,7 +72,7 @@ MyDemoThemeData custom_generateCustomTheme({
   required String? neutral,
 
 }) {
-  final baseline = ThemeTempUtility.baseline_generateBaseline(
+  final baseline = ThemeUtility.generateBaselineTheme(
     customColors: customColors,
   );
   final sourceColor = primary ?? baseline.coreColors['primary']!;

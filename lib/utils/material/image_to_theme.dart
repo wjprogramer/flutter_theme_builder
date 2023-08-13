@@ -4,62 +4,60 @@ import 'dart:math' as math;
 
 import 'package:flutter_theme_builder/extensions/extensions.dart';
 import 'package:flutter_theme_builder/models/models.dart';
-import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
+import 'package:flutter_theme_builder/utilities/theme_utility.dart';
 import 'package:flutter_theme_builder/utils/core/image.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
-// JSCompiler_StaticMethods_updateThemeFromImage
 Future<MyDemoThemeData> buildThemeFromImage(String assetPath, {
   List<MyCustomColor> customColors = const [],
   bool isContent = false,
   Int8List? imageData,
 }) async {
-  final String color = (await image_sourceColorsFromImage(assetPath, imageData: imageData))[0];
-  final theme = dynamic_generateDynamicTheme(
+  final String color = (await getSourceColorsFromImage(assetPath, imageData: imageData))[0];
+  final theme = generateDynamicTheme(
     color, customColors: customColors, isContent: isContent,
   );
   return theme;
 }
 
-MyDemoThemeData dynamic_generateDynamicTheme(sourceColor, {
+MyDemoThemeData generateDynamicTheme(sourceColor, {
   List<MyCustomColor> customColors = const [],
   bool isContent = false,
 }) {
   final source = argbFromHex(sourceColor);
-  // final palette = isContent
-  //     ? colorUtilities.CorePalette.contentOf(source)
-  //     : colorUtilities.CorePalette.of(source);
   final light = isContent
       ? colorUtilities.Scheme.lightFromCorePalette(colorUtilities.CorePalette.of(source))
       : colorUtilities.Scheme.lightFromCorePalette(colorUtilities.CorePalette.contentOf(source));
   final dark = isContent
       ? colorUtilities.Scheme.darkFromCorePalette(colorUtilities.CorePalette.of(source))
       : colorUtilities.Scheme.darkFromCorePalette(colorUtilities.CorePalette.contentOf(source));
-  final baseline = ThemeTempUtility.baseline_generateBaseline(
+
+  final baselineThemeData = ThemeUtility.generateBaselineTheme(
     customColors: customColors,
   );
 
-  baseline.baseline = false;
-  baseline.seed = sourceColor;
-  baseline.coreColors = {};
-  baseline.extendedColors = customColors;
-  baseline.customColors = custom_color_convertCustomColors(customColors, sourceColor);
-  baseline.lightScheme = light.toMyScheme(Brightness.light);
-  baseline.darkScheme = dark.toMyScheme(Brightness.dark);
+  baselineThemeData
+    ..baseline = false
+    ..seed = sourceColor
+    ..coreColors = {}
+    ..extendedColors = customColors
+    ..customColors = custom_color_convertCustomColors(customColors, sourceColor)
+    ..lightScheme = light.toMyScheme(Brightness.light)
+    ..darkScheme = dark.toMyScheme(Brightness.dark);
 
-  return baseline;
+  return baselineThemeData;
 }
 
-Future<List<String>> image_sourceColorsFromImage(String assetPath, {
+Future<List<String>> getSourceColorsFromImage(String assetPath, {
   Int8List? imageData,
 }) async {
   final _pixels = await image_bufferToPixels(assetPath, imageData: imageData);
   final result = await quantizer_celebi$QuantizerCelebi$quantize(_pixels);
+  final score = colorUtilities.Score.score(result.colorToCount);
 
-  final a = colorUtilities.Score.score(result.colorToCount);
-  return a
-      .sublist(0, math.min(5, a.length))
+  return score
+      .sublist(0, math.min(5, score.length))
       .map((e) => hexFromArgb(e))
       .map((e) => e.toUpperCase()).toList();
 }

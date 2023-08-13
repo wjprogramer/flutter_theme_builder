@@ -7,7 +7,6 @@ import 'package:flutter_theme_builder/models/themes.dart';
 class MyDemoThemeData {
   MyDemoThemeData({
     required this.seed,
-    required this.name,
     required this.baseline,
     required this.extendedColors,
     required this.coreColors,
@@ -20,7 +19,6 @@ class MyDemoThemeData {
   });
 
   String seed;
-  String name;
   bool baseline;
   List<MyCustomColor> extendedColors;
   Map<MyColorSchemeKey, String?> coreColors;
@@ -39,7 +37,6 @@ class MyDemoThemeData {
 
     return {
       'seed': seed,
-      'name': name,
       'baseline': baseline,
       'extendedColors': extendedColors.map((e) => e.toJson()).toList(),
       'coreColors': jsonCoreColors,
@@ -55,7 +52,6 @@ class MyDemoThemeData {
   factory MyDemoThemeData.fromJson(Map data) {
     return MyDemoThemeData(
       seed: data['seed'],
-      name: data['name'],
       baseline: data['baseline'],
       extendedColors: (data['extendedColors'] as List).map((e) => MyCustomColor.fromJson(e)).toList(),
       coreColors: _coreColorsFromJson(data['coreColors']),
@@ -85,7 +81,6 @@ class MyDemoThemeData {
 
   MyDemoThemeData copyWith({
     String? seed,
-    String? name,
     bool? baseline,
     List<MyCustomColor>? extendedColors,
     Map<MyColorSchemeKey, String?>? coreColors,
@@ -98,7 +93,6 @@ class MyDemoThemeData {
   }) {
     return MyDemoThemeData(
       seed: seed ?? this.seed,
-      name: name ?? this.name,
       baseline: baseline ?? this.baseline,
       extendedColors: extendedColors ?? this.extendedColors,
       coreColors: coreColors ?? this.coreColors,
@@ -112,10 +106,6 @@ class MyDemoThemeData {
   }
 
   Themes getThemes() {
-    // return Themes(
-    //   ThemeData.light(useMaterial3: true),
-    //   ThemeData.dark(useMaterial3: true),
-    // );
     return Themes(
       ThemeData.from(
         useMaterial3: true,
