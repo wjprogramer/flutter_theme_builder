@@ -6,9 +6,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_common_package/extensions/extensions.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/providers/theme_change_provider.dart';
-import 'package:flutter_theme_builder/utilities/theme_temp_utility.dart';
 import 'package:flutter_theme_builder/utils/material/color.dart';
-import 'package:flutter_theme_builder/utils/test/test.dart';
 import 'package:flutter_theme_builder/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
@@ -631,10 +629,6 @@ class _CustomThemeFragmentState extends State<CustomThemeFragment> {
     final lightTheme = themes.light;
     final darkTheme = themes.dark;
     final customColorsResults = _themeProvider.customThemes.customColors;
-
-    testSomething();
-    ThemeTempUtility.test();
-    ThemeTempUtility.testThemes();
 
     return [
       Wrap(

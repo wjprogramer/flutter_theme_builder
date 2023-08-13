@@ -9,4 +9,3 @@ export 'material/themes.dart';
 
 export 'math/math.dart';
 export 'math/powers.dart';
-export 'test/test.dart';

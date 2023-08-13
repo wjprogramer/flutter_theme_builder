@@ -1,49 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/enums/enums.dart';
 import 'package:flutter_theme_builder/models/models.dart';
-import 'package:flutter_theme_builder/models/themes.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 
 part 'theme_temp_utility_data.dart';
 
 class ThemeTempUtility {
-  static void test() {
-    return;
-
-    final a = baseline_generateBaseline();
-    print(getPrettyJSONString(a));
-
-    final b = baseline_getColorById('md.sys.color.secondary', TOKENS_3P_GROUP.light);
-    print(b);
-
-    final c = baseline_getColorById('md.sys.color.tertiary', TOKENS_3P_GROUP.light);
-    print(c);
-
-    final d = {
-      'name': 'fuck',
-      'value': 4284255994,
-      'inner': {
-        'v': 4284255994,
-      },
-    };
-    final e = myJsonConverter(d, toEncodable: color_replaceArgbWithHex);
-    print(getPrettyJSONString(e));
-
-  }
-
-  static Themes testThemes() {
-    return Themes(
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: baseline_getScheme(Brightness.light).toColorScheme(),
-      ),
-      ThemeData.from(
-        useMaterial3: true,
-        colorScheme: baseline_getScheme(Brightness.dark).toColorScheme(),
-      ),
-    );
-  }
 
   static MyDemoThemeData baseline_generateBaseline({
     List<MyCustomColor> customColors = const [],

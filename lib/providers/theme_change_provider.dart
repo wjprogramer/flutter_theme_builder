@@ -43,7 +43,6 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeData get themeData {
     final themes = _currentThemes;
-    // print(getPrettyJSONString(_customThemes.toJson()));
 
     return _brightness == Brightness.light
         ? themes.light
@@ -73,7 +72,6 @@ class ThemeProvider extends ChangeNotifier {
     Color? neutralColor,
     List<MyCustomColor>? customColors,
   }) {
-    print('primaryColor: $primaryColor');
     _customThemes = _buildThemes(
       primaryColor: primaryColor,
       secondaryColor: secondaryColor,
