@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_theme_builder/enums/enums.dart';
+import 'package:flutter_theme_builder/extensions/extensions.dart';
 import 'package:flutter_theme_builder/models/models.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
@@ -13,6 +14,10 @@ class ThemeUtility {
   }) {
     final sourceColor = "#6750A4";
 
+    final colorUtilities.TonalPalette x = baselineGetPalette("primary");
+
+    print(x.xToJson());
+
     return MyDemoThemeData(
       seed: sourceColor,
       baseline: true,
@@ -23,12 +28,12 @@ class ThemeUtility {
       lightScheme: _baseline_getScheme(Brightness.light),
       darkScheme: _baseline_getScheme(Brightness.dark),
       palettes: MyCorePalette(
-        primary: _baseline_getPalette("primary"),
-        secondary: _baseline_getPalette("secondary"),
-        tertiary: _baseline_getPalette("tertiary"),
-        error: _baseline_getPalette("error"),
-        neutral: _baseline_getPalette("neutral"),
-        neutralVariant: _baseline_getPalette("neutral-variant")
+        primary: baselineGetPalette("primary"),
+        secondary: baselineGetPalette("secondary"),
+        tertiary: baselineGetPalette("tertiary"),
+        error: baselineGetPalette("error"),
+        neutral: baselineGetPalette("neutral"),
+        neutralVariant: baselineGetPalette("neutral-variant")
       ),
       styles: {
         'display': _baseline_getFontStyleGroup("display"),
@@ -88,16 +93,16 @@ class ThemeUtility {
     );
   }
 
-  static MyToken? _latest_findTokenById(String tokenId, TOKENS_3P_GROUP? vGroup, {
+  static MyToken<T>? _latest_findTokenById<T>(String tokenId, TOKENS_3P_GROUP? vGroup, {
     bool resolve = false,
     bool hex = false,
   }) {
-    MyToken? searchGroup(Map group) {
+    MyToken<T>? searchGroup(Map group) {
       for (final entry in group.entries) {
         final id = entry.key;
         final value = entry.value;
         if (id == tokenId) {
-          return _latest_convertToken(id, value, resolve: resolve, hex: hex);
+          return _latest_convertToken<T>(id, value, resolve: resolve, hex: hex);
         }
       }
       return null;
@@ -123,7 +128,7 @@ class ThemeUtility {
     return null;
   }
 
-  static MyToken _latest_convertToken(id, Map value, {
+  static MyToken<T> _latest_convertToken<T>(id, Map value, {
     required bool resolve,
     required bool hex,
     TOKENS_3P_GROUP? vGroup,
@@ -134,7 +139,7 @@ class ThemeUtility {
       token['value'] is String &&
       (token['value'] as String).startsWith('md.')
     ) {
-      final match = _latest_findTokenById(token['value'], vGroup, resolve: resolve, hex: hex);
+      final match = _latest_findTokenById<T>(token['value'], vGroup, resolve: resolve, hex: hex);
       if (match != null) {
         return match;
       }
@@ -175,10 +180,10 @@ class ThemeUtility {
     );
   }
 
-  static colorUtilities.TonalPalette _baseline_getPalette(section) {
+  static colorUtilities.TonalPalette baselineGetPalette(section) {
     final prefix = 'md.ref.palette.${section}';
 
-    final tokens = _latest_findAllTokens((section, id) => id.startsWith(prefix) ? true : false);
+    final tokens = _latest_findAllTokens<String>((section, id) => id.startsWith(prefix) ? true : false);
     final group = {};
     for (final token in tokens) {
       if ("neutral" == section && token.id.startsWith('${prefix}-')) {
@@ -199,9 +204,9 @@ class ThemeUtility {
     ));
   }
 
-  static List<MyToken> _latest_findAllTokens(Function match) {
+  static List<MyToken<T>> _latest_findAllTokens<T>(Function match) {
     final tokens = _TOKENS_3P;
-    final results = <MyToken>[];
+    final results = <MyToken<T>>[];
 
     for (final entry in tokens.entries) {
       final section = entry.key,
@@ -210,7 +215,7 @@ class ThemeUtility {
         final id = gEntry.key,
             value = gEntry.value;
         if (match(section, id)) {
-          final token = _latest_convertToken(
+          final token = _latest_convertToken<T>(
             id, value, resolve: true, hex: true, vGroup: TOKENS_3P_GROUP.palette,
           );
           results.add(token);
@@ -233,7 +238,7 @@ class ThemeUtility {
     // TODO: 優先處理這邊
     final prefix = 'md.sys.typescale.${section}',
         fontFamily = _latest_findTokenById('${prefix}.font', null, resolve: true),
-        fontWeight = _latest_findTokenById('${prefix}.weight', null, resolve: true),
+        fontWeight = _latest_findTokenById<int>('${prefix}.weight', null, resolve: true),
         fontSize = _latest_findTokenById('${prefix}.size', null, resolve: true),
         lineHeight = _latest_findTokenById('${prefix}.line-height', null, resolve: true),
         tracking = _latest_findTokenById('${prefix}.tracking', null, resolve: true),

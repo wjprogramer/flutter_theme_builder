@@ -1,12 +1,12 @@
-class MyToken {
+class MyToken<T> {
   MyToken({
     this.name = '',
-    dynamic value,
+    required T value,
     this.id = '',
   }): value = value;
 
   String name;
-  dynamic value;
+  T value;
   String id;
 
   Map<String, dynamic> toJson() {

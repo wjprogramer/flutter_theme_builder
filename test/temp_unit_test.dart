@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_theme_builder/utilities/theme_utility.dart';
 import 'package:flutter_theme_builder/utils/utils.dart';
 import 'package:material_color_utilities/material_color_utilities.dart' as colorUtilities;
 import 'package:material_color_utilities/hct/hct_solver.dart';
@@ -73,6 +74,7 @@ void main() {
     final tonalPalette = colorUtilities.TonalPalette.of(25, 84);
 
     final tonesGroup = tonal_group_tonesToTonalGroup(tonalPalette);
+
     myAssertEqual(tonesGroup[0], "#000000");
     myAssertEqual(tonesGroup[10], "#410002");
     myAssertEqual(tonesGroup[20], "#690005");
@@ -116,7 +118,23 @@ void main() {
     colorUtilities.Scheme.lightFromCorePalette(corePalette);
   });
 
-  test('', () {});
+  test('baselineGetPalette', () {
+    final primary = ThemeUtility.baselineGetPalette('primary');
+
+    expect(primary.get(0), 4278190080);
+    expect(primary.get(10), 4280352861);
+    expect(primary.get(20), 4281867890);
+    expect(primary.get(30), 4283381643);
+    expect(primary.get(40), 4284960932);
+    expect(primary.get(50), 4286539710);
+    expect(primary.get(60), 4288316123);
+    expect(primary.get(70), 4290158072);
+    expect(primary.get(80), 4291869951);
+    expect(primary.get(90), 4293582335);
+    expect(primary.get(95), 4294372863);
+    expect(primary.get(99), 4294966270);
+    expect(primary.get(100), 4294967295);
+  });
 
   test('', () {});
 
