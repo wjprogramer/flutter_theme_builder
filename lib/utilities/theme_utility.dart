@@ -35,13 +35,6 @@ class ThemeUtility {
         neutral: baselineGetPalette("neutral"),
         neutralVariant: baselineGetPalette("neutral-variant")
       ),
-      styles: {
-        'display': _baseline_getFontStyleGroup("display"),
-        'headline': _baseline_getFontStyleGroup("headline"),
-        'body': _baseline_getFontStyleGroup("body"),
-        'label': _baseline_getFontStyleGroup("label"),
-        'title': _baseline_getFontStyleGroup("title")
-      },
       customColors: custom_color_convertCustomColors(customColors, sourceColor)
     );
   }
@@ -174,7 +167,6 @@ class ThemeUtility {
     }
 
     return MyToken(
-      name: token['name'],
       value: token['value'],
       id: token['id'],
     );
@@ -224,47 +216,6 @@ class ThemeUtility {
     }
 
     return results;
-  }
-
-  static _baseline_getFontStyleGroup(section) {
-    return {
-      "large": _baseline_getFontStyle('${section}-large'),
-      "medium": _baseline_getFontStyle('${section}-medium'),
-      "small": _baseline_getFontStyle('${section}-smal'),
-    };
-  }
-
-  static _baseline_getFontStyle(section) {
-    // TODO: 優先處理這邊
-    final prefix = 'md.sys.typescale.${section}',
-        fontFamily = _latest_findTokenById('${prefix}.font', null, resolve: true),
-        fontWeight = _latest_findTokenById<int>('${prefix}.weight', null, resolve: true),
-        fontSize = _latest_findTokenById('${prefix}.size', null, resolve: true),
-        lineHeight = _latest_findTokenById('${prefix}.line-height', null, resolve: true),
-        tracking = _latest_findTokenById('${prefix}.tracking', null, resolve: true),
-        fontWeightValue = fontWeight?.value;
-
-    if (fontWeightValue == null) {
-      return null;
-    }
-
-    return {
-      'fontFamilyName': fontFamily?.value['valuesList'][0],
-      'fontFamilyStyle': 950 <= fontWeightValue ? "Ultra-black"
-          : 900 <= fontWeightValue ? "Black"
-          : 800 <= fontWeightValue ?
-      "Ultra-bold" : 700 <= fontWeightValue ? "Bold"
-          : 600 <= fontWeightValue ? "Demi-bold"
-          : 500 <= fontWeightValue ? "Medium"
-          : 400 <= fontWeightValue ? "Regular"
-          : 300 <= fontWeightValue ? "Light"
-          : 200 <= fontWeightValue ? "Extra-light"
-          : "Hairline",
-      'fontWeight': fontWeightValue,
-      'fontSize': fontSize?.value['value'],
-      'lineHeight': lineHeight?.value['value'],
-      'letterSpacing': tracking?.value['value'],
-    };
   }
 
 }
